@@ -1,0 +1,20 @@
+<RCC>
+  <qresource prefix="/">
+    <file>../UI/icons/delete-64.ico</file>
+    <file>../UI/icons/speaker-64.ico</file>
+    <file>../UI/icons/edit-11-64.ico</file>
+    <file>../UI/icons/chevron-down.svg</file>
+    <file>../UI/icons/chevron-up.svg</file>
+    <file>../UI/icons/plus.svg</file>
+    <file>../UI/icons/edit-2-64.ico</file>
+    <file>../UI/icons/book-2-64.ico</file>
+    <file>../UI/icons/minus.svg</file>
+    <file>../UI/icons/x.svg</file>
+    <file>../UI/icons/email-3-64.ico</file>
+    <file>../UI/icons/key-3-64.ico</file>
+    <file>../UI/icons/user-64.ico</file>
+    <file>../UI/icons/arrow-left.svg</file>
+    <file>../UI/icons/loading.gif</file>
+    <file>../UI/fonts/LuckiestGuy-Regular.ttf</file>
+  </qresource>
+</RCC>
