@@ -27,114 +27,76 @@ def create_table():
     cursor.execute("PRAGMA foreign_keys = ON;")
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_name TEXT NOT NULL UNIQUE,
+        CREATE TABLE IF NOT EXISTS positions (
+            position_name TEXT PRIMARY KEY
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS employees (
+            employee_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            employee_name TEXT NOT NULL,
             password TEXT NOT NULL,
             email TEXT NOT NULL,
-            created_at TEXT
+            phone TEXT NOT NULL,
+            address TEXT NOT NULL,
+            position_name TEXT NOT NULL,
+            created_at DATETIME,
+            update_at DATETIME,
+            FOREIGN KEY(position_name) REFERENCES positions(position_name)
+        )
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS type_product (
+            type_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            type_name TEXT NOT NULL
         )
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS topics (
-            topic_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            topic_name TEXT NOT NULL,
-            created_at TEXT,
-            user_id INTEGER,
-            FOREIGN KEY(user_id) REFERENCES users(user_id),
-            UNIQUE(topic_name, user_id)
+        CREATE TABLE IF NOT EXISTS products (
+            product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_name TEXT NOT NULL,
+            price DOUBLE NOT NULL,
+            type_id INTEGER NOT NULL,
+            FOREIGN KEY(type_id) REFERENCES type_product(type_id)
         )
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS words (
-            word_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            word_name TEXT NOT NULL UNIQUE
+        CREATE TABLE IF NOT EXISTS customers (
+            customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_name TEXT NOT NULL,
+            customer_phone TEXT NOT NULL,
+            customer_address TEXT NOT NULL,
+            customer_email TEXT NOT NULL UNIQUE
         )
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS pronunciations (
-            pronunciation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            word_id INTEGER NOT NULL,
-            region TEXT,          -- Vùng miền, ví dụ: 'UK', 'US'
-            phonetic_text TEXT,   -- Phiên âm dạng text, ví dụ: '/həˈləʊ/'
-            audio_url TEXT,      -- Đường dẫn URL đến file MP3
-            FOREIGN KEY(word_id) REFERENCES words(word_id) ON DELETE CASCADE
+        CREATE TABLE IF NOT EXISTS invoices (
+            invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date_buy DATETIME NOT NULL,
+            total_amount DOUBLE NOT NULL,
+            employee_id INTEGER NOT NULL,
+            customer_id INTEGER NOT NULL,
+            FOREIGN KEY(employee_id) REFERENCES employees(employee_id),
+            FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
         )
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS meanings (
-            meaning_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            word_id INTEGER NOT NULL,
-            part_of_speech TEXT NOT NULL,
-            FOREIGN KEY(word_id) REFERENCES words(word_id) on DELETE CASCADE
-        )
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS definition (
-            definition_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            meaning_id INTEGER NOT NULL,
-            language TEXT NOT NULL, -- 'en', 'vi'
-            definition_text TEXT NOT NULL,
-            FOREIGN KEY(meaning_id) REFERENCES meanings(meaning_id) ON DELETE CASCADE
-        )
-    """)
-
-    cursor.execute("""
-            CREATE TABLE IF NOT EXISTS examples (
-                example_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                meaning_id INTEGER NOT NULL,
-                example_en TEXT NOT NULL,
-                example_vi TEXT,
-                FOREIGN KEY(meaning_id) REFERENCES meanings(meaning_id) ON DELETE CASCADE
+            CREATE TABLE IF NOT EXISTS invoice_details (
+                invoice_id INTEGER NOT NULL,
+                quantity INTEGER NOT NULL CHECK(quantity > 0),
+                unit_price DOUBLE NOT NULL,
+                subtotal_amount DOUBLE NOT NULL,
+                product_id INTEGER NOT NULL,
+                PRIMARY KEY (invoice_id, product_id),
+                FOREIGN KEY(invoice_id) REFERENCES invoice(invoice_id) ON DELETE CASCADE,
+                FOREIGN KEY(product_id) REFERENCES products(product_id)
             )
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS topic_word (
-            topic_id INTEGER,
-            word_id INTEGER,
-            PRIMARY KEY(topic_id, word_id),
-            FOREIGN KEY(topic_id) REFERENCES topics(topic_id),
-            FOREIGN KEY(word_id) REFERENCES words(word_id)
-        )
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS user_word_progress (
-            user_id INTEGER NOT NULL,
-            word_id INTEGER NOT NULL,
-            
-            -- Cột chính cho SRS
-            srs_level INTEGER NOT NULL DEFAULT 0,            -- Cấp độ SRS hiện tại (0, 1, 2, ...)
-            next_review_at TEXT NOT NULL,                    -- Thời điểm cần ôn tập lại (dạng 'YYYY-MM-DD HH:MM:SS')
-            
-            -- Cột thống kê
-            correct_streak INTEGER NOT NULL DEFAULT 0,       -- Số lần trả lời đúng liên tiếp
-            total_incorrect_count INTEGER NOT NULL DEFAULT 0, -- Tổng số lần trả lời sai
-            
-            -- Cột trạng thái
-            is_mastered INTEGER NOT NULL DEFAULT 0,          -- Đã thành thạo chưa? (0 = chưa, 1 = rồi)
-            last_reviewed_at TEXT,                           -- Lần cuối cùng ôn tập
-            
-            PRIMARY KEY(user_id, word_id),
-            FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-            FOREIGN KEY(word_id) REFERENCES words(word_id) ON DELETE CASCADE
-        )
-    """)
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS user_lock (
-            user_id INTEGER PRIMARY KEY,
-            locked_until TIMESTAMP,
-            resend_attempts INTEGER,
-            last_resend TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
-        );
     """)
 
     conn.commit()
