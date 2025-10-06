@@ -12,11 +12,11 @@ from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 from src.views.moveable_window import MoveableWindow
 from resources import resources_rc
 
-class MainWindow(QMainWindow, MoveableWindow):
+class ManagerMainWindow(QMainWindow, MoveableWindow):
     def __init__(self, username):
         # self.username = username
         super().__init__()
-        uic.loadUi("UI/forms/main_screen.ui", self)
+        uic.loadUi("UI/forms/manager/manager_main_screen.ui", self)
         MoveableWindow.__init__(self)
 
         self.go_back.hide()
