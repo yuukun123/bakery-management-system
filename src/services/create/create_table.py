@@ -35,6 +35,8 @@ def create_table():
             phone TEXT NOT NULL,
             address TEXT NOT NULL,
             role TEXT NOT NULL,
+            -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
+            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'inactive')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME
         )
@@ -56,6 +58,8 @@ def create_table():
             import_price REAL NOT NULL CHECK(import_price >= 0),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME,
+            -- hỗ trợ xóa sản phẩm nhưng chỉ là xóa mềm
+            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'discontinued')),
             type_id INTEGER NOT NULL,
             FOREIGN KEY(type_id) REFERENCES type_product(type_id)
         )
