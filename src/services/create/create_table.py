@@ -27,30 +27,23 @@ def create_table():
     cursor.execute("PRAGMA foreign_keys = ON;")
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS positions (
-            position_name TEXT PRIMARY KEY
-        )
-    """)
-
-    cursor.execute("""
         CREATE TABLE IF NOT EXISTS employees (
-            employee_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            employee_id BIGINT PRIMARY KEY,
             employee_name TEXT NOT NULL,
-            password TEXT NOT NULL,
-            email TEXT NOT NULL,
+            password_hash TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
             phone TEXT NOT NULL,
             address TEXT NOT NULL,
-            position_name TEXT NOT NULL,
-            created_at DATETIME,
-            update_at DATETIME,
-            FOREIGN KEY(position_name) REFERENCES positions(position_name)
+            role TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME
         )
     """)
     
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS type_product (
             type_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            type_name TEXT NOT NULL
+            type_name TEXT NOT NULL UNIQUE
         )
     """)
 
@@ -58,7 +51,11 @@ def create_table():
         CREATE TABLE IF NOT EXISTS products (
             product_id INTEGER PRIMARY KEY AUTOINCREMENT,
             product_name TEXT NOT NULL,
-            price DOUBLE NOT NULL,
+            sellingPrice REAL NOT NULL CHECK(sellingPrice >= 0),
+            stock INTEGER NOT NULL CHECK(stock >= 0),
+            import_price REAL NOT NULL CHECK(import_price >= 0),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME,
             type_id INTEGER NOT NULL,
             FOREIGN KEY(type_id) REFERENCES type_product(type_id)
         )
@@ -77,8 +74,8 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS invoices (
             invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date_buy DATETIME NOT NULL,
-            total_amount DOUBLE NOT NULL,
+            invoice_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
             employee_id INTEGER NOT NULL,
             customer_id INTEGER NOT NULL,
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id),
@@ -87,17 +84,62 @@ def create_table():
     """)
 
     cursor.execute("""
-            CREATE TABLE IF NOT EXISTS invoice_details (
-                invoice_id INTEGER NOT NULL,
-                quantity INTEGER NOT NULL CHECK(quantity > 0),
-                unit_price DOUBLE NOT NULL,
-                subtotal_amount DOUBLE NOT NULL,
-                product_id INTEGER NOT NULL,
-                PRIMARY KEY (invoice_id, product_id),
-                FOREIGN KEY(invoice_id) REFERENCES invoice(invoice_id) ON DELETE CASCADE,
-                FOREIGN KEY(product_id) REFERENCES products(product_id)
-            )
+        CREATE TABLE IF NOT EXISTS invoice_details (
+            invoice_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL CHECK(quantity > 0),
+            unit_price REAL NOT NULL,
+            subtotal_amount_invoice REAL GENERATED ALWAYS AS (quantity * unit_price) STORED,
+            PRIMARY KEY (invoice_id, product_id),
+            FOREIGN KEY(invoice_id) REFERENCES invoices(invoice_id) ON DELETE CASCADE,
+            FOREIGN KEY(product_id) REFERENCES products(product_id)
+        )
     """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS import_invoice (
+            import_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            employee_id INTEGER NOT NULL,
+            import_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
+            FOREIGN KEY(employee_id) REFERENCES employees(employee_id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS import_invoice_details (
+            import_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL CHECK(quantity > 0),
+            unit_price DOUBLE NOT NULL,
+            subtotal_amount_import_invoice REAL GENERATED ALWAYS AS (quantity * unit_price) STORED,
+            PRIMARY KEY (import_id, product_id),
+            FOREIGN KEY(import_id) REFERENCES import_invoice(import_id) ON DELETE CASCADE,
+            FOREIGN KEY(product_id) REFERENCES products(product_id)
+        )
+    """)
+
+    cursor.execute("""
+                    CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_sale
+                    AFTER INSERT ON invoice_details
+                    BEGIN
+                        UPDATE products
+                        SET stock = stock - NEW.quantity
+                        WHERE product_id = NEW.product_id;
+                    END;
+                """)
+
+    cursor.execute("""
+                    CREATE TRIGGER IF NOT EXISTS trg_increase_stock_on_import
+                    AFTER INSERT ON import_invoice_details
+                    BEGIN
+                        UPDATE products
+                        SET stock = stock + NEW.quantity
+                        WHERE product_id = NEW.product_id;
+                    END;
+                """)
+
+    print("Tables and Triggers created successfully.")
 
     conn.commit()
     conn.close()
