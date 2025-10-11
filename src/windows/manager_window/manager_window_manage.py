@@ -1,4 +1,4 @@
-# from src.views.login_regis_view.login_regis import Login_and_Register_Window
+# from src.views.login_view.login_regis import Login_and_Register_Window
 from src.views.manager_main_view.manager_main_view import ManagerMainWindow
 # from src.views.main_view.topic_view import TopicWindow
 # from src.views.main_view.vocab_view import VocabWindow

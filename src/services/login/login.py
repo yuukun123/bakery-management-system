@@ -29,7 +29,7 @@ class Login:
         self.cursor = self.connection.cursor()
         print(f"connect database '{db_path}' successful")
 
-    def check_login(self, username_login, password_login):
+    def check_login(self, employee_id, password_login):
         """
         Checks user credentials against the database correctly.
         Returns user info dictionary on success, None on failure.
@@ -47,11 +47,11 @@ class Login:
                 users
             WHERE
                 LOWER(user_name) = LOWER(?)
-        """, (username_login,))
+        """, (employee_id,))
         user_data = cursor.fetchone()
 
         if not user_data:
-            print(f"❌ Login failed: User '{username_login}' not found.")
+            print(f"❌ Login failed: User '{employee_id}' not found.")
             return {"success": False, "error": "invalid_credentials"}
 
         # Bước 2: Dùng check_password_hash để so sánh mật khẩu người dùng nhập
@@ -59,14 +59,17 @@ class Login:
         stored_password_hash = user_data['password_hash']
 
         if check_password_hash(stored_password_hash, password_login):
-            print(f"✅ Login success for user '{username_login}'")
+            print(f"✅ Login success for user '{employee_id}'")
             # Trả về một dictionary chứa thông tin người dùng, rất hữu ích cho ứng dụng
             return {"success": True, "user": dict(user_data)}  # luôn có success
         elif not check_password_hash(stored_password_hash, password_login):
-            print(f"❌ Login failed for user '{username_login}': Incorrect password.")
+            print(f"❌ Login failed for user '{employee_id}': Incorrect password.")
             return {"success": False, "error": "incorrect_password"}
+        elif user_data['status'] == 'inactive':
+            print(f"❌ Login failed for user '{employee_id}': Account is inactive.")
+            return {"success": False, "error": "account_inactive"}
         else:
-            print(f"❌ Login failed for user '{username_login}': Unknown error.")
+            print(f"❌ Login failed for user '{employee_id}': Unknown error.")
             return {"success": False, "error": "unknown_error"}
 
     def close(self):
