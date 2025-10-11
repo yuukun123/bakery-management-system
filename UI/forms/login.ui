@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>718</height>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,19 +80,19 @@ border: 1px solid rgb(0, 0, 0)
            <rect>
             <x>10</x>
             <y>0</y>
-            <width>160</width>
+            <width>115</width>
             <height>30</height>
            </rect>
           </property>
           <property name="minimumSize">
            <size>
-            <width>160</width>
+            <width>85</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>160</width>
+            <width>115</width>
             <height>50</height>
            </size>
           </property>
@@ -113,50 +113,6 @@ border: 1px solid rgb(0, 0, 0)
             <number>0</number>
            </property>
            <item>
-            <widget class="QPushButton" name="pushButton_7">
-             <property name="maximumSize">
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border-radius: 10px</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>../icons/lexiland_logo1.png</normaloff>../icons/lexiland_logo1.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>34</width>
-               <height>34</height>
-              </size>
-             </property>
-             <property name="shortcut">
-              <string notr="true"/>
-             </property>
-             <property name="autoRepeat">
-              <bool>true</bool>
-             </property>
-             <property name="autoExclusive">
-              <bool>true</bool>
-             </property>
-             <property name="autoRepeatDelay">
-              <number>300</number>
-             </property>
-             <property name="autoDefault">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QLabel" name="label_7">
              <property name="font">
               <font>
@@ -175,7 +131,7 @@ font: 10pt &quot;Luckiest Guy&quot;;</string>
               <string>BAKER SYSTEM</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -330,7 +286,7 @@ border-radius:12px;</string>
               <number>0</number>
              </property>
              <property name="topMargin">
-              <number>20</number>
+              <number>25</number>
              </property>
              <property name="rightMargin">
               <number>0</number>
@@ -665,7 +621,7 @@ font-size: 15px</string>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QPushButton" name="eye_on">
+                           <widget class="QPushButton" name="show_pass">
                             <property name="maximumSize">
                              <size>
                               <width>28</width>
@@ -688,7 +644,7 @@ font-size: 15px</string>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QPushButton" name="pushButton">
+                           <widget class="QPushButton" name="hide_pass">
                             <property name="maximumSize">
                              <size>
                               <width>28</width>

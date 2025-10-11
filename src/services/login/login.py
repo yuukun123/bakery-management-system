@@ -39,14 +39,14 @@ class Login:
         # Chúng ta chỉ cần lấy password_hash để kiểm tra
         cursor.execute("""
             SELECT
-                employee_id AS id,
-                role
-                password AS password_hash
+                employee_id,
+                role,
+                password_hash,
                 status
             FROM
-                users
+                employees
             WHERE
-                LOWER(user_name) = LOWER(?)
+                employee_id = ?
         """, (employee_id,))
         user_data = cursor.fetchone()
 

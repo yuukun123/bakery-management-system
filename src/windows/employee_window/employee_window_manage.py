@@ -2,17 +2,10 @@
 from src.views.employee_main_view.employee_main_view import EmployeeMainWindow
 # from src.views.main_view.topic_view import TopicWindow
 # from src.views.main_view.vocab_view import VocabWindow
-# from src.controllers.login_regis_controllers.login_controller import LoginController
+# from src.controllers.login_controllers.login_controller import LoginController
 
-# def open_login_window():
-#     window = Login_and_Register_Window()
-#     controller = LoginController(window)
-#     window.controller = controller
-#     window.show()
-#     return window
-
-def open_employee_main_window():
-    window = EmployeeMainWindow()
+def open_employee_main_window(employee_id):
+    window = EmployeeMainWindow(employee_id)
     window.setFixedSize(1920, 1080)
     window.show()
     return window
