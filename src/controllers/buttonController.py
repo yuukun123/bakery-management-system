@@ -29,6 +29,6 @@ class buttonController:
         self.view.setWindowOpacity(1.0)
 
     def handle_logout(self):
-        from src.windows.window_manage import open_login_window
+        from src.windows.login_window import open_login_window
         open_login_window()
         self.view.close()
