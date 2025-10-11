@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox, QApplication
-from src.services.login_register.login_register import Login_Register
+from src.services.login.login import Login_Register
 from src.utils.check_correct_email_password import check_password, check_email
 
 class RegisterController:

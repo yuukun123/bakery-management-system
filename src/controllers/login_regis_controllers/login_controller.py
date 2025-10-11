@@ -1,5 +1,5 @@
 # from PyQt5.QtWidgets import QMessageBox
-# from src.services.login_register.login_register import Login_Register
+# from src.services.login.login import Login_Register
 # # from src.services.query_data.query_data import QueryData
 #
 # class LoginController:

@@ -34,33 +34,12 @@ class CreateSampleData:
 
     def create_sample_data(self):
         self.cursor.execute("""
-                INSERT INTO topics (topic_name, created_at, user_id)
+                INSERT INTO employees (employee_id, employee_name, password_hash, email, phone, address, role, status, created_at, updated_at)
                 VALUES 
-                        ('Topic 1', datetime('now'), 1),
-                        ('Topic 1', datetime('now'), 2),
-                        ('Topic 2', datetime('now'), 1),
-                        ('Topic 2', datetime('now'), 2),
-                        ('Topic 3', datetime('now'), 1),
-                        ('Topic 3', datetime('now'), 2),
-                        ('Topic 4', datetime('now'), 1),
-                        ('Topic 4', datetime('now'), 2),
-                        ('Topic 5', datetime('now'), 1),
-                        ('Topic 5', datetime('now'), 2),
-                        ('Topic 6', datetime('now'), 1),
-                        ('Topic 6', datetime('now'), 2),
-                        ('Topic 7', datetime('now'), 1),
-                        ('Topic 7', datetime('now'), 2),
-                        ('Topic 8', datetime('now'), 1),
-                        ('Topic 8', datetime('now'), 2),
-                        ('Topic 9', datetime('now'), 1),
-                        ('Topic 9', datetime('now'), 2),
-                        ('Topic 10', datetime('now'), 1),
-                        ('Topic 10', datetime('now'), 2),
-                        ('Topic 11', datetime('now'), 1),
-                        ('Topic 11', datetime('now'), 2),
-                        ('Topic 12', datetime('now'), 1),
-                        ('Topic 12', datetime('now'), 2)
-                        
+                    ('251000001', 'yuu', '1', 'yuu.doe@example.com', '1234567890', '123 Main St', 'Manager', 'active', datetime('now'), datetime('now')),
+                    ('251000002', 'hao', '1', 'hao.doe@example.com', '1234567890', '123 Main St', 'Manager', 'active', datetime('now'), datetime('now')),
+                    ('251000003', 'ngoc', '1', 'ngoc.doe@example.com', '1234567890', '123 Main St', 'Employee', 'active', datetime('now'), datetime('now')),
+                    ('251000004', 'binh', '1', 'binh.doe@example.com', '1234567890', '123 Main St', 'Employee', 'active', datetime('now'), datetime('now'))
             """)
         self.connection.commit()
         print("Sample data inserted successfully.")

@@ -16,7 +16,7 @@
 #     def __init__(self):
 #         super().__init__()
 #
-#         uic.loadUi("UI/forms/login_register.ui", self)
+#         uic.loadUi("UI/forms/login.ui", self)
 #         print("DEBUG:", self.enter_email_page)
 #         MoveableWindow.__init__(self)
 #

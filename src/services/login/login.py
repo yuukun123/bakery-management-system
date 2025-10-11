@@ -3,7 +3,7 @@ import sqlite3
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-class Login_Register:
+class Login:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,9 +39,10 @@ class Login_Register:
         # Chúng ta chỉ cần lấy password_hash để kiểm tra
         cursor.execute("""
             SELECT
-                user_id AS id,
-                user_name,
+                employee_id AS id,
+                role
                 password AS password_hash
+                status
             FROM
                 users
             WHERE
@@ -67,23 +68,6 @@ class Login_Register:
         else:
             print(f"❌ Login failed for user '{username_login}': Unknown error.")
             return {"success": False, "error": "unknown_error"}
-
-    def add_users(self, username_register, password_register, email_register):
-        try:
-            self.cursor.execute("SELECT * FROM users WHERE user_name = ?", (username_register,))
-            if self.cursor.fetchone():
-                return {"success": False, "error": "username_exists"}
-
-            hashed_password = generate_password_hash(password_register)
-            self.cursor.execute("""
-                INSERT INTO users (user_name, password, email)
-                VALUES (?, ?, ?)
-            """, (username_register, hashed_password, email_register))
-            self.connection.commit()
-            return {"success": True}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
-
 
     def close(self):
         self.connection.close()
