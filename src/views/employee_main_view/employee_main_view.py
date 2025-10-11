@@ -17,8 +17,6 @@ class EmployeeMainWindow(QMainWindow, MoveableWindow):
         uic.loadUi("UI/forms/employee/employee_main_screen.ui", self)
         MoveableWindow.__init__(self)
 
-        # self.go_back.hide()
-
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)

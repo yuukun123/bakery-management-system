@@ -15,8 +15,6 @@ class ManagerMainWindow(QMainWindow, MoveableWindow):
         uic.loadUi("UI/forms/manager/manager_main_screen.ui", self)
         MoveableWindow.__init__(self)
 
-        self.go_back.hide()
-
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
