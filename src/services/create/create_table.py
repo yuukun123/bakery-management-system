@@ -53,7 +53,7 @@ def create_table():
         CREATE TABLE IF NOT EXISTS products (
             product_id INTEGER PRIMARY KEY AUTOINCREMENT,
             product_name TEXT NOT NULL,
-            sellingPrice REAL NOT NULL CHECK(sellingPrice >= 0),
+            selling_price REAL NOT NULL CHECK(sellingPrice >= 0),
             stock INTEGER NOT NULL CHECK(stock >= 0),
             import_price REAL NOT NULL CHECK(import_price >= 0),
             image_path TEXT, -- nếu bạn lưu đường dẫn tương đối (ví dụ: "images/cake1.jpg")

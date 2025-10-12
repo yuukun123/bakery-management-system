@@ -34,15 +34,23 @@ class CreateSampleData:
 
     def create_sample_data(self):
         self.cursor.execute("""
-                INSERT INTO employees (employee_id, employee_name, password_hash, email, phone, address, role, status, created_at, updated_at)
+                INSERT INTO products (product_id, product_name, selling_price, stock, import_price, created_at, updated_at, status, type_id)
                 VALUES 
-                    ('251000001', 'yuu', '1', 'yuu.doe@example.com', '1234567890', '123 Main St', 'Manager', 'active', datetime('now'), datetime('now')),
-                    ('251000002', 'hao', '1', 'hao.doe@example.com', '1234567890', '123 Main St', 'Manager', 'active', datetime('now'), datetime('now')),
-                    ('251000003', 'ngoc', '1', 'ngoc.doe@example.com', '1234567890', '123 Main St', 'Employee', 'active', datetime('now'), datetime('now')),
-                    ('251000004', 'binh', '1', 'binh.doe@example.com', '1234567890', '123 Main St', 'Employee', 'active', datetime('now'), datetime('now'))
+                    ('1', 'Avocado_Croissant', 50000, 10, 45000, datetime('now'), datetime('now'), 'active', 1),
+                    ('1', 'Avocado_Croissant', 50000, 10, 45000, datetime('now'), datetime('now'), 'active', 1),
+                    ('1', 'Avocado_Croissant', 50000, 10, 45000, datetime('now'), datetime('now'), 'active', 1),
+                    ('1', 'Avocado_Croissant', 50000, 10, 45000, datetime('now'), datetime('now'), 'active', 1),
+                    ('1', 'Avocado_Croissant', 50000, 10, 45000, datetime('now'), datetime('now'), 'active', 1),
+                    ('1', 'Avocado_Croissant', 50000, 10, 45000, datetime('now'), datetime('now'), 'active', 1),
+                    ('2', 'Mousse'),
+                    ('3', 'Tart')
             """)
         self.connection.commit()
         print("Sample data inserted successfully.")
+
+    # def update_element(self):
+    #     self.cursor.execute("""ALTER TABLE products RENAME COLUMN sellingPrice TO selling_price""")
+    #     self.connection.commit()
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object

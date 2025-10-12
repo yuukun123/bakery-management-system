@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QLineEdit
 from src.controllers.login_controllers.login_controller import LoginController
 from src.views.moveable_window import MoveableWindow
 from src.controllers.buttonController import buttonController
+from resources import resources_rc
 
 class Login_Window(QMainWindow , MoveableWindow):
     def __init__(self):
