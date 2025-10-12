@@ -278,8 +278,13 @@ border-radius:12px;</string>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>75</height>
+              <height>100</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>25</pointsize>
+             </font>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <property name="leftMargin">
@@ -299,7 +304,7 @@ border-radius:12px;</string>
                <property name="font">
                 <font>
                  <family>Luckiest Guy</family>
-                 <pointsize>37</pointsize>
+                 <pointsize>50</pointsize>
                  <weight>50</weight>
                  <italic>false</italic>
                  <bold>false</bold>
@@ -307,7 +312,7 @@ border-radius:12px;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">color: #1A5276;
-font: 37pt &quot;Luckiest Guy&quot;;</string>
+font: 50pt &quot;Luckiest Guy&quot;;</string>
                </property>
                <property name="text">
                 <string>BAKERY</string>
@@ -337,7 +342,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                <number>0</number>
               </property>
               <property name="topMargin">
-               <number>15</number>
+               <number>25</number>
               </property>
               <property name="rightMargin">
                <number>0</number>
@@ -356,7 +361,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                 <property name="font">
                  <font>
                   <family>Open Sans ExtraBold</family>
-                  <pointsize>17</pointsize>
+                  <pointsize>22</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -379,13 +384,13 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                   <number>0</number>
                  </property>
                  <property name="topMargin">
-                  <number>20</number>
+                  <number>0</number>
                  </property>
                  <property name="rightMargin">
                   <number>11</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>60</number>
+                  <number>120</number>
                  </property>
                  <item>
                   <widget class="QWidget" name="widget_32" native="true">
@@ -453,7 +458,7 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="username_login">
+                        <widget class="QLineEdit" name="employee_id_login">
                          <property name="minimumSize">
                           <size>
                            <width>0</width>
@@ -462,14 +467,13 @@ font: 37pt &quot;Luckiest Guy&quot;;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>-1</pointsize>
+                           <pointsize>11</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">background-color: rgb(255, 255, 255);
 padding-left:10px;
-padding-right:10px;
-font-size: 15px</string>
+padding-right:10px;</string>
                          </property>
                          <property name="placeholderText">
                           <string>User name</string>
@@ -577,10 +581,7 @@ font-size: 15px</string>
                        <item>
                         <widget class="QFrame" name="frame_3">
                          <property name="styleSheet">
-                          <string notr="true">background-color: rgb(255, 255, 255);
-padding-left:10px;
-padding-right:10px;
-font-size: 15px</string>
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="frameShape">
                           <enum>QFrame::StyledPanel</enum>
@@ -590,13 +591,13 @@ font-size: 15px</string>
                          </property>
                          <layout class="QHBoxLayout" name="horizontalLayout_3">
                           <property name="leftMargin">
-                           <number>0</number>
+                           <number>11</number>
                           </property>
                           <property name="topMargin">
                            <number>0</number>
                           </property>
                           <property name="rightMargin">
-                           <number>0</number>
+                           <number>10</number>
                           </property>
                           <property name="bottomMargin">
                            <number>0</number>
@@ -609,11 +610,19 @@ font-size: 15px</string>
                               <height>40</height>
                              </size>
                             </property>
+                            <property name="font">
+                             <font>
+                              <pointsize>11</pointsize>
+                             </font>
+                            </property>
                             <property name="styleSheet">
                              <string notr="true"/>
                             </property>
                             <property name="echoMode">
                              <enum>QLineEdit::Password</enum>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                             </property>
                             <property name="placeholderText">
                              <string>Password</string>
@@ -637,8 +646,8 @@ font-size: 15px</string>
                             </property>
                             <property name="iconSize">
                              <size>
-                              <width>28</width>
-                              <height>28</height>
+                              <width>25</width>
+                              <height>25</height>
                              </size>
                             </property>
                            </widget>
@@ -660,8 +669,8 @@ font-size: 15px</string>
                             </property>
                             <property name="iconSize">
                              <size>
-                              <width>28</width>
-                              <height>28</height>
+                              <width>25</width>
+                              <height>25</height>
                              </size>
                             </property>
                            </widget>
@@ -683,51 +692,7 @@ font-size: 15px</string>
                        <string notr="true">color: rgb(255, 0, 4);</string>
                       </property>
                       <property name="text">
-                       <string>sdfsdf1</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QWidget" name="widget_34" native="true">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>30</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>11</pointsize>
-                    </font>
-                   </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_58">
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item alignment="Qt::AlignRight">
-                     <widget class="QPushButton" name="ForgotPassword">
-                      <property name="font">
-                       <font>
-                        <pointsize>10</pointsize>
-                       </font>
-                      </property>
-                      <property name="cursor">
-                       <cursorShape>PointingHandCursor</cursorShape>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: rgb(48, 73, 120);</string>
-                      </property>
-                      <property name="text">
-                       <string>You forgot your password?</string>
-                      </property>
-                      <property name="flat">
-                       <bool>true</bool>
+                       <string/>
                       </property>
                      </widget>
                     </item>
@@ -787,67 +752,6 @@ QPushButton::hover{
                        <string>LOGIN</string>
                       </property>
                      </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item alignment="Qt::AlignHCenter">
-                  <widget class="QWidget" name="widget_36" native="true">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>50</height>
-                    </size>
-                   </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_60">
-                    <property name="spacing">
-                     <number>7</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>11</number>
-                    </property>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_61">
-                      <property name="spacing">
-                       <number>10</number>
-                      </property>
-                      <item>
-                       <widget class="QLabel" name="label_14">
-                        <property name="font">
-                         <font>
-                          <pointsize>10</pointsize>
-                         </font>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true">color: rgb(255, 255, 255);</string>
-                        </property>
-                        <property name="text">
-                         <string>You don't have an acount yet?</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item alignment="Qt::AlignLeft">
-                       <widget class="QPushButton" name="sign_up_link">
-                        <property name="font">
-                         <font>
-                          <pointsize>10</pointsize>
-                         </font>
-                        </property>
-                        <property name="cursor">
-                         <cursorShape>PointingHandCursor</cursorShape>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true">color: rgb(48, 73, 120);</string>
-                        </property>
-                        <property name="text">
-                         <string>Sign up</string>
-                        </property>
-                        <property name="flat">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
                     </item>
                    </layout>
                   </widget>

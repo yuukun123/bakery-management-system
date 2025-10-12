@@ -12,42 +12,39 @@ class Login_Window(QMainWindow , MoveableWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("UI/forms/login.ui", self)
-
         MoveableWindow.__init__(self)
-
-        # bên login đặt mặc định ẩn khi mở vì login luôn mở lên đầu tiên
+        # bên login_query đặt mặc định ẩn khi mở vì login_query luôn mở lên đầu tiên
         self.errors_5.hide()
         self.errors_6.hide()
-
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
-
         # Tạo controller, truyền self vào
         self.buttonController = buttonController(self)
         self.login_controller = LoginController(self)
-
-
         # Gắn nút
         self.LoginBtn.clicked.connect(
             lambda: self.login_controller.handle_login(
-                self.username_login.text(), self.password_login.text()
+                self.employee_id_login.text(), self.password_login.text()
             )
         )
-
         self.closeBtn.clicked.connect(buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
 
         # show and hide password
+        self.show_pass.clicked.connect(self.toggle_new_password)
         self.hide_pass.clicked.connect(self.toggle_new_password)
+        self.hide_pass.hide()  # ẩn icon hide ban đầu
 
     def toggle_new_password(self):
-        if self.enter_password.echoMode() == QLineEdit.Password:
-            self.enter_password.setEchoMode(QLineEdit.Normal)
-            path = "UI/icons/eye.svg"
-            self.hide_pass.setIcon(QIcon(path))
+        if self.password_login.echoMode() == QLineEdit.Password:
+            # Hiện mật khẩu
+            self.password_login.setEchoMode(QLineEdit.Normal)
+            self.show_pass.hide()
+            self.hide_pass.show()
         else:
-            self.enter_password.setEchoMode(QLineEdit.Password)
-            path = "UI/icons/eye-off.svg"
-            self.hide_pass.setIcon(QIcon(path))
+            # Ẩn mật khẩu
+            self.password_login.setEchoMode(QLineEdit.Password)
+            self.hide_pass.hide()
+            self.show_pass.show()

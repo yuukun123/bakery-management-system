@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
-from src.services.login.login import Login
+from src.services.login_query.login_query import Login
 from src.services.query_user_name import QueryUserName
 from src.windows.manager_window.manager_window_manage import open_manager_main_window
 
@@ -16,7 +16,7 @@ class LoginController:
             self.on_login_null()
             return
         model = Login()
-        print(f"DEBUG: Trying login with {employee_id}/{password_login}")
+        print(f"DEBUG: Trying login_query with {employee_id}/{password_login}")
         user = model.check_login(employee_id, password_login)
         if user["success"]:
             print("DEBUG: Login success")
@@ -41,7 +41,7 @@ class LoginController:
     def on_login_success(self, employee_id):
         from src.windows.employee_window.employee_window_manage import open_employee_main_window
         from src.windows.manager_window.manager_window_manage import open_manager_main_window
-        QMessageBox.information(self.view, "Login", "✅ login success!")
+        QMessageBox.information(self.view, "Login", "✅ login_query success!")
         try:
             print(f"DEBUG: Login success for user '{employee_id}'")
             user_context = self.query_data.get_employee_by_employee_id(employee_id)
@@ -77,7 +77,7 @@ class LoginController:
         print("please enter username and password!")
 
     def on_login_failed(self):
-        QMessageBox.warning(self.view, "Login", "❌ login failed!")
+        QMessageBox.warning(self.view, "Login", "❌ login_query failed!")
 
     def on_inactive_account(self):
         QMessageBox.warning(self.view, "Login", "❌ account is inactive!")
