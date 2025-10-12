@@ -284,6 +284,9 @@ border-radius:10px;
           <property name="topMargin">
            <number>7</number>
           </property>
+          <property name="rightMargin">
+           <number>11</number>
+          </property>
           <item>
            <widget class="QFrame" name="frame_2">
             <property name="frameShape">
@@ -576,7 +579,7 @@ border-radius:10px;
              <item>
               <widget class="QFrame" name="frame_8">
                <property name="styleSheet">
-                <string notr="true">border: 1px solid rgb(117, 117, 117);
+                <string notr="true">border: 1px solid #adb5bd;
 background-color: #a2d2ff;</string>
                </property>
                <property name="frameShape">
@@ -673,7 +676,7 @@ background-color: #a2d2ff;</string>
                     <number>0</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>355</number>
+                    <number>100</number>
                    </property>
                    <item>
                     <widget class="QToolButton" name="product_btn">
@@ -707,7 +710,27 @@ background-color: #a2d2ff;</string>
 }
 
 #product_btn:hover{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#product_btn:pressed{
+	background-color: rgb(7, 170, 7);
+	color: rgb(255, 255, 255);
+}
+
+#product_btn:checked{
 	background-color: #00b4d8;
+	color: rgb(255, 255, 255)
+}
+
+#product_btn::hover:checked{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#product_btn:pressed:checked{
+	background-color: #rgb(7, 170, 7);
 	color: rgb(255, 255, 255)
 }</string>
                      </property>
@@ -745,7 +768,27 @@ background-color: #a2d2ff;</string>
 }
 
 #customer_btn:hover{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#customer_btn:pressed{
+	background-color: rgb(7, 170, 7);
+	color: rgb(255, 255, 255);
+}
+
+#customer_btn:checked{
 	background-color: #00b4d8;
+	color: rgb(255, 255, 255)
+}
+
+#customer_btn::hover:checked{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#customer_btn:pressed:checked{
+	background-color: #rgb(7, 170, 7);
 	color: rgb(255, 255, 255)
 }</string>
                      </property>
@@ -783,7 +826,27 @@ background-color: #a2d2ff;</string>
 }
 
 #invoice_btn:hover{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#invoice_btn:pressed{
+	background-color: rgb(7, 170, 7);
+	color: rgb(255, 255, 255);
+}
+
+#invoice_btn:checked{
 	background-color: #00b4d8;
+	color: rgb(255, 255, 255)
+}
+
+#invoice_btn::hover:checked{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#invoice_btn:pressed:checked{
+	background-color: #rgb(7, 170, 7);
 	color: rgb(255, 255, 255)
 }</string>
                      </property>
@@ -793,6 +856,19 @@ background-color: #a2d2ff;</string>
                     </widget>
                    </item>
                   </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_12">
+                  <property name="styleSheet">
+                   <string notr="true">border: none;</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -806,8 +882,9 @@ background-color: #a2d2ff;</string>
                <property name="lineWidth">
                 <number>0</number>
                </property>
-               <widget class="QWidget" name="page"/>
-               <widget class="QWidget" name="page_2"/>
+               <widget class="QWidget" name="prodcut_page"/>
+               <widget class="QWidget" name="customer_page"/>
+               <widget class="QWidget" name="invoice_page"/>
               </widget>
              </item>
             </layout>
