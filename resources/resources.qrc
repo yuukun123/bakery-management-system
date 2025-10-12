@@ -16,6 +16,7 @@
     <file>../UI/icons/arrow-left.svg</file>
     <file>../UI/icons/eye.svg</file>
     <file>../UI/icons/eye-off.svg</file>
+    <file>../UI/icons/search.svg</file>
     <file>../UI/icons/loading.gif</file>
     <file>../UI/fonts/LuckiestGuy-Regular.ttf</file>
   </qresource>
