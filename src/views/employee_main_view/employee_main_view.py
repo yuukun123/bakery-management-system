@@ -2,7 +2,6 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
-# from src.services.query_data.query_data import QueryData
 from src.controllers.buttonController import buttonController
 from src.services.query_user_name import QueryUserName
 from src.utils.username_ui import set_employee_info, set_employee_role

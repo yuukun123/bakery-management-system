@@ -21,3 +21,16 @@ class EmployeeQueryData:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
         return conn
+
+    def get_product(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT product_id, product_name, selling_price, image_path FROM products")
+            products = [dict(row) for row in cursor.fetchall()]
+            return products
+        except sqlite3.Error as e:
+            print(f"Database error in get product:  {e}")
+            return None
+        finally:
+            conn.close()
