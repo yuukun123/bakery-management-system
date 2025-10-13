@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1400</width>
-    <height>840</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1098,8 +1098,8 @@ QComboBox::down-arrow {
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>647</width>
-                             <height>630</height>
+                             <width>656</width>
+                             <height>625</height>
                             </rect>
                            </property>
                            <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1339,8 +1339,8 @@ color: rgb(255, 255, 255)</string>
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>478</width>
-                             <height>474</height>
+                             <width>482</width>
+                             <height>470</height>
                             </rect>
                            </property>
                            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1780,6 +1780,9 @@ color: #d62828;
                                <weight>75</weight>
                                <bold>true</bold>
                               </font>
+                             </property>
+                             <property name="cursor">
+                              <cursorShape>PointingHandCursor</cursorShape>
                              </property>
                              <property name="styleSheet">
                               <string notr="true">#continue_btn{

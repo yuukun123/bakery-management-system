@@ -98,3 +98,14 @@ class QueryData:
         finally:
             if conn:
                 conn.close()
+
+    def get_data_manager(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT employee_id, employee_name, role, status, email FROM employees")
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in get_user_by_username: {e}")
+            return None
