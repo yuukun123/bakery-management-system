@@ -44,7 +44,7 @@ class LoginController:
         QMessageBox.information(self.view, "Login", "✅ login_query success!")
         try:
             print(f"DEBUG: Login success for user '{employee_id}'")
-            user_context = self.query_data.get_employee_by_employee_id(employee_id)
+            user_context = self.query_data.get_employee_field_by_id(employee_id, 'employee_name')
             if not user_context:
                 print(f"LỖI: Không tìm thấy thông tin user '{employee_id}'.")
                 return

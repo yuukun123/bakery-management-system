@@ -56,7 +56,7 @@ def create_table():
             selling_price REAL NOT NULL CHECK(sellingPrice >= 0),
             stock INTEGER NOT NULL CHECK(stock >= 0),
             import_price REAL NOT NULL CHECK(import_price >= 0),
-            image_path TEXT, -- nếu bạn lưu đường dẫn tương đối (ví dụ: "images/cake1.jpg")
+            image_path TEXT NOT NULL, -- nếu bạn lưu đường dẫn tương đối (ví dụ: "images/cake1.jpg")
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME,
             -- hỗ trợ xóa sản phẩm nhưng chỉ là xóa mềm
@@ -125,24 +125,24 @@ def create_table():
     """)
 
     cursor.execute("""
-                    CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_sale
-                    AFTER INSERT ON invoice_details
-                    BEGIN
-                        UPDATE products
-                        SET stock = stock - NEW.quantity
-                        WHERE product_id = NEW.product_id;
-                    END;
-                """)
+        CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_sale
+        AFTER INSERT ON invoice_details
+        BEGIN
+            UPDATE products
+            SET stock = stock - NEW.quantity
+            WHERE product_id = NEW.product_id;
+        END;
+    """)
 
     cursor.execute("""
-                    CREATE TRIGGER IF NOT EXISTS trg_increase_stock_on_import
-                    AFTER INSERT ON import_invoice_details
-                    BEGIN
-                        UPDATE products
-                        SET stock = stock + NEW.quantity
-                        WHERE product_id = NEW.product_id;
-                    END;
-                """)
+        CREATE TRIGGER IF NOT EXISTS trg_increase_stock_on_import
+        AFTER INSERT ON import_invoice_details
+        BEGIN
+            UPDATE products
+            SET stock = stock + NEW.quantity
+            WHERE product_id = NEW.product_id;
+        END;
+    """)
 
     print("Tables and Triggers created successfully.")
 
