@@ -76,9 +76,22 @@ class CreateSampleData:
             """)
         self.connection.commit()
         print("Sample data inserted successfully.")
-    # def update_element(self):
-    #     self.cursor.execute("""ALTER TABLE products ADD image_path TEXT NOT NULL""")
-    #     self.connection.commit()
+    def update_element(self):
+        employees_gender = [
+            ("Male", "251000001"),
+            ("Male", "251000002"),
+            ("Female", "251000003"),
+            ("Male", "251000004"),
+        ]
+
+        for sex, emp_id in employees_gender:
+            self.cursor.execute("""
+                UPDATE employees
+                SET sex = ?
+                WHERE employee_id = ?
+            """, (sex, emp_id))
+        # self.cursor.execute("""ALTER TABLE employees ADD COLUMN sex TEXT NOT NULL DEFAULT 'Unknown';""")
+        self.connection.commit()
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object

@@ -35,6 +35,7 @@ def create_table():
             phone TEXT NOT NULL,
             address TEXT NOT NULL,
             role TEXT NOT NULL CHECK(role IN ('Manager', 'Employee')),
+            sex TEXT NOT NULL CHECK(sex IN ('Male', 'Female')),
             -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
             status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'inactive')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

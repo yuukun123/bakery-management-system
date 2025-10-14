@@ -1,5 +1,6 @@
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5 import uic
 
 class ProductCard(QWidget):
@@ -14,13 +15,25 @@ class ProductCard(QWidget):
 
     def set_data(self, data):
         # Điền dữ liệu vào các label
-        self.name_label.setText(data.get('product_name'))
-        # ... set ảnh và giá
+        self.product_name_label.setText(data.get('product_name'))
+        self.product_price_label.setText(f"{data.get('selling_price')}đ")
+
+        # Set ảnh
+        pixmap = QPixmap(data.get('image_path'))
+        if not pixmap.isNull():
+            target_width = int(self.image_label.width() * 7)  # tăng 30%
+            target_height = int(self.image_label.height() * 7)
+
+            scaled_pixmap = pixmap.scaled(
+                target_width,
+                target_height,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation
+            )
+            self.image_label.setPixmap(scaled_pixmap)
+            self.image_label.setAlignment(Qt.AlignCenter)
 
     def mousePressEvent(self, event):
-        """
-        Hàm này sẽ tự động được Qt gọi khi người dùng click chuột vào widget này.
-        """
+        """Xử lý khi click vào card."""
         self.product_clicked.emit(self.product_data)
-        # Gọi lại hàm gốc để đảm bảo các sự kiện khác vẫn hoạt động
         super().mousePressEvent(event)
