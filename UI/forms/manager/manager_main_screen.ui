@@ -531,7 +531,7 @@ color: rgb(255, 255, 255)
 }</string>
                   </property>
                   <property name="text">
-                   <string>logout</string>
+                   <string>Đăng xuất</string>
                   </property>
                   <property name="autoRepeat">
                    <bool>true</bool>
@@ -646,7 +646,7 @@ background-color: #a2d2ff;</string>
                       <string>Nhân sự</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../../resources/resources.qrc">
+                      <iconset>
                        <normaloff>:/UI/icons/conference-call-64.ico</normaloff>:/UI/icons/conference-call-64.ico</iconset>
                      </property>
                     </widget>
@@ -682,7 +682,7 @@ background-color: #a2d2ff;</string>
                       <string>Sản phẩm</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../../resources/resources.qrc">
+                      <iconset>
                        <normaloff>:/UI/icons/product-64.ico</normaloff>:/UI/icons/product-64.ico</iconset>
                      </property>
                     </widget>
@@ -718,7 +718,7 @@ background-color: #a2d2ff;</string>
                       <string>Nhập hàng</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../../resources/resources.qrc">
+                      <iconset>
                        <normaloff>:/UI/icons/invoice-64.ico</normaloff>:/UI/icons/invoice-64.ico</iconset>
                      </property>
                     </widget>
@@ -754,7 +754,7 @@ background-color: #a2d2ff;</string>
                       <string>Thống kê</string>
                      </property>
                      <property name="icon">
-                      <iconset resource="../../../resources/resources.qrc">
+                      <iconset>
                        <normaloff>:/UI/icons/report-2-64.ico</normaloff>:/UI/icons/report-2-64.ico</iconset>
                      </property>
                     </widget>
@@ -846,7 +846,7 @@ background-color: #a2d2ff;</string>
                           <string>Thêm</string>
                          </property>
                          <property name="icon">
-                          <iconset resource="../../../resources/resources.qrc">
+                          <iconset>
                            <normaloff>:/UI/icons/plus_2.svg</normaloff>:/UI/icons/plus_2.svg</iconset>
                          </property>
                         </widget>
@@ -891,7 +891,7 @@ background-color: #a2d2ff;</string>
                           <string>Xóa</string>
                          </property>
                          <property name="icon">
-                          <iconset resource="../../../resources/resources.qrc">
+                          <iconset>
                            <normaloff>:/UI/icons/delete.ico</normaloff>:/UI/icons/delete.ico</iconset>
                          </property>
                         </widget>
@@ -1421,7 +1421,7 @@ QTableWidget QScrollBar::sub-page:vertical {
                           <string>Thêm</string>
                          </property>
                          <property name="icon">
-                          <iconset resource="../../../resources/resources.qrc">
+                          <iconset>
                            <normaloff>:/UI/icons/plus_2.svg</normaloff>:/UI/icons/plus_2.svg</iconset>
                          </property>
                         </widget>
@@ -1461,7 +1461,7 @@ QTableWidget QScrollBar::sub-page:vertical {
                           <string>Xóa</string>
                          </property>
                          <property name="icon">
-                          <iconset resource="../../../resources/resources.qrc">
+                          <iconset>
                            <normaloff>:/UI/icons/delete.ico</normaloff>:/UI/icons/delete.ico</iconset>
                          </property>
                         </widget>

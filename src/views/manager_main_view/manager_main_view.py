@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication, QTableWidgetItem, QAbstractItemView, QHeaderView, \
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem, QAbstractItemView, QHeaderView, \
     QAbstractScrollArea
 
 from src.services.query_data_manager.manager_query_data import QueryData
@@ -10,7 +10,7 @@ from src.utils.username_ui import set_employee_info, set_employee_role
 from src.views.moveable_window import MoveableWindow
 from resources import resources_rc
 
-class ManagerMainWindow(QMainWindow, MoveableWindow):
+class ManagerMainWindow(QMainWindow):
     def __init__(self, employee_id):
         # self.username = username
         super().__init__()
