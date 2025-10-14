@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>322</height>
+    <width>258</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@ border: 1px solid rgb(0, 0, 0)</string>
         </property>
         <property name="font">
          <font>
-          <pointsize>8</pointsize>
+          <pointsize>9</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -66,10 +66,12 @@ border-top: none;
 border-right: none;
 border-left: none;
 background-color: #a9d6e5;
+border-bottom-left-radius: 8px;
+border-bottom-right-radius: 8px;
 }</string>
         </property>
         <property name="text">
-         <string>Strawberry_Dream_Croissant</string>
+         <string>Strawberry Dream Croissant</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -101,13 +103,13 @@ background-color: #a9d6e5;
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>40</height>
+          <height>35</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>40</height>
+          <height>35</height>
          </size>
         </property>
         <property name="font">
@@ -123,6 +125,8 @@ border-bottom: none;
 border-right: none;
 border-left: none;
 background-color: #a9d6e5;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
 }</string>
         </property>
         <property name="text">

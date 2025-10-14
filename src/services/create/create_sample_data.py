@@ -78,22 +78,22 @@ class CreateSampleData:
         print("Sample data inserted successfully.")
     def update_element(self):
         employees_gender = [
-            ("Male", "251000001"),
-            ("Male", "251000002"),
-            ("Female", "251000003"),
-            ("Male", "251000004"),
+            ("2025-10-14", "251000001"),
+            ("2025-10-10", "251000002"),
+            ("2025-10-9", "251000003"),
+            ("2025-10-12", "251000004"),
         ]
 
-        for sex, emp_id in employees_gender:
+        for starting_date, emp_id in employees_gender:
             self.cursor.execute("""
                 UPDATE employees
-                SET sex = ?
+                SET starting_date = ?
                 WHERE employee_id = ?
-            """, (sex, emp_id))
-        # self.cursor.execute("""ALTER TABLE employees ADD COLUMN sex TEXT NOT NULL DEFAULT 'Unknown';""")
+            """, (starting_date, emp_id))
+        # self.cursor.execute("""ALTER TABLE employees RENAME COLUMN starting to starting_date""")
         self.connection.commit()
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
-    sample.create_sample_data()  # gọi hàm instance
-    # sample.update_element()
+    # sample.create_sample_data()  # gọi hàm instance
+    sample.update_element()
