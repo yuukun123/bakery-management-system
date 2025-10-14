@@ -12,32 +12,6 @@ class QueryUserName:
         conn.row_factory = sqlite3.Row
         return conn
 
-    # def get_employee_by_employee_id(self, employee_id):
-    #     conn = self._get_connection()
-    #     cursor = conn.cursor()
-    #     try:
-    #         cursor.execute("SELECT employee_name FROM employees WHERE employee_id = ?", (employee_id,))
-    #         row = cursor.fetchone()
-    #         return dict(row) if row else None
-    #     except sqlite3.Error as e:
-    #         print(f"Database error in get_employee_by_employee_id: {e}")
-    #         return None
-    #     finally:
-    #         conn.close()
-    #
-    # def get_employee_role_by_employee_id(self, employee_id):
-    #     conn = self._get_connection()
-    #     cursor = conn.cursor()
-    #     try:
-    #         cursor.execute("SELECT role FROM employees WHERE employee_id = ?", (employee_id,))
-    #         row = cursor.fetchone()
-    #         return dict(row) if row else None
-    #     except sqlite3.Error as e:
-    #         print(f"Database error in get_employee_role_by_employee_id: {e}")
-    #         return None
-    #     finally:
-    #         conn.close()
-
     def get_employee_field_by_id(self, employee_id, field):
         conn = self._get_connection()
         cursor = conn.cursor()

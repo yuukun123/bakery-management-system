@@ -16,7 +16,7 @@ if __name__ == "__main__":
     # window = open_employee_main_window()
     sys.exit(app.exec_())
 
-    # # Dữ liệu test
+    # Dữ liệu test
     # product_data = {
     #     "product_id": 1,
     #     "product_name": "Avocado Croissant",
