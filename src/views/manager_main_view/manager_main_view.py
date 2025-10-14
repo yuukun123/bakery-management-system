@@ -1,7 +1,9 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication, QTableWidgetItem, QAbstractItemView, QHeaderView, \
+    QAbstractScrollArea
 
+from src.services.query_data_manager.manager_query_data import QueryData
 from src.controllers.buttonController import buttonController
 from src.services.query_user_name import QueryUserName
 from src.utils.username_ui import set_employee_info, set_employee_role
@@ -20,11 +22,23 @@ class ManagerMainWindow(QMainWindow, MoveableWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
 
+        self.delete_employee_btn.setEnabled(False)
+        self.update_employee_btn.setEnabled(False)
+
         self.query_username = QueryUserName()
         self._employee_context = None
         self._employee_role = None
         self.employee_id = employee_id
         self.load_employee_context(self.employee_id)
+
+        self.set_default_stack(0, self.employee_btn)
+        self.employee_btn.clicked.connect(lambda: self.switch_stack(0, self.employee_btn))
+        self.product_btn.clicked.connect(lambda: self.switch_stack(1, self.product_btn))
+        self.import_invoice_btn.clicked.connect(lambda: self.switch_stack(2, self.import_invoice_btn))
+        self.statistical_btn.clicked.connect(lambda: self.switch_stack(3, self.statistical_btn))
+
+        self.query_data = QueryData()
+        self.load_data_manager()
 
         if not self._employee_context:
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{self.employee_id}'.")
@@ -42,32 +56,69 @@ class ManagerMainWindow(QMainWindow, MoveableWindow):
 
     def load_employee_context(self, employee_id):
         print(f"DEBUG: Đang tải user context cho employee id: {employee_id}")
-        self._employee_context = self.query_username.get_employee_by_employee_id(employee_id)
-        self._employee_role = self.query_username.get_employee_role_by_employee_id(employee_id)
+        self._employee_context = self.query_username.get_employee_field_by_id(employee_id,'employee_name')
+        self._employee_role = self.query_username.get_employee_field_by_id(employee_id, 'role')
         print(f"DEBUG: User context đã tải: {self._employee_context}")
-    #
-    # def handle_topic_window_click(self):
-    #     print("DEBUG: start open_topic_window")
-    #     if not self._user_context:
-    #         # Sử dụng self._user_context để lấy username cho thông báo lỗi
-    #         user_name_for_msg = self.username # Hoặc một giá trị mặc định
-    #         QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{user_name_for_msg}'.")
-    #         return
-    #     try:
-    #         self.hide()  # ẩn ngay lập tức
-    #         current_username = self._user_context.get('user_name')
-    #         self.topic_window = TopicWindow(parent=self, username=current_username, main_window=self)
-    #         self.topic_window.topic_controller.setup_for_user(self._user_context)
-    #         print("DEBUG: topic_window created", self.topic_window)
-    #         self.topic_window.show()
-    #         print("DEBUG: vocab_window show called")
-    #     except Exception as e:
-    #         print("ERROR while opening topic window:", e)
-    #         self.show()
-    #
-    # def handle_practice_window_click(self):
-    #     print("DEBUG: start open dialog topic_for_practice")
-    #     dialog = topic_practice(self._user_context, self)
-    #     dialog.open()
 
+    def load_data_manager(self):
+        data = self.query_data.get_data_manager()
+        print(f"DEBUG: data manager: {data}")
+        if not data:
+            print("Không có dữ liệu nhân viên")
+            return
+        table = self.employee_tableWidget
+        headers = ["Mã nhân viên", "Tên", "Giới tính", "Chức danh", "Trạng thái", "Email","số điện thoại", "Địa chỉ"]
+        table.setColumnCount(len(headers))
+        table.setHorizontalHeaderLabels(headers)
+        table.setRowCount(len(data))
+        for row_index, row_data in enumerate(data):
+            for col_index, cell_data in enumerate(row_data):
+                item = QTableWidgetItem(str(cell_data))
+                table.setItem(row_index, col_index, item)
+        table.resizeColumnsToContents()
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        table.setAlternatingRowColors(True)
+        table.setSortingEnabled(True)
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        table.verticalHeader().setVisible(False)
+        table.setFocusPolicy(Qt.NoFocus)
+        table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
+    def get_nav_buttons(self):
+        return [
+            self.employee_btn,
+            self.product_btn,
+            self.import_invoice_btn,
+            self.statistical_btn
+        ]
+
+    def reset_button_styles(self):
+        normal_style = """
+            QPushButton {
+                color: rgb(255, 255, 255);
+	            background-color: rgb(0, 104, 153);
+            }
+        """
+        for btn in self.get_nav_buttons():
+            btn.setStyleSheet(normal_style)
+
+    def set_active_button_style(self, active_button):
+        active_style = """
+            QPushButton {
+            color: rgb(255, 255, 255);
+                background-color: rgb(0, 68, 100);
+            }
+        """
+        active_button.setStyleSheet(active_style)
+    def update_navigation_styles(self, active_button):
+        self.reset_button_styles()
+        self.set_active_button_style(active_button)
+
+    def switch_stack(self, index, button):
+        self.stackedWidget.setCurrentIndex(index)
+        self.update_navigation_styles(button)
+
+    def set_default_stack(self, index, button):
+        self.switch_stack(index, button)

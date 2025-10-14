@@ -103,9 +103,10 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT employee_id, employee_name, role, status, email FROM employees")
+            cursor.execute("SELECT employee_id, employee_name, sex, role, status, email, phone, address FROM employees")
             rows = cursor.fetchall()
             return rows
         except sqlite3.Error as e:
             print(f"Database error in get_user_by_username: {e}")
             return None
+

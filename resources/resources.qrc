@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="/">
+    <file>../UI/icons/delete.ico</file>
+    <file>../UI/icons/plus_2.svg</file>
+    <file>../UI/icons/conference-call-64.ico</file>
+    <file>../UI/icons/invoice-64.ico</file>
+    <file>../UI/icons/product-64.ico</file>
+    <file>../UI/icons/report-2-64.ico</file>
     <file>../UI/icons/delete-64.ico</file>
     <file>../UI/icons/speaker-64.ico</file>
     <file>../UI/icons/edit-11-64.ico</file>
