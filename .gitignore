@@ -17,3 +17,5 @@ src/database/*.db
 
 # Ignore logs
 *.log
+
+*.ui.bak
