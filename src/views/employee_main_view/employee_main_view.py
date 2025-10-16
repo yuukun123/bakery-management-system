@@ -3,7 +3,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
 from src.controllers.buttonController import buttonController
+from src.controllers.employee_main_controller.product_controller import ProductController
 from src.services.query_user_name import QueryUserName
+from src.utils.employee_tab.changeTab import MenuNavigator
 from src.utils.username_ui import set_employee_info, set_employee_role
 from src.views.moveable_window import MoveableWindow
 from resources import resources_rc
@@ -36,12 +38,45 @@ class EmployeeMainWindow(QMainWindow):
         print(f"DEBUG: Employee role: {employee_role}")
 
         set_employee_info(self.username_label, employee_name)
-        print(f"debug: {set_employee_role(self.role_label, employee_role)}")
+        set_employee_role(self.role_label, employee_role)
 
         self.buttonController = buttonController(self)
         self.closeBtn.clicked.connect(buttonController.handle_close)
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
+
+        buttons = [ self.product_btn, self.customer_btn, self.invoice_btn ]
+        index_map = {btn: i for i, btn in enumerate(buttons)}
+        self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.product_btn)
+
+        # self.dashboardController = dashboardController(parent=self)
+        #
+        # self.classroomController = ClassroomController(
+        #     self.area2,
+        #     parent=self,
+        #     # classroom_page = self.Classroom_page
+        # )
+        #
+        # self.studentListController = StudentListController(
+        #     self.studentList,
+        #     parent=self,
+        #     student_page=self.Student_page
+        # )
+        #
+        # self.studentScoreController = StudentScoreController(
+        #     self.scoresList,
+        #     parent=self,
+        #     edit_button=self.editScoreBtn,
+        #     score_page=self.Scores_page
+        # )
+        self.productController = ProductController(self.product_page, self)
+
+
+        self.stackedWidget.currentChanged.connect(self.on_tab_changed)
+        # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
+        if self.stackedWidget.currentWidget() == self.prodcut_page:
+            self.on_tab_changed(self.stackedWidget.currentIndex())
+        self.on_tab_changed(self.stackedWidget.currentIndex())
 
     def load_employee_context(self, employee_id):
         print(f"DEBUG: Đang tải user context cho employee id: {employee_id}")
@@ -49,3 +84,39 @@ class EmployeeMainWindow(QMainWindow):
         print(f"DEBUG: User context đã tải: {self._employee_context}")
         self._employee_role = self.query_username.get_employee_field_by_id(employee_id, 'role')
         print(f"DEBUG: User role đã tải: {self._employee_role}")
+
+    def on_tab_changed(self, index):
+        current_widget = self.stackedWidget.widget(index)
+
+        if current_widget == self.prodcut_page:
+            print("Đã chuyển đến trang Product")
+            # if not self.dashboardController._initialized_for_user:
+            #     self.dashboardController.setup_for_user(self.teacher_context)
+
+        elif current_widget == self.customer_page:
+            print("Đã chuyển đến trang Customer")
+            # if not self.studentListController._initialized_for_user:
+            #     self.studentListController.setup_for_user(self.teacher_context)
+
+        elif current_widget == self.invoice_page:
+            print("Đã chuyển đến trang Invoice")
+            # if not self.studentListController._initialized_for_user:
+            #     self.studentListController.setup_for_user(self.teacher_context)
+
+    def show_checkout_page(self):
+        """
+        Hàm này được gọi khi nhấn nút 'Thanh Toán'.
+        Nó sẽ chuyển sang trang thanh toán.
+        """
+        # Tại đây, bạn có thể lấy dữ liệu từ giỏ hàng và truyền vào form thanh toán
+        # Ví dụ: self.fill_checkout_form(self.current_cart)
+
+        print("DEBUG: Chuyển sang trang thanh toán.")
+        self.product_stackedWidget.setCurrentWidget(self.payment_method)
+
+    def show_product_selection_page(self):
+        """
+        Hàm này được gọi khi nhấn nút 'Quay Lại' từ trang thanh toán.
+        """
+        print("DEBUG: Quay lại trang chọn sản phẩm.")
+        self.product_stackedWidget.setCurrentWidget(self.product_list)

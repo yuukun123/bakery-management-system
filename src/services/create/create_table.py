@@ -54,7 +54,7 @@ def create_table():
         CREATE TABLE IF NOT EXISTS products (
             product_id INTEGER PRIMARY KEY AUTOINCREMENT,
             product_name TEXT NOT NULL,
-            selling_price REAL NOT NULL CHECK(sellingPrice >= 0),
+            selling_price REAL NOT NULL CHECK(selling_price >= 0),
             stock INTEGER NOT NULL CHECK(stock >= 0),
             import_price REAL NOT NULL CHECK(import_price >= 0),
             image_path TEXT NOT NULL, -- nếu bạn lưu đường dẫn tương đối (ví dụ: "images/cake1.jpg")
@@ -71,7 +71,7 @@ def create_table():
         CREATE TABLE IF NOT EXISTS customers (
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_name TEXT NOT NULL,
-            customer_phone TEXT NOT NULL,
+            customer_phone TEXT NOT NULL UNIQUE,
             customer_address TEXT NOT NULL,
             customer_email TEXT NOT NULL UNIQUE
         )
@@ -142,6 +142,30 @@ def create_table():
             UPDATE products
             SET stock = stock + NEW.quantity
             WHERE product_id = NEW.product_id;
+        END;
+    """)
+
+    # Trigger tự động cập nhật `updated_at` cho bảng employees
+    cursor.execute("""
+        CREATE TRIGGER IF NOT EXISTS trg_employees_updated_at
+        AFTER UPDATE ON employees
+        FOR EACH ROW
+        BEGIN
+            UPDATE employees
+            SET updated_at = CURRENT_TIMESTAMP
+            WHERE employee_id = OLD.employee_id;
+        END;
+    """)
+
+    # Trigger tự động cập nhật `updated_at` cho bảng products
+    cursor.execute("""
+        CREATE TRIGGER IF NOT EXISTS trg_products_updated_at
+        AFTER UPDATE ON products
+        FOR EACH ROW
+        BEGIN
+            UPDATE products
+            SET updated_at = CURRENT_TIMESTAMP
+            WHERE product_id = OLD.product_id;
         END;
     """)
 
