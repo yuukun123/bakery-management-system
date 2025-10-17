@@ -37,6 +37,7 @@ class EmployeeMainWindow(QMainWindow):
         print(f"DEBUG: Employee name: {employee_name}")
         print(f"DEBUG: Employee role: {employee_role}")
 
+
         set_employee_info(self.username_label, employee_name)
         set_employee_role(self.role_label, employee_role)
 
@@ -84,6 +85,7 @@ class EmployeeMainWindow(QMainWindow):
         print(f"DEBUG: User context đã tải: {self._employee_context}")
         self._employee_role = self.query_username.get_employee_field_by_id(employee_id, 'role')
         print(f"DEBUG: User role đã tải: {self._employee_role}")
+
 
     def on_tab_changed(self, index):
         current_widget = self.stackedWidget.widget(index)

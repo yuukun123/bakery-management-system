@@ -531,7 +531,7 @@ color: rgb(255, 255, 255)
 }</string>
                   </property>
                   <property name="text">
-                   <string>Đăng xuất</string>
+                   <string>logout</string>
                   </property>
                   <property name="autoRepeat">
                    <bool>true</bool>
@@ -646,7 +646,7 @@ background-color: #a2d2ff;</string>
                       <string>Nhân sự</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../../../resources/resources.qrc">
                        <normaloff>:/UI/icons/conference-call-64.ico</normaloff>:/UI/icons/conference-call-64.ico</iconset>
                      </property>
                     </widget>
@@ -682,7 +682,7 @@ background-color: #a2d2ff;</string>
                       <string>Sản phẩm</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../../../resources/resources.qrc">
                        <normaloff>:/UI/icons/product-64.ico</normaloff>:/UI/icons/product-64.ico</iconset>
                      </property>
                     </widget>
@@ -718,7 +718,7 @@ background-color: #a2d2ff;</string>
                       <string>Nhập hàng</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../../../resources/resources.qrc">
                        <normaloff>:/UI/icons/invoice-64.ico</normaloff>:/UI/icons/invoice-64.ico</iconset>
                      </property>
                     </widget>
@@ -754,7 +754,7 @@ background-color: #a2d2ff;</string>
                       <string>Thống kê</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../../../resources/resources.qrc">
                        <normaloff>:/UI/icons/report-2-64.ico</normaloff>:/UI/icons/report-2-64.ico</iconset>
                      </property>
                     </widget>
@@ -771,7 +771,7 @@ background-color: #a2d2ff;</string>
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="employee_page">
                 <property name="styleSheet">
@@ -846,7 +846,7 @@ background-color: #a2d2ff;</string>
                           <string>Thêm</string>
                          </property>
                          <property name="icon">
-                          <iconset>
+                          <iconset resource="../../../resources/resources.qrc">
                            <normaloff>:/UI/icons/plus_2.svg</normaloff>:/UI/icons/plus_2.svg</iconset>
                          </property>
                         </widget>
@@ -891,7 +891,7 @@ background-color: #a2d2ff;</string>
                           <string>Xóa</string>
                          </property>
                          <property name="icon">
-                          <iconset>
+                          <iconset resource="../../../resources/resources.qrc">
                            <normaloff>:/UI/icons/delete.ico</normaloff>:/UI/icons/delete.ico</iconset>
                          </property>
                         </widget>
@@ -992,7 +992,7 @@ background-color: #a2d2ff;</string>
                         <widget class="QComboBox" name="filter_employee">
                          <property name="styleSheet">
                           <string notr="true">QComboBox#filter_employee {
-    border: 1px solid #ccc;      
+    border: 2px solid rgb(226, 226, 226);        
     border-radius: 6px;           
     padding: 6px 10px;             
     background: #fdfdfd;           
@@ -1071,7 +1071,7 @@ QComboBox#filter_employee::down-arrow {
                         <widget class="QComboBox" name="status_filter">
                          <property name="styleSheet">
                           <string notr="true">QComboBox#status_filter {
-    border: 1px solid #ccc;      
+    border: 2px solid rgb(226, 226, 226);       
     border-radius: 6px;           
     padding: 6px 10px;             
     background: #fdfdfd;           
@@ -1104,7 +1104,7 @@ QComboBox#status_filter::down-arrow {
                          </item>
                          <item>
                           <property name="text">
-                           <string>Còn làm việc</string>
+                           <string>Đang làm việc</string>
                           </property>
                          </item>
                          <item>
@@ -1150,7 +1150,7 @@ QComboBox#status_filter::down-arrow {
                         <widget class="QComboBox" name="display_filter">
                          <property name="styleSheet">
                           <string notr="true">QComboBox#display_filter {
-    border: 1px solid #ccc;      
+    border: 2px solid rgb(226, 226, 226);    
     border-radius: 6px;           
     padding: 6px 10px;             
     background: #fdfdfd;           
@@ -1267,7 +1267,7 @@ QComboBox#display_filter::down-arrow {
                           </font>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">border: 1px solid rgb(138, 138, 138);
+                          <string notr="true">border: 2px solid rgb(226, 226, 226);    
 padding-left: 10px;
 
 </string>
@@ -1276,7 +1276,7 @@ padding-left: 10px;
                           <string/>
                          </property>
                          <property name="placeholderText">
-                          <string>Search for name</string>
+                          <string>Tìm kiếm mã NV/ Tên NV</string>
                          </property>
                         </widget>
                        </item>
@@ -1421,7 +1421,7 @@ QTableWidget QScrollBar::sub-page:vertical {
                           <string>Thêm</string>
                          </property>
                          <property name="icon">
-                          <iconset>
+                          <iconset resource="../../../resources/resources.qrc">
                            <normaloff>:/UI/icons/plus_2.svg</normaloff>:/UI/icons/plus_2.svg</iconset>
                          </property>
                         </widget>
@@ -1452,16 +1452,19 @@ QTableWidget QScrollBar::sub-page:vertical {
 }
 #delete_product_btn::hover{
 	
-	
 	background-color: rgb(188, 0, 0);
-
-}</string>
+}
+#delete_product_btn:disabled {
+   color: rgb(120, 120, 120);       /* Màu chữ xám */
+   background-color: rgb(200, 200, 200); /* Màu nền xám */
+}
+</string>
                          </property>
                          <property name="text">
                           <string>Xóa</string>
                          </property>
                          <property name="icon">
-                          <iconset>
+                          <iconset resource="../../../resources/resources.qrc">
                            <normaloff>:/UI/icons/delete.ico</normaloff>:/UI/icons/delete.ico</iconset>
                          </property>
                         </widget>
@@ -1491,11 +1494,13 @@ QTableWidget QScrollBar::sub-page:vertical {
 	color: rgb(255, 255, 255);
 }
 #update_product_btn::hover{
-	
-	
 	background-color: rgb(0, 85, 127);
-
-}</string>
+}
+#update_product_btn:disabled {
+   color: rgb(120, 120, 120);       /* Màu chữ xám */
+   background-color: rgb(200, 200, 200); /* Màu nền xám */
+}
+</string>
                          </property>
                          <property name="text">
                           <string>Sửa</string>
@@ -1514,16 +1519,329 @@ QTableWidget QScrollBar::sub-page:vertical {
                  </item>
                  <item alignment="Qt::AlignTop">
                   <widget class="QFrame" name="frame_12">
+                   <property name="styleSheet">
+                    <string notr="true">border: 1px solid rgb(138, 138, 138);
+</string>
+                   </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
                    </property>
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout">
+                    <item>
+                     <widget class="QFrame" name="frame_24">
+                      <property name="styleSheet">
+                       <string notr="true">border:none;</string>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_18">
+                       <item>
+                        <widget class="QLabel" name="label_8">
+                         <property name="font">
+                          <font>
+                           <pointsize>10</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(85, 85, 85);</string>
+                         </property>
+                         <property name="text">
+                          <string>Danh mục</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_category">
+                         <property name="styleSheet">
+                          <string notr="true">QComboBox#comboBox_category {
+    border: 2px solid rgb(226, 226, 226);     
+    border-radius: 6px;           
+    padding: 6px 10px;             
+    background: #fdfdfd;           
+    font-size: 14px;
+}
+
+QComboBox#comboBox_category:focus {
+    border: 1px solid #888;        
+    background: #ffffff;           
+}
+
+QComboBox#comboBox_category::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#comboBox_category::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Tất cả</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Croissant</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Tart</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Mousse</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_22">
+                      <property name="styleSheet">
+                       <string notr="true">border:none;</string>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_17">
+                       <item>
+                        <widget class="QLabel" name="label_7">
+                         <property name="font">
+                          <font>
+                           <pointsize>10</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(85, 85, 85);</string>
+                         </property>
+                         <property name="text">
+                          <string>Hiển thị</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_display">
+                         <property name="styleSheet">
+                          <string notr="true">QComboBox#comboBox_display {
+   border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;           
+    padding: 6px 10px;             
+    background: #fdfdfd;           
+    font-size: 14px;
+}
+
+QComboBox#comboBox_display:focus {
+    border: 1px solid #888;        
+    background: #ffffff;           
+}
+
+QComboBox#comboBox_display::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#comboBox_display::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Tất cả</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>10</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>100</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>200</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>500</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_23">
+                      <property name="styleSheet">
+                       <string notr="true">border:none;</string>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_16">
+                       <item>
+                        <widget class="QPushButton" name="search_btn_2">
+                         <property name="minimumSize">
+                          <size>
+                           <width>35</width>
+                           <height>35</height>
+                          </size>
+                         </property>
+                         <property name="cursor">
+                          <cursorShape>PointingHandCursor</cursorShape>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">#search_btn_2{
+	background-color: rgb(241, 241, 241);
+}
+#search_btn_2::hover{
+	background-color: rgb(217, 217, 217);
+}
+</string>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="icon">
+                          <iconset resource="../../../resources/resources.qrc">
+                           <normaloff>:/UI/icons/search.svg</normaloff>:/UI/icons/search.svg</iconset>
+                         </property>
+                         <property name="checkable">
+                          <bool>false</bool>
+                         </property>
+                         <property name="checked">
+                          <bool>false</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="lineEdit_2">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>35</height>
+                          </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <pointsize>10</pointsize>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">border: 2px solid rgb(226, 226, 226);    
+padding-left: 10px;
+
+</string>
+                         </property>
+                         <property name="text">
+                          <string/>
+                         </property>
+                         <property name="placeholderText">
+                          <string>Tìm kiếm mã SP/ tên SP</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QTableWidget" name="tableWidget_2"/>
+                  <widget class="QTableWidget" name="product_tableWidget">
+                   <property name="styleSheet">
+                    <string notr="true">QTableWidget {
+    font: 13px &quot;Segoe UI&quot;;
+}
+
+QHeaderView::section {
+    background-color: #2980b9;
+    color: white;
+    padding: 6px;
+	border: 1px solid rgb(191, 191, 191);
+    font-weight: bold;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;
+}
+
+QTableWidget::item:selected {
+    background-color: #cce5ff;
+	border: 1px solid #2980b9;
+    color: black;
+
+}
+
+
+QTableWidget QScrollBar:vertical {
+    background: #f0f0f0;
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #7aa5d2;
+    min-height: 30px;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical:hover {
+    background: #5a92c4;
+}
+
+QTableWidget QScrollBar::add-line:vertical, 
+QTableWidget QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QTableWidget QScrollBar::add-page:vertical, 
+QTableWidget QScrollBar::sub-page:vertical {
+    background: none;
+}
+</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
