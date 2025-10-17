@@ -21,8 +21,8 @@ class ProductCard(QWidget):
         # Set ảnh
         pixmap = QPixmap(data.get('image_path'))
         if not pixmap.isNull():
-            target_width = int(self.image_label.width() * 7)  # tăng 30%
-            target_height = int(self.image_label.height() * 6)
+            target_width = int(self.image_label.width() * 9)  # tăng 30%
+            target_height = int(self.image_label.height() * 9)
 
             scaled_pixmap = pixmap.scaled(
                 target_width,
