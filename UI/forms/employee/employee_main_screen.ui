@@ -910,7 +910,7 @@ background-color: #a2d2ff;</string>
                     <string notr="true">border: 0px solid rgb(2, 2, 2)</string>
                    </property>
                    <property name="currentIndex">
-                    <number>1</number>
+                    <number>0</number>
                    </property>
                    <widget class="QWidget" name="product_list">
                     <property name="styleSheet">
@@ -1109,8 +1109,8 @@ QComboBox::down-arrow {
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>100</width>
-                             <height>30</height>
+                             <width>601</width>
+                             <height>626</height>
                             </rect>
                            </property>
                            <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1149,9 +1149,21 @@ border-radius: 10px</string>
                      </item>
                      <item>
                       <widget class="QFrame" name="frame_13">
-                       <property name="maximumSize">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
                         <size>
                          <width>500</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
                          <height>16777215</height>
                         </size>
                        </property>
@@ -1236,8 +1248,8 @@ color: rgb(255, 255, 255)</string>
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>425</width>
-                             <height>168</height>
+                             <width>498</width>
+                             <height>474</height>
                             </rect>
                            </property>
                            <layout class="QVBoxLayout" name="verticalLayout_12">
