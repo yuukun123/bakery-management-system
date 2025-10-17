@@ -8,6 +8,8 @@ from src.controllers.buttonController import buttonController
 from src.services.query_user_name import QueryUserName
 from src.utils.username_ui import set_employee_info, set_employee_role
 from src.views.moveable_window import MoveableWindow
+from src.views.manager_main_view.employee_view import EmployeeViewWidget
+from src.views.manager_main_view.product_view import ProductViewWidget
 from resources import resources_rc
 
 class ManagerMainWindow(QMainWindow):
@@ -22,8 +24,13 @@ class ManagerMainWindow(QMainWindow):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
 
+        # Vô hiệu hóa các nút xóa sửa
         self.delete_employee_btn.setEnabled(False)
         self.update_employee_btn.setEnabled(False)
+        self.update_product_btn.setEnabled(False)
+        self.delete_product_btn.setEnabled(False)
+
+        self.setup_views()
 
         self.query_username = QueryUserName()
         self._employee_context = None
@@ -36,9 +43,6 @@ class ManagerMainWindow(QMainWindow):
         self.product_btn.clicked.connect(lambda: self.switch_stack(1, self.product_btn))
         self.import_invoice_btn.clicked.connect(lambda: self.switch_stack(2, self.import_invoice_btn))
         self.statistical_btn.clicked.connect(lambda: self.switch_stack(3, self.statistical_btn))
-
-        self.query_data = QueryData()
-        self.load_data_manager()
 
         if not self._employee_context:
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{self.employee_id}'.")
@@ -59,32 +63,6 @@ class ManagerMainWindow(QMainWindow):
         self._employee_context = self.query_username.get_employee_field_by_id(employee_id,'employee_name')
         self._employee_role = self.query_username.get_employee_field_by_id(employee_id, 'role')
         print(f"DEBUG: User context đã tải: {self._employee_context}")
-
-    def load_data_manager(self):
-        data = self.query_data.get_data_manager()
-        print(f"DEBUG: data manager: {data}")
-        if not data:
-            print("Không có dữ liệu nhân viên")
-            return
-        table = self.employee_tableWidget
-        headers = ["Mã nhân viên", "Tên", "Giới tính", "Chức danh", "Trạng thái", "Email","số điện thoại", "Địa chỉ"]
-        table.setColumnCount(len(headers))
-        table.setHorizontalHeaderLabels(headers)
-        table.setRowCount(len(data))
-        for row_index, row_data in enumerate(data):
-            for col_index, cell_data in enumerate(row_data):
-                item = QTableWidgetItem(str(cell_data))
-                table.setItem(row_index, col_index, item)
-        table.resizeColumnsToContents()
-        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        table.setAlternatingRowColors(True)
-        table.setSortingEnabled(True)
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        table.verticalHeader().setVisible(False)
-        table.setFocusPolicy(Qt.NoFocus)
-        table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
     def get_nav_buttons(self):
         return [
@@ -122,3 +100,7 @@ class ManagerMainWindow(QMainWindow):
 
     def set_default_stack(self, index, button):
         self.switch_stack(index, button)
+
+    def setup_views(self):
+        self.employee_view = EmployeeViewWidget(self)
+        self.product_view = ProductViewWidget(self)

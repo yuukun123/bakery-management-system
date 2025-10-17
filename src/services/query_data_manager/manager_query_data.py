@@ -103,10 +103,21 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT employee_id, employee_name, sex, role, status, email, phone, address FROM employees")
+            cursor.execute("SELECT employee_id, employee_name, sex, role, status, email, phone, address, starting_date, end_date FROM employees")
             rows = cursor.fetchall()
             return rows
         except sqlite3.Error as e:
-            print(f"Database error in get_user_by_username: {e}")
+            print(f"Database error in get_data_manager: {e}")
+            return None
+
+    def get_data_product(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT product_id, product_name, selling_price, import_price, stock, status, image_path FROM products")
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in get_data_product: {e}")
             return None
 
