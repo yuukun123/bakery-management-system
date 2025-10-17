@@ -1375,7 +1375,7 @@ color: rgb(255, 255, 255)</string>
                                     </property>
                                     <layout class="QHBoxLayout" name="horizontalLayout_10">
                                      <property name="spacing">
-                                      <number>5</number>
+                                      <number>2</number>
                                      </property>
                                      <property name="leftMargin">
                                       <number>0</number>
@@ -1423,7 +1423,7 @@ border: 1px solid #495057;</string>
                                        </property>
                                        <property name="maximumSize">
                                         <size>
-                                         <width>55</width>
+                                         <width>50</width>
                                          <height>50</height>
                                         </size>
                                        </property>
