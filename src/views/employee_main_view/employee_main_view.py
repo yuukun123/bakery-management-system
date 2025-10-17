@@ -69,12 +69,11 @@ class EmployeeMainWindow(QMainWindow):
         #     edit_button=self.editScoreBtn,
         #     score_page=self.Scores_page
         # )
-        self.productController = ProductController(self.product_page, self)
-
+        self.product_controller = ProductController(self.product_page, self)
 
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
-        if self.stackedWidget.currentWidget() == self.prodcut_page:
+        if self.stackedWidget.currentWidget() == self.product_page:
             self.on_tab_changed(self.stackedWidget.currentIndex())
         self.on_tab_changed(self.stackedWidget.currentIndex())
 
@@ -88,10 +87,11 @@ class EmployeeMainWindow(QMainWindow):
     def on_tab_changed(self, index):
         current_widget = self.stackedWidget.widget(index)
 
-        if current_widget == self.prodcut_page:
+        if current_widget == self.product_page:
             print("Đã chuyển đến trang Product")
             # if not self.dashboardController._initialized_for_user:
             #     self.dashboardController.setup_for_user(self.teacher_context)
+            self.product_controller.setup_page()
 
         elif current_widget == self.customer_page:
             print("Đã chuyển đến trang Customer")
@@ -102,21 +102,3 @@ class EmployeeMainWindow(QMainWindow):
             print("Đã chuyển đến trang Invoice")
             # if not self.studentListController._initialized_for_user:
             #     self.studentListController.setup_for_user(self.teacher_context)
-
-    def show_checkout_page(self):
-        """
-        Hàm này được gọi khi nhấn nút 'Thanh Toán'.
-        Nó sẽ chuyển sang trang thanh toán.
-        """
-        # Tại đây, bạn có thể lấy dữ liệu từ giỏ hàng và truyền vào form thanh toán
-        # Ví dụ: self.fill_checkout_form(self.current_cart)
-
-        print("DEBUG: Chuyển sang trang thanh toán.")
-        self.product_stackedWidget.setCurrentWidget(self.payment_method)
-
-    def show_product_selection_page(self):
-        """
-        Hàm này được gọi khi nhấn nút 'Quay Lại' từ trang thanh toán.
-        """
-        print("DEBUG: Quay lại trang chọn sản phẩm.")
-        self.product_stackedWidget.setCurrentWidget(self.product_list)

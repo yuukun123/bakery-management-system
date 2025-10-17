@@ -41,7 +41,7 @@ class LoginController:
     def on_login_success(self, employee_id):
         from src.windows.employee_window.employee_window_manage import open_employee_main_window
         from src.windows.manager_window.manager_window_manage import open_manager_main_window
-        QMessageBox.information(self.view, "Login", "✅ login_query success!")
+        QMessageBox.information(self.view, "Login", "✅ login success!")
         try:
             print(f"DEBUG: Login success for user '{employee_id}'")
             user_context = self.query_data.get_employee_field_by_id(employee_id, 'employee_name')

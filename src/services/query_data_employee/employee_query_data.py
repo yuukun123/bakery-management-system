@@ -22,7 +22,7 @@ class EmployeeQueryData:
         conn.row_factory = sqlite3.Row
         return conn
 
-    def get_product(self):
+    def get_all_products(self):
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
