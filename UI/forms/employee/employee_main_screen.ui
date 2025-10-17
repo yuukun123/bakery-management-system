@@ -1157,7 +1157,7 @@ border-radius: 10px</string>
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>500</width>
+                         <width>0</width>
                          <height>0</height>
                         </size>
                        </property>
