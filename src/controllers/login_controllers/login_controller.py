@@ -81,3 +81,8 @@ class LoginController:
 
     def on_inactive_account(self):
         QMessageBox.warning(self.view, "Login", "❌ account is inactive!")
+
+    def auto_fill_login(self, employee_id):
+        self.view.employee_id_login.setText(employee_id)
+        self.view.password_login.setText("1")  # Mật khẩu mặc định cho mục đích thử nghiệm
+        print(f"DEBUG: Auto-filled login for user '{employee_id}'")

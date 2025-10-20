@@ -2,7 +2,9 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets, QtCore
 
-from src.windows.login_window import open_login_window
+from src.views.employee_main_view.item_card import ItemCard
+from src.views.login_view.login_view import Login_Window
+# from src.windows.login_window import open_login_window
 from src.views.employee_main_view.product_card import ProductCard  # nếu bạn lưu class trên vào file product_card.py
 
 if __name__ == "__main__":
@@ -10,8 +12,14 @@ if __name__ == "__main__":
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
     app = QtWidgets.QApplication(sys.argv)
-    open_login_window()
-    # window = open_employee_main_window()
+    # open_login_window()
+
+    # auto fill login for testing
+    login_window = Login_Window()
+    if login_window.login_controller:
+        login_window.login_controller.auto_fill_login("251000003")
+    login_window.show()
+
     sys.exit(app.exec_())
 
     # Dữ liệu test
@@ -23,7 +31,7 @@ if __name__ == "__main__":
     # }
     #
     # window = QMainWindow()
-    # card = ProductCard(product_data)
+    # card = ItemCard(product_data)
     # window.setCentralWidget(card)
     # # window.resize(300, 300)
     # window.show()

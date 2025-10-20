@@ -2,10 +2,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHeaderView, QTableWidgetItem, QStackedWidget, QToolButton, QWidget, QGridLayout
 
 from src.views.employee_main_view.product_card import ProductCard
+from src.views.employee_main_view.item_card import ItemCard
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
 
 class ProductController:
     def __init__(self, ui_page, main_window):
+        self.current_order = {}
         self.page = ui_page
         self.main_window = main_window
         self._initialized = False  # Cờ để chắc rằng chúng ta chỉ setup 1 lần
@@ -30,9 +32,23 @@ class ProductController:
 
         self.product_layout.setHorizontalSpacing(15)
         self.product_layout.setVerticalSpacing(15)
+        self.product_layout.setContentsMargins(0, 0, 0, 0)
         self.product_layout.setAlignment(Qt.AlignTop)
 
-        self.items_layout = self.product_layout
+        # --- Setup UI item  ---
+        self.order_list_container = self.main_window.order_list_container
+
+        if self.order_list_container is None:
+            raise RuntimeError("Không tìm thấy QWidget 'order_list_container' trên trang thanh toán.")
+
+        # Tạo layout cho container này nếu chưa có
+        if self.order_list_container.layout() is None:
+            self.order_list_layout = QVBoxLayout(self.order_list_container)
+            self.order_list_layout.setAlignment(Qt.AlignTop)
+        else:
+            self.order_list_layout = self.order_list_container.layout()
+
+        self.order_list_layout.addStretch()
 
     def setup_page(self):
         """
@@ -52,8 +68,6 @@ class ProductController:
         print("DEBUG: Checkout button connected to show_checkout_page.")
         self.cancel_btn.clicked.connect(self.show_product_selection_page)
         print("DEBUG: Cancel button connected to show_product_selection_page.")
-        # self.back_to_selection_button.clicked.connect(self.show_product_selection_page)
-        # ... các kết nối khác
 
     def show_checkout_page(self):
         """Chuyển sang trang thanh toán."""
@@ -89,12 +103,46 @@ class ProductController:
             # topic_card = TopicCardWidget(topic_data, parent=self.topic_container)
             product_card = ProductCard(product_data, parent=self.product_container)
 
-            # topic_card.details_requested.connect(self.handle_details_requested)
+            product_card.product_clicked.connect(self.handle_click_product)
+
             row = index // num_columns
             col = index % num_columns
             self.product_layout.addWidget(product_card, row, col)
 
         print("DEBUG: [ProductController] Finished creating product cards.")
-        #
-        # for product in all_products:
-        #     self.product_list_layout.addWidget(card)
+
+    def handle_click_product(self, product_data):
+        """
+        Xử lý khi click vào một sản phẩm.
+        Kiểm tra xem sản phẩm đã có trong hóa đơn chưa,
+        nếu có thì tăng số lượng, nếu chưa thì thêm mới.
+        """
+        product_id = product_data.get('product_id')
+        if product_id is None:
+            print("ERROR: Sản phẩm không có ID.")
+            return
+
+        print(f"DEBUG: [Controller] Clicked on product ID: {product_id}")
+
+        # KIỂM TRA XEM SẢN PHẨM ĐÃ CÓ TRONG HÓA ĐƠN CHƯA
+        if product_id in self.current_order:
+            # Nếu đã có, chỉ cần tăng số lượng
+            print(f"DEBUG: [Controller] Product ID {product_id} already in order. Increasing quantity.")
+            existing_card = self.current_order[product_id]
+            existing_card.increase_quantity()  # Bạn sẽ cần tạo hàm này trong ItemCard
+        else:
+            # Nếu chưa có, tạo card mới và thêm vào
+            print(f"DEBUG: [Controller] Product ID {product_id} not in order. Creating new card.")
+            if self.order_list_layout is None:
+                print("ERROR: [Controller] order_list_layout is None! Cannot add item card.")
+                return
+
+            new_card = ItemCard(product_data)
+
+            # Thêm card vào layout
+            # self.order_list_layout.addWidget(new_card)
+            insert_position = self.order_list_layout.count() - 1  # -1 vì cái stretch cũng được tính là 1 item
+            self.order_list_layout.insertWidget(insert_position, new_card)
+
+            # LƯU card mới vào dictionary để theo dõi
+            self.current_order[product_id] = new_card

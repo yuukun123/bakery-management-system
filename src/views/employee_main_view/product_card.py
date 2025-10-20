@@ -16,13 +16,13 @@ class ProductCard(QWidget):
     def set_data(self, data):
         # Điền dữ liệu vào các label
         self.product_name_label.setText(data.get('product_name'))
-        self.product_price_label.setText(f"{data.get('selling_price')}đ")
+        self.product_price_label.setText(f"{data.get('selling_price')}")
 
         # Set ảnh
         pixmap = QPixmap(data.get('image_path'))
         if not pixmap.isNull():
-            target_width = int(self.image_label.width() * 9)  # tăng 30%
-            target_height = int(self.image_label.height() * 9)
+            target_width = int(self.image_label.width() * 13)  # tăng 30%
+            target_height = int(self.image_label.height() * 8)
 
             scaled_pixmap = pixmap.scaled(
                 target_width,
@@ -35,5 +35,6 @@ class ProductCard(QWidget):
 
     def mousePressEvent(self, event):
         """Xử lý khi click vào card."""
+        print(f"DEBUG: [ProductCard] Clicked on '{self.product_data.get('product_name')}'!")
         self.product_clicked.emit(self.product_data)
         super().mousePressEvent(event)
