@@ -3,7 +3,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
 from src.controllers.buttonController import buttonController
+from src.controllers.employee_main_controller.checkout_controller import CheckoutController
 from src.controllers.employee_main_controller.product_controller import ProductController
+from src.models.order_service import OrderService
 from src.services.query_user_name import QueryUserName
 from src.utils.employee_tab.changeTab import MenuNavigator
 from src.utils.username_ui import set_employee_info, set_employee_role
@@ -70,7 +72,9 @@ class EmployeeMainWindow(QMainWindow):
         #     edit_button=self.editScoreBtn,
         #     score_page=self.Scores_page
         # )
-        self.product_controller = ProductController(self.product_page, self)
+        self.order_service = OrderService()
+        self.product_controller = ProductController(self.product_page, self, self.order_service)
+        self.checkout_controller = CheckoutController(self.checkout_page, self, self.order_service)
 
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
@@ -85,7 +89,6 @@ class EmployeeMainWindow(QMainWindow):
         self._employee_role = self.query_username.get_employee_field_by_id(employee_id, 'role')
         print(f"DEBUG: User role đã tải: {self._employee_role}")
 
-
     def on_tab_changed(self, index):
         current_widget = self.stackedWidget.widget(index)
 
@@ -94,6 +97,7 @@ class EmployeeMainWindow(QMainWindow):
             # if not self.dashboardController._initialized_for_user:
             #     self.dashboardController.setup_for_user(self.teacher_context)
             self.product_controller.setup_page()
+            self.checkout_controller.setup_page()
 
         elif current_widget == self.customer_page:
             print("Đã chuyển đến trang Customer")

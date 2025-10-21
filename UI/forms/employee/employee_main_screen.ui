@@ -910,7 +910,7 @@ background-color: #a2d2ff;</string>
                     <string notr="true">border: 0px solid rgb(2, 2, 2)</string>
                    </property>
                    <property name="currentIndex">
-                    <number>0</number>
+                    <number>1</number>
                    </property>
                    <widget class="QWidget" name="product_list">
                     <property name="styleSheet">
@@ -1109,8 +1109,8 @@ QComboBox::down-arrow {
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>653</width>
-                             <height>626</height>
+                             <width>16</width>
+                             <height>16</height>
                             </rect>
                            </property>
                            <property name="styleSheet">
@@ -1251,8 +1251,8 @@ color: rgb(255, 255, 255)</string>
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>446</width>
-                             <height>474</height>
+                             <width>407</width>
+                             <height>16</height>
                             </rect>
                            </property>
                            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1397,7 +1397,7 @@ color: rgb(255, 255, 255)</string>
                                </widget>
                               </item>
                               <item>
-                               <widget class="QLabel" name="total">
+                               <widget class="QLabel" name="total_bill_label">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                   <horstretch>0</horstretch>
@@ -1416,7 +1416,7 @@ color: rgb(255, 255, 255)</string>
                                  </font>
                                 </property>
                                 <property name="styleSheet">
-                                 <string notr="true">#total{
+                                 <string notr="true">#total_bill_label{
 	color: #d62828;
 }</string>
                                 </property>
@@ -1601,7 +1601,7 @@ border-radius: 10px;</string>
                           </layout>
                          </widget>
                         </item>
-                        <item>
+                        <item alignment="Qt::AlignTop">
                          <widget class="QFrame" name="frame_38">
                           <property name="styleSheet">
                            <string notr="true">border: none;</string>
@@ -1662,7 +1662,7 @@ border-radius: 10px;</string>
                                <number>0</number>
                               </property>
                               <item>
-                               <widget class="QToolButton" name="add_customer_btn">
+                               <widget class="QToolButton" name="show_add_customer_btn">
                                 <property name="minimumSize">
                                  <size>
                                   <width>250</width>
@@ -1683,13 +1683,13 @@ border-radius: 10px;</string>
                                  </font>
                                 </property>
                                 <property name="styleSheet">
-                                 <string notr="true">#add_customer_btn{
+                                 <string notr="true">#show_add_customer_btn{
 background-color: #e09f3e;
 color: rgb(255, 255, 255);
 border-radius: 10px;
 }
 
-#add_customer_btn:hover{
+#show_add_customer_btn:hover{
 background-color: #495057;
 }</string>
                                 </property>
@@ -1753,6 +1753,14 @@ border: none;</string>
                               </item>
                               <item>
                                <widget class="QPushButton" name="search_customer_btn">
+                                <property name="font">
+                                 <font>
+                                  <pointsize>8</pointsize>
+                                 </font>
+                                </property>
+                                <property name="cursor">
+                                 <cursorShape>PointingHandCursor</cursorShape>
+                                </property>
                                 <property name="styleSheet">
                                  <string notr="true">border: none;</string>
                                 </property>
@@ -1765,8 +1773,8 @@ border: none;</string>
                                 </property>
                                 <property name="iconSize">
                                  <size>
-                                  <width>26</width>
-                                  <height>26</height>
+                                  <width>30</width>
+                                  <height>30</height>
                                  </size>
                                 </property>
                                </widget>
@@ -1777,7 +1785,7 @@ border: none;</string>
                           </layout>
                          </widget>
                         </item>
-                        <item>
+                        <item alignment="Qt::AlignVCenter">
                          <widget class="QFrame" name="contain_customer">
                           <property name="minimumSize">
                            <size>
@@ -1917,194 +1925,6 @@ background-color: #3a5a40;
                          </widget>
                         </item>
                         <item>
-                         <widget class="QTableWidget" name="table_list">
-                          <property name="enabled">
-                           <bool>true</bool>
-                          </property>
-                          <property name="font">
-                           <font>
-                            <weight>75</weight>
-                            <bold>true</bold>
-                           </font>
-                          </property>
-                          <property name="styleSheet">
-                           <string notr="true">QHeaderView::section {
-    background-color: #1976d2;
-    font-weight: bold;
-	color: rgb(255, 255, 255);
-	font-size: 15px;
-	padding: 5px;
-	border: 1px solid rgb(255, 255, 255)
-}
-
-QTableWidget::item:selected {
-    background-color: transparent;
-    color: black;
-    font-weight: normal;
-}
-
-QTableWidget {
-    gridline-color: rgb(176, 176, 176);
-	border: none;
-}
-
-
-QScrollBar:vertical {
-    border: none;
-    background: #f0f0f0;
-    width: 12px;
-    margin: 0px 0px 0px 0px;
-}
-
-QScrollBar::handle:vertical {
-    background: #a9a9a9;
-    min-height: 50px;
-    border: none;
-}
-
-QScrollBar:horizontal {
-    border: none;
-    background: #f0f0f0;
-    height: 12px;
-    margin: 0px 0px 0px 0px;
-}
-
-QScrollBar::handle:horizontal {
-    background: #a9a9a9;
-    min-width: 20px;
-    border: none;
-}
-</string>
-                          </property>
-                          <property name="frameShape">
-                           <enum>QFrame::StyledPanel</enum>
-                          </property>
-                          <property name="frameShadow">
-                           <enum>QFrame::Plain</enum>
-                          </property>
-                          <property name="lineWidth">
-                           <number>1</number>
-                          </property>
-                          <property name="midLineWidth">
-                           <number>0</number>
-                          </property>
-                          <property name="sizeAdjustPolicy">
-                           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-                          </property>
-                          <property name="editTriggers">
-                           <set>QAbstractItemView::NoEditTriggers</set>
-                          </property>
-                          <property name="tabKeyNavigation">
-                           <bool>true</bool>
-                          </property>
-                          <property name="showDropIndicator" stdset="0">
-                           <bool>true</bool>
-                          </property>
-                          <property name="dragEnabled">
-                           <bool>false</bool>
-                          </property>
-                          <property name="showGrid">
-                           <bool>true</bool>
-                          </property>
-                          <property name="gridStyle">
-                           <enum>Qt::SolidLine</enum>
-                          </property>
-                          <property name="rowCount">
-                           <number>17</number>
-                          </property>
-                          <property name="columnCount">
-                           <number>3</number>
-                          </property>
-                          <attribute name="horizontalHeaderVisible">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="horizontalHeaderCascadingSectionResizes">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="horizontalHeaderDefaultSectionSize">
-                           <number>300</number>
-                          </attribute>
-                          <attribute name="horizontalHeaderHighlightSections">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="horizontalHeaderMinimumSectionSize">
-                           <number>220</number>
-                          </attribute>
-                          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="horizontalHeaderStretchLastSection">
-                           <bool>true</bool>
-                          </attribute>
-                          <attribute name="verticalHeaderVisible">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="verticalHeaderCascadingSectionResizes">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="verticalHeaderDefaultSectionSize">
-                           <number>60</number>
-                          </attribute>
-                          <attribute name="verticalHeaderHighlightSections">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="verticalHeaderMinimumSectionSize">
-                           <number>30</number>
-                          </attribute>
-                          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-                           <bool>false</bool>
-                          </attribute>
-                          <attribute name="verticalHeaderStretchLastSection">
-                           <bool>false</bool>
-                          </attribute>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <row/>
-                          <column>
-                           <property name="text">
-                            <string>Mã Khách Hàng</string>
-                           </property>
-                          </column>
-                          <column>
-                           <property name="text">
-                            <string>Tên Khách Hàng</string>
-                           </property>
-                          </column>
-                          <column>
-                           <property name="text">
-                            <string>Số Điện Thoại</string>
-                           </property>
-                          </column>
-                          <item row="0" column="1">
-                           <property name="text">
-                            <string/>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>10</pointsize>
-                            </font>
-                           </property>
-                           <property name="textAlignment">
-                            <set>AlignCenter</set>
-                           </property>
-                          </item>
-                         </widget>
-                        </item>
-                        <item>
                          <widget class="QGroupBox" name="groupBox">
                           <property name="minimumSize">
                            <size>
@@ -2210,6 +2030,19 @@ border: 1px solid #6c757d;</string>
                            </item>
                           </layout>
                          </widget>
+                        </item>
+                        <item>
+                         <spacer name="verticalSpacer">
+                          <property name="orientation">
+                           <enum>Qt::Vertical</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>20</width>
+                            <height>40</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
                       </widget>

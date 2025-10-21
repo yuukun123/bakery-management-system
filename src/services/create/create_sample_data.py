@@ -77,20 +77,20 @@ class CreateSampleData:
         self.connection.commit()
         print("Sample data inserted successfully.")
     def update_element(self):
-        employees_gender = [
-            ("2025-10-14", "251000001"),
-            ("2025-10-10", "251000002"),
-            ("2025-10-9", "251000003"),
-            ("2025-10-12", "251000004"),
-        ]
-
-        for starting_date, emp_id in employees_gender:
-            self.cursor.execute("""
-                UPDATE employees
-                SET starting_date = ?
-                WHERE employee_id = ?
-            """, (starting_date, emp_id))
-        # self.cursor.execute("""ALTER TABLE employees RENAME COLUMN starting to starting_date""")
+        # employees_gender = [
+        #     ("2025-10-14", "251000001"),
+        #     ("2025-10-10", "251000002"),
+        #     ("2025-10-9", "251000003"),
+        #     ("2025-10-12", "251000004"),
+        # ]
+        #
+        # for starting_date, emp_id in employees_gender:
+        #     self.cursor.execute("""
+        #         UPDATE employees
+        #         SET starting_date = ?
+        #         WHERE employee_id = ?
+        #     """, (starting_date, emp_id))
+        self.cursor.execute("""ALTER TABLE invoices ADD COLUMN change_give DECIMAL(10,2)""")
         self.connection.commit()
 
 if __name__ == "__main__":
