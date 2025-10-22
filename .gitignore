@@ -12,9 +12,6 @@ __pycache__/
 .idea/
 .vscode/
 
-# Ignore databases / local files
-src/database/*.db
-
 # Ignore logs
 *.log
 
