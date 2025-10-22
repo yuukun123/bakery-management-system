@@ -14,16 +14,16 @@ class CheckoutController:
         # Lấy các widget con từ trang sản phẩm để tiện truy cập
         # Tên widget phải khớp với tên bạn đặt trong Qt Designer
         self.product_stackedWidget = self.page.findChild(QStackedWidget, 'product_stackedWidget')
-        self.search_customer = self.page.findChild(QToolButton, 'search_customer')
+        self.search_customer = self.page.findChild(QLineEdit, 'search_customer')
         self.customer_name_label = self.page.findChild(QLabel, 'customer_name_label')
         self.customer_phone_label = self.page.findChild(QLabel, 'customer_phone_label')
         self.search_customer_btn = self.page.findChild(QPushButton, 'search_customer_btn')
         self.contain_customer = self.page.findChild(QFrame, 'contain_customer')
         self.contain_customer.hide()
-        self.show_add_customer_btn = self.page.findChild(QToolButton, 'add_customer')
+        self.show_add_customer_btn = self.page.findChild(QToolButton, 'show_add_customer_btn')
         self.customer_name = self.page.findChild(QLineEdit, 'customer_name')
         self.customer_phone = self.page.findChild(QLineEdit, 'customer_phone')
-        self.add_customer = self.page.findChild(QToolButton, 'add_customer')
+        self.add_customer = self.page.findChild(QPushButton, 'add_customer')
         self.pay_bt = self.page.findChild(QToolButton, 'pay_btn')
         self.cancel_btn = self.page.findChild(QToolButton, 'cancel_btn')
 
@@ -42,18 +42,20 @@ class CheckoutController:
         print("DEBUG: Checkout button connected to show_checkout_page.")
         self.show_add_customer_btn.clicked.connect(self.show_add_customer)
         print("DEBUG: Cancel button connected to show_product_selection_page.")
-        self.add_customer.clicked.connect(self.add_customer)
+        self.add_customer.clicked.connect(self.handle_add_customer_infor)
         print("DEBUG: Cancel button connected to show_product_selection_page.")
 
     def search_customer_with_phone(self):
-        customer_phone = self.search_customer
+        customer_phone = self.search_customer.text().strip()
         customers = self.query_data.get_customer_with_phone(customer_phone)
+
+        if not customer_phone:
+            print("DEBUG: Vui lòng nhập số điện thoại khách hàng.")
+            return
+
         if not customers:
             self.contain_customer.show()
-            customer_name = self.customer_name.text()
-            customer_phone = self.customer_phone.text()
-            self.query_data.add_customer(customer_name, customer_phone)
-            self.contain_customer.hide()
+            return
 
         self.customer_name_label.setText(customers[0]['customer_name'])
         self.customer_phone_label.setText(customers[0]['customer_phone'])
@@ -61,11 +63,12 @@ class CheckoutController:
     def show_add_customer(self):
         self.contain_customer.show()
 
-    def add_customer(self):
+    def handle_add_customer_infor(self):
         customer_name = self.customer_name.text()
         customer_phone = self.customer_phone.text()
         self.query_data.add_customer(customer_name, customer_phone)
         self.contain_customer.hide()
+        print("Debug: add customer successful")
 
     def save_invoice(self):
         pass

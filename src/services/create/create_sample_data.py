@@ -5,32 +5,28 @@ class CreateSampleData:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
         script_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # lùi 1 bước về thư mục services
+        # lùi 1 bước về thư muc services
         models_dir = os.path.dirname(script_dir)
-
         # chốt lại thư mục gốc để chứa folder database
         project_root = os.path.dirname(models_dir)
-
         # đường dẫn đầy đủ đến thư mục database
         db_folder = os.path.join(project_root, "database")
-
-        # Và cuối cùng, đường dẫn đầy đủ đến file CSDL
-        db_path = os.path.join(db_folder, "database.db")
-
-        print(f"Thư mục script hiện tại: {script_dir}")
-        print(f"Thư mục gốc của dự án: {project_root}")
-        print(f"Đường dẫn CSDL sẽ được tạo tại: {db_path}")
-
-        # Tạo thư mục 'database' trong thư mục gốc nếu nó chưa tồn tại
         os.makedirs(db_folder, exist_ok=True)
-        print(f"Thư mục '{db_folder}' đã sẵn sàng.")
+        # Và cuối cùng, đường dẫn đầy đủ đến file CSDL
+        self.db_path = os.path.join(db_folder, "database.db")
+        print(f"DEBUG: QueryData initialized. DB path is '{self.db_path}'")
 
-        # Kết nối CSDL
-        self.connection = sqlite3.connect(db_path)
-        self.connection.row_factory = sqlite3.Row  # trả về dạng dict-like thay vì tuple
-        self.cursor = self.connection.cursor()
-        print(f"connect database '{db_path}' successful")
+        # # Kết nối CSDL
+        # self.connection = sqlite3.connect(db_path)
+        # self.connection.row_factory = sqlite3.Row  # trả về dạng dict-like thay vì tuple
+        # self.cursor = self.connection.cursor()
+        # print(f"connect database '{db_path}' successful")
+
+    def _get_connection(self):
+        """Hàm tiện ích để tạo một kết nối mới."""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        return conn
 
     def create_sample_data(self):
         self.cursor.executescript("""
@@ -90,8 +86,25 @@ class CreateSampleData:
         #         SET starting_date = ?
         #         WHERE employee_id = ?
         #     """, (starting_date, emp_id))
-        self.cursor.execute("""ALTER TABLE invoices ADD COLUMN change_give DECIMAL(10,2)""")
-        self.connection.commit()
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("ALTER TABLE customers RENAME TO customers_old;")
+        cursor.execute("""
+        CREATE TABLE customers (
+            customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_name TEXT NOT NULL,
+            customer_phone TEXT UNIQUE NOT NULL
+        );
+        """)
+        cursor.execute("""
+        INSERT INTO customers (customer_id, customer_name, customer_phone)
+        SELECT customer_id, customer_name, customer_phone FROM customers_old;
+        """)
+        cursor.execute("DROP TABLE customers_old;")
+
+        conn.commit()
+        conn.close()
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
