@@ -89,23 +89,26 @@ class CreateSampleData:
         conn = self._get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("ALTER TABLE customers RENAME TO customers_old;")
-        cursor.execute("""
-        CREATE TABLE customers (
-            customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_name TEXT NOT NULL,
-            customer_phone TEXT UNIQUE NOT NULL
-        );
-        """)
-        cursor.execute("""
-        INSERT INTO customers (customer_id, customer_name, customer_phone)
-        SELECT customer_id, customer_name, customer_phone FROM customers_old;
-        """)
-        cursor.execute("DROP TABLE customers_old;")
+        # cursor.execute("ALTER TABLE customers RENAME TO customers_old;")
+        # cursor.execute("""
+        # CREATE TABLE customers (
+        #     customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #     customer_name TEXT NOT NULL,
+        #     customer_phone TEXT UNIQUE NOT NULL
+        # );
+        # """)
+        # cursor.execute("""
+        # INSERT INTO customers (customer_id, customer_name, customer_phone)
+        # SELECT customer_id, customer_name, customer_phone FROM customers_old;
+        # """)
+        # cursor.execute("DROP TABLE customers_old;")
 
-        conn.commit()
-        conn.close()
-
+#         cursor.execute("ALTER TABLE invoices add column invoice_code TEXT NOT NULL UNIQUE")
+#         cursor.execute("ALTER TABLE import_invoices add column invoice_date TEXT NOT NULL UNIQUE")
+#
+#         conn.commit()
+#         conn.close()
+#
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
     # sample.create_sample_data()  # gọi hàm instance
