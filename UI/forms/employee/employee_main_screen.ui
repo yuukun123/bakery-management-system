@@ -860,6 +860,64 @@ background-color: #a2d2ff;</string>
                      </property>
                     </widget>
                    </item>
+                   <item>
+                    <widget class="QToolButton" name="inventory_btn">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>12</pointsize>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#inventory_btn{
+	border: 0px solid rgb(138, 138, 138);
+	border-radius: none;
+	background-color: none;
+}
+
+#inventory_btn:hover{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#inventory_btn:pressed{
+	background-color: rgb(7, 170, 7);
+	color: rgb(255, 255, 255);
+}
+
+#inventory_btn:checked{
+	background-color: #0077b6;
+	color: rgb(255, 255, 255)
+}
+
+#inventory_btn::hover:checked{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#inventory_btn:pressed:checked{
+	background-color: #rgb(7, 170, 7);
+	color: rgb(255, 255, 255)
+}</string>
+                     </property>
+                     <property name="text">
+                      <string>Tồn Kho</string>
+                     </property>
+                    </widget>
+                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -1935,7 +1993,7 @@ background-color: #3a5a40;
                           <property name="minimumSize">
                            <size>
                             <width>0</width>
-                            <height>100</height>
+                            <height>150</height>
                            </size>
                           </property>
                           <property name="maximumSize">
@@ -1979,10 +2037,7 @@ QGroupBox::title {
                           <property name="checkable">
                            <bool>false</bool>
                           </property>
-                          <layout class="QHBoxLayout" name="horizontalLayout_19">
-                           <property name="spacing">
-                            <number>25</number>
-                           </property>
+                          <layout class="QGridLayout" name="gridLayout_2">
                            <property name="leftMargin">
                             <number>11</number>
                            </property>
@@ -1992,7 +2047,7 @@ QGroupBox::title {
                            <property name="bottomMargin">
                             <number>20</number>
                            </property>
-                           <item>
+                           <item row="1" column="0">
                             <widget class="QLabel" name="customer_name_label">
                              <property name="font">
                               <font>
@@ -2006,14 +2061,35 @@ QGroupBox::title {
 border: 1px solid #6c757d;</string>
                              </property>
                              <property name="text">
-                              <string>sgsgsdgsgs</string>
+                              <string/>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignCenter</set>
                              </property>
                             </widget>
                            </item>
-                           <item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_4">
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>35</height>
+                              </size>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <pointsize>10</pointsize>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">border: none;</string>
+                             </property>
+                             <property name="text">
+                              <string>Tên khách hàng</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="1">
                             <widget class="QLabel" name="customer_phone_label">
                              <property name="font">
                               <font>
@@ -2027,10 +2103,31 @@ border: 1px solid #6c757d;</string>
 border: 1px solid #6c757d;</string>
                              </property>
                              <property name="text">
-                              <string>sgsgsdgsgs</string>
+                              <string/>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignCenter</set>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="1">
+                            <widget class="QLabel" name="label_14">
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>35</height>
+                              </size>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <pointsize>10</pointsize>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">border: none;</string>
+                             </property>
+                             <property name="text">
+                              <string>Số điện thoại</string>
                              </property>
                             </widget>
                            </item>
@@ -2314,6 +2411,9 @@ padding: 5 10px;
                                 <property name="readOnly">
                                  <bool>true</bool>
                                 </property>
+                                <property name="placeholderText">
+                                 <string>0</string>
+                                </property>
                                </widget>
                               </item>
                               <item>
@@ -2449,13 +2549,17 @@ color: #d00000;</string>
                                  </font>
                                 </property>
                                 <property name="styleSheet">
-                                 <string notr="true">border: 1px solid #6c757d;</string>
+                                 <string notr="true">border: 1px solid #6c757d;
+padding: 5 10px;</string>
                                 </property>
                                 <property name="cursorPosition">
                                  <number>0</number>
                                 </property>
                                 <property name="readOnly">
                                  <bool>true</bool>
+                                </property>
+                                <property name="placeholderText">
+                                 <string>0</string>
                                 </property>
                                </widget>
                               </item>
@@ -3103,7 +3207,7 @@ QComboBox::down-arrow {
                              </item>
                              <item>
                               <property name="text">
-                               <string>Chuyển khoảng</string>
+                               <string>Chuyển khoản</string>
                               </property>
                              </item>
                             </widget>

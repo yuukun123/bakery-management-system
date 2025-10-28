@@ -80,6 +80,7 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS invoices (
             invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_code TEXT NOT NULL UNIQUE,
             invoice_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
             employee_id INTEGER NOT NULL,
@@ -108,6 +109,7 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS import_invoice (
             import_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_date TEXT NOT NULL UNIQUE,
             employee_id INTEGER NOT NULL,
             import_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),

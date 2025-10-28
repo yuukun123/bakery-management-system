@@ -33,6 +33,7 @@ class EmployeeMainWindow(QMainWindow):
         if not self._employee_context:
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{self.employee_id}'.")
             return
+
         employee_name = self._employee_context.get('employee_name') if self._employee_context else 'Unknown'
         employee_role = self._employee_role.get('role') if self._employee_role else 'Unknown'
 
@@ -81,6 +82,10 @@ class EmployeeMainWindow(QMainWindow):
         if self.stackedWidget.currentWidget() == self.product_page:
             self.on_tab_changed(self.stackedWidget.currentIndex())
         self.on_tab_changed(self.stackedWidget.currentIndex())
+
+    def get_employee_context(self):
+        """Get the employee context data."""
+        return self._employee_context
 
     def load_employee_context(self, employee_id):
         print(f"DEBUG: Đang tải user context cho employee id: {employee_id}")

@@ -72,6 +72,7 @@ class CreateSampleData:
             """)
         self.connection.commit()
         print("Sample data inserted successfully.")
+
     def update_element(self):
         # employees_gender = [
         #     ("2025-10-14", "251000001"),
@@ -103,13 +104,75 @@ class CreateSampleData:
         # """)
         # cursor.execute("DROP TABLE customers_old;")
 
+        # try:
+        #     print("Đã kết nối tới database.")
+        #     print("Bắt đầu quá trình sửa lại bảng 'invoices' để thêm DEFAULT cho invoice_date...")
+        #
+        #     cursor.execute("BEGIN TRANSACTION;")
+        #     cursor.execute("PRAGMA foreign_keys=OFF;")
+        #
+        #     # TẠO BẢNG MỚI VỚI CẤU TRÚC ĐÚNG
+        #     print(" -> Bước 1: Tạo bảng mới 'invoices_new'...")
+        #     cursor.execute("""
+        #             CREATE TABLE invoices_new (
+        #                 invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #                 invoice_code TEXT NOT NULL UNIQUE,
+        #                 invoice_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        #                 total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
+        #                 employee_id INTEGER NOT NULL,
+        #                 customer_id INTEGER NOT NULL,
+        #                 payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản')),
+        #                 cash_received TEXT not null,
+        #                 change_given TEXT not null,
+        #                 FOREIGN KEY(employee_id) REFERENCES employees(employee_id),
+        #                 FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
+        #             )
+        #         """)
+        #
+        #     # SAO CHÉP DỮ LIỆU TỪ BẢNG CŨ SANG BẢNG MỚI
+        #     print(" -> Bước 2: Sao chép dữ liệu từ 'invoices' sang 'invoices_new'...")
+        #     # Lấy tất cả các cột từ bảng cũ
+        #     cursor.execute("""
+        #             INSERT INTO invoices_new (
+        #                 invoice_id, invoice_code, invoice_date, total_amount, payment_method,
+        #                 cash_received, change_given, employee_id, customer_id
+        #             )
+        #             SELECT
+        #                 invoice_id, invoice_code, invoice_date, total_amount, payment_method,
+        #                 cash_received, change_given, employee_id, customer_id
+        #             FROM invoices;
+        #         """)
+        #
+        #     # XÓA BẢNG CŨ VÀ ĐỔI TÊN BẢNG MỚI
+        #     print(" -> Bước 3: Xóa bảng cũ 'invoices' và đổi tên bảng mới...")
+        #     cursor.execute("DROP TABLE invoices;")
+        #     cursor.execute("ALTER TABLE invoices_new RENAME TO invoices;")
+        #
+        #     conn.commit()
+        #     print("\nGiao dịch thành công! Bảng 'invoices' đã được cập nhật với cấu trúc đúng.")
+        #
+        # except sqlite3.Error as e:
+        #     print(f"\nCó lỗi xảy ra: {e}")
+        #     if conn:
+        #         conn.rollback()
+        # finally:
+        #     if conn:
+        #         cursor.execute("PRAGMA foreign_keys=ON;")
+        #         conn.close()
+        #         print("Đã đóng kết nối database.")
+
         # cursor.execute("ALTER TABLE invoices add column cash_received TEXT")
         # cursor.execute("ALTER TABLE invoices add column change_given TEXT")
         # cursor.execute("ALTER TABLE invoices add column payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản'))")
-#
+
+        # cursor.execute(
+        #    """INSERT OR REPLACE INTO customers (customer_id, customer_name, customer_phone)
+        #     VALUES (1, 'Khách vãng lai', 'N/A')
+        # """)
+
         conn.commit()
         conn.close()
-#
+
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
     # sample.create_sample_data()  # gọi hàm instance
