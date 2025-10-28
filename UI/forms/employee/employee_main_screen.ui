@@ -910,7 +910,7 @@ background-color: #a2d2ff;</string>
                     <string notr="true">border: 0px solid rgb(2, 2, 2)</string>
                    </property>
                    <property name="currentIndex">
-                    <number>0</number>
+                    <number>1</number>
                    </property>
                    <widget class="QWidget" name="product_list">
                     <property name="styleSheet">
@@ -1881,8 +1881,14 @@ border-radius: 10px;
 padding: 5 5px;
 }</string>
                              </property>
+                             <property name="inputMethodHints">
+                              <set>Qt::ImhHiddenText|Qt::ImhPreferNumbers</set>
+                             </property>
                              <property name="placeholderText">
                               <string>Số điện thoại</string>
+                             </property>
+                             <property name="clearButtonEnabled">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
