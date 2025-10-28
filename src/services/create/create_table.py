@@ -84,6 +84,9 @@ def create_table():
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
             employee_id INTEGER NOT NULL,
             customer_id INTEGER NOT NULL,
+            payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản')),
+            cash_received TEXT not null,
+            change_given TEXT not null,
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id),
             FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
         )

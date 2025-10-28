@@ -2,23 +2,26 @@ import re
 
 def is_valid_phone_number(phone_number: str) -> bool:
     """
-    Kiểm tra xem một chuỗi có phải là số điện thoại hợp lệ của Việt Nam hay không.
-    Chấp nhận các SĐT 10 số, bắt đầu bằng đầu số 0.
-
-    Args:
-        phone_number (str): Chuỗi số điện thoại cần kiểm tra.
-
-    Returns:
-        bool: True nếu hợp lệ, False nếu không hợp lệ.
+    Kiểm tra số điện thoại VN 10 chữ số hợp lệ.
+    - Bắt đầu bằng 0 và có 10 chữ số tổng cộng.
+    - Bắt đầu bằng một trong các đầu số phổ biến: 03,05,07,08,09.
+    - Loại trừ chuỗi toàn '0' như '0000000000'.
     """
     if not phone_number or not isinstance(phone_number, str):
         return False
 
-    # Regex cho SĐT Việt Nam 10 số (bắt đầu bằng 0, theo sau là 9 chữ số)
-    # Ví dụ: 0912345678, 0398765432, ...
-    pattern = r'^0\d{9}$'
+    phone = phone_number.strip()
 
-    if re.match(pattern, phone_number):
-        return True
-    else:
+    # Loại trừ chuỗi toàn 0
+    if phone == "0" * 10:
         return False
+
+    if len(phone) != 10:
+        return False
+
+    if not phone.startswith("0"):
+        return False
+
+    # Regex: bắt đầu bằng 03|05|07|08|09 + 8 chữ số nữa (tổng 10 chữ số)
+    pattern = r'^(03|05|07|08|09)\d{8}$'
+    return bool(re.match(pattern, phone))

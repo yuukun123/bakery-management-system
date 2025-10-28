@@ -103,11 +103,12 @@ class CreateSampleData:
         # """)
         # cursor.execute("DROP TABLE customers_old;")
 
-#         cursor.execute("ALTER TABLE invoices add column invoice_code TEXT NOT NULL UNIQUE")
-#         cursor.execute("ALTER TABLE import_invoices add column invoice_date TEXT NOT NULL UNIQUE")
+        # cursor.execute("ALTER TABLE invoices add column cash_received TEXT")
+        # cursor.execute("ALTER TABLE invoices add column change_given TEXT")
+        # cursor.execute("ALTER TABLE invoices add column payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản'))")
 #
-#         conn.commit()
-#         conn.close()
+        conn.commit()
+        conn.close()
 #
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
