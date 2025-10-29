@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1400</width>
+    <width>1571</width>
     <height>840</height>
    </rect>
   </property>
@@ -860,6 +860,64 @@ background-color: #a2d2ff;</string>
                      </property>
                     </widget>
                    </item>
+                   <item>
+                    <widget class="QToolButton" name="inventory_btn">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>12</pointsize>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#inventory_btn{
+	border: 0px solid rgb(138, 138, 138);
+	border-radius: none;
+	background-color: none;
+}
+
+#inventory_btn:hover{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#inventory_btn:pressed{
+	background-color: rgb(7, 170, 7);
+	color: rgb(255, 255, 255);
+}
+
+#inventory_btn:checked{
+	background-color: #0077b6;
+	color: rgb(255, 255, 255)
+}
+
+#inventory_btn::hover:checked{
+	background-color: #adb5bd;
+	color: rgb(255, 255, 255)
+}
+
+#inventory_btn:pressed:checked{
+	background-color: #rgb(7, 170, 7);
+	color: rgb(255, 255, 255)
+}</string>
+                     </property>
+                     <property name="text">
+                      <string>Tồn Kho</string>
+                     </property>
+                    </widget>
+                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -1160,7 +1218,7 @@ border-radius: 10px</string>
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>450</width>
+                         <width>470</width>
                          <height>0</height>
                         </size>
                        </property>
@@ -1251,7 +1309,7 @@ color: rgb(255, 255, 255)</string>
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>407</width>
+                             <width>427</width>
                              <height>16</height>
                             </rect>
                            </property>
@@ -1287,7 +1345,7 @@ color: rgb(255, 255, 255)</string>
                                 <number>0</number>
                                </property>
                                <property name="topMargin">
-                                <number>11</number>
+                                <number>15</number>
                                </property>
                                <property name="rightMargin">
                                 <number>0</number>
@@ -1478,7 +1536,7 @@ color: rgb(255, 255, 255)</string>
                    </widget>
                    <widget class="QWidget" name="checkout_page">
                     <property name="styleSheet">
-                     <string notr="true">#payment_method{
+                     <string notr="true">#checkout_page{
 border: 1px solid rgb(0, 0, 0);
 }</string>
                     </property>
@@ -1881,8 +1939,14 @@ border-radius: 10px;
 padding: 5 5px;
 }</string>
                              </property>
+                             <property name="inputMethodHints">
+                              <set>Qt::ImhNone</set>
+                             </property>
                              <property name="placeholderText">
                               <string>Số điện thoại</string>
+                             </property>
+                             <property name="clearButtonEnabled">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -1929,7 +1993,7 @@ background-color: #3a5a40;
                           <property name="minimumSize">
                            <size>
                             <width>0</width>
-                            <height>100</height>
+                            <height>150</height>
                            </size>
                           </property>
                           <property name="maximumSize">
@@ -1973,10 +2037,7 @@ QGroupBox::title {
                           <property name="checkable">
                            <bool>false</bool>
                           </property>
-                          <layout class="QHBoxLayout" name="horizontalLayout_19">
-                           <property name="spacing">
-                            <number>25</number>
-                           </property>
+                          <layout class="QGridLayout" name="gridLayout_2">
                            <property name="leftMargin">
                             <number>11</number>
                            </property>
@@ -1986,7 +2047,7 @@ QGroupBox::title {
                            <property name="bottomMargin">
                             <number>20</number>
                            </property>
-                           <item>
+                           <item row="1" column="0">
                             <widget class="QLabel" name="customer_name_label">
                              <property name="font">
                               <font>
@@ -2000,14 +2061,35 @@ QGroupBox::title {
 border: 1px solid #6c757d;</string>
                              </property>
                              <property name="text">
-                              <string>sgsgsdgsgs</string>
+                              <string/>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignCenter</set>
                              </property>
                             </widget>
                            </item>
-                           <item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_4">
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>35</height>
+                              </size>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <pointsize>10</pointsize>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">border: none;</string>
+                             </property>
+                             <property name="text">
+                              <string>Tên khách hàng</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="1">
                             <widget class="QLabel" name="customer_phone_label">
                              <property name="font">
                               <font>
@@ -2021,10 +2103,31 @@ border: 1px solid #6c757d;</string>
 border: 1px solid #6c757d;</string>
                              </property>
                              <property name="text">
-                              <string>sgsgsdgsgs</string>
+                              <string/>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignCenter</set>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="1">
+                            <widget class="QLabel" name="label_14">
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>35</height>
+                              </size>
+                             </property>
+                             <property name="font">
+                              <font>
+                               <pointsize>10</pointsize>
+                              </font>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">border: none;</string>
+                             </property>
+                             <property name="text">
+                              <string>Số điện thoại</string>
                              </property>
                             </widget>
                            </item>
@@ -2049,9 +2152,21 @@ border: 1px solid #6c757d;</string>
                      </item>
                      <item>
                       <widget class="QFrame" name="frame_29">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>800</width>
+                         <height>0</height>
+                        </size>
+                       </property>
                        <property name="maximumSize">
                         <size>
-                         <width>680</width>
+                         <width>800</width>
                          <height>16777215</height>
                         </size>
                        </property>
@@ -2119,11 +2234,11 @@ border: 1px solid #6c757d;</string>
                            <property name="bottomMargin">
                             <number>0</number>
                            </property>
-                           <item>
+                           <item alignment="Qt::AlignHCenter">
                             <widget class="QLabel" name="label_5">
                              <property name="minimumSize">
                               <size>
-                               <width>0</width>
+                               <width>300</width>
                                <height>40</height>
                               </size>
                              </property>
@@ -2224,31 +2339,13 @@ color: rgb(255, 255, 255)</string>
                                <number>0</number>
                               </property>
                               <item>
-                               <widget class="QLabel" name="label_6">
+                               <widget class="QFrame" name="frame_35">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                                   <horstretch>0</horstretch>
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
-                                <property name="font">
-                                 <font>
-                                  <pointsize>13</pointsize>
-                                  <weight>75</weight>
-                                  <bold>true</bold>
-                                 </font>
-                                </property>
-                                <property name="styleSheet">
-                                 <string notr="true">border: none;
-color: #52b69a;</string>
-                                </property>
-                                <property name="text">
-                                 <string>Tiền nhận</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item>
-                               <widget class="QFrame" name="frame_35">
                                 <property name="styleSheet">
                                  <string notr="true">border: none;</string>
                                 </property>
@@ -2260,59 +2357,89 @@ color: #52b69a;</string>
                                 </property>
                                 <layout class="QHBoxLayout" name="horizontalLayout_16">
                                  <item>
-                                  <widget class="QLineEdit" name="input_money">
+                                  <widget class="QLabel" name="label_6">
                                    <property name="sizePolicy">
-                                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                                      <horstretch>0</horstretch>
                                      <verstretch>0</verstretch>
                                     </sizepolicy>
                                    </property>
-                                   <property name="minimumSize">
-                                    <size>
-                                     <width>0</width>
-                                     <height>45</height>
-                                    </size>
-                                   </property>
                                    <property name="font">
                                     <font>
-                                     <pointsize>15</pointsize>
-                                    </font>
-                                   </property>
-                                   <property name="styleSheet">
-                                    <string notr="true">#input_money{
-border: 1px solid #6c757d;
-padding: 5 10px;
-}</string>
-                                   </property>
-                                  </widget>
-                                 </item>
-                                 <item>
-                                  <widget class="QLabel" name="label_8">
-                                   <property name="maximumSize">
-                                    <size>
-                                     <width>60</width>
-                                     <height>16777215</height>
-                                    </size>
-                                   </property>
-                                   <property name="font">
-                                    <font>
-                                     <pointsize>15</pointsize>
+                                     <pointsize>13</pointsize>
                                      <weight>75</weight>
                                      <bold>true</bold>
                                     </font>
                                    </property>
                                    <property name="styleSheet">
-                                    <string notr="true">border: none;</string>
+                                    <string notr="true">border: none;
+color: #52b69a;</string>
                                    </property>
                                    <property name="text">
-                                    <string>VND</string>
-                                   </property>
-                                   <property name="alignment">
-                                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                    <string>Tiền nhận</string>
                                    </property>
                                   </widget>
                                  </item>
                                 </layout>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLineEdit" name="cash_received_input">
+                                <property name="sizePolicy">
+                                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                                  <horstretch>0</horstretch>
+                                  <verstretch>0</verstretch>
+                                 </sizepolicy>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>45</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <pointsize>15</pointsize>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">#cash_received_input{
+border: 1px solid #6c757d;
+padding: 5 10px;
+}</string>
+                                </property>
+                                <property name="readOnly">
+                                 <bool>true</bool>
+                                </property>
+                                <property name="placeholderText">
+                                 <string>0</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_8">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <pointsize>15</pointsize>
+                                  <weight>75</weight>
+                                  <bold>true</bold>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">border: none;</string>
+                                </property>
+                                <property name="text">
+                                 <string>VND</string>
+                                </property>
+                                <property name="alignment">
+                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                </property>
                                </widget>
                               </item>
                              </layout>
@@ -2343,7 +2470,7 @@ padding: 5 10px;
                              </property>
                              <layout class="QHBoxLayout" name="horizontalLayout_14">
                               <property name="spacing">
-                               <number>22</number>
+                               <number>10</number>
                               </property>
                               <property name="topMargin">
                                <number>0</number>
@@ -2352,31 +2479,13 @@ padding: 5 10px;
                                <number>0</number>
                               </property>
                               <item>
-                               <widget class="QLabel" name="label_7">
+                               <widget class="QFrame" name="frame_36">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                                   <horstretch>0</horstretch>
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
-                                <property name="font">
-                                 <font>
-                                  <pointsize>13</pointsize>
-                                  <weight>75</weight>
-                                  <bold>true</bold>
-                                 </font>
-                                </property>
-                                <property name="styleSheet">
-                                 <string notr="true">border: none;
-color: #d00000;</string>
-                                </property>
-                                <property name="text">
-                                 <string>Tiền thối</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item>
-                               <widget class="QFrame" name="frame_36">
                                 <property name="styleSheet">
                                  <string notr="true">border: none;</string>
                                 </property>
@@ -2387,60 +2496,94 @@ color: #d00000;</string>
                                  <enum>QFrame::Raised</enum>
                                 </property>
                                 <layout class="QHBoxLayout" name="horizontalLayout_17">
+                                 <property name="rightMargin">
+                                  <number>22</number>
+                                 </property>
+                                 <property name="bottomMargin">
+                                  <number>11</number>
+                                 </property>
                                  <item>
-                                  <widget class="QLineEdit" name="change">
+                                  <widget class="QLabel" name="label_7">
                                    <property name="sizePolicy">
-                                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                                      <horstretch>0</horstretch>
                                      <verstretch>0</verstretch>
                                     </sizepolicy>
                                    </property>
-                                   <property name="minimumSize">
-                                    <size>
-                                     <width>0</width>
-                                     <height>45</height>
-                                    </size>
-                                   </property>
                                    <property name="font">
                                     <font>
-                                     <pointsize>15</pointsize>
-                                    </font>
-                                   </property>
-                                   <property name="styleSheet">
-                                    <string notr="true">border: 1px solid #6c757d;</string>
-                                   </property>
-                                   <property name="cursorPosition">
-                                    <number>0</number>
-                                   </property>
-                                   <property name="readOnly">
-                                    <bool>true</bool>
-                                   </property>
-                                  </widget>
-                                 </item>
-                                 <item>
-                                  <widget class="QLabel" name="label_9">
-                                   <property name="maximumSize">
-                                    <size>
-                                     <width>60</width>
-                                     <height>16777215</height>
-                                    </size>
-                                   </property>
-                                   <property name="font">
-                                    <font>
-                                     <pointsize>15</pointsize>
+                                     <pointsize>13</pointsize>
                                      <weight>75</weight>
                                      <bold>true</bold>
                                     </font>
                                    </property>
                                    <property name="styleSheet">
-                                    <string notr="true">border: none;</string>
+                                    <string notr="true">border: none;
+color: #d00000;</string>
                                    </property>
                                    <property name="text">
-                                    <string>VND</string>
+                                    <string>Tiền thối</string>
                                    </property>
                                   </widget>
                                  </item>
                                 </layout>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLineEdit" name="cash_change">
+                                <property name="sizePolicy">
+                                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                                  <horstretch>0</horstretch>
+                                  <verstretch>0</verstretch>
+                                 </sizepolicy>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>45</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <pointsize>15</pointsize>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">border: 1px solid #6c757d;
+padding: 5 10px;</string>
+                                </property>
+                                <property name="cursorPosition">
+                                 <number>0</number>
+                                </property>
+                                <property name="readOnly">
+                                 <bool>true</bool>
+                                </property>
+                                <property name="placeholderText">
+                                 <string>0</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QLabel" name="label_9">
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>60</width>
+                                  <height>16777215</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <pointsize>15</pointsize>
+                                  <weight>75</weight>
+                                  <bold>true</bold>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">border: none;</string>
+                                </property>
+                                <property name="text">
+                                 <string>VND</string>
+                                </property>
                                </widget>
                               </item>
                              </layout>
@@ -3064,7 +3207,7 @@ QComboBox::down-arrow {
                              </item>
                              <item>
                               <property name="text">
-                               <string>Chuyển khoảng</string>
+                               <string>Chuyển khoản</string>
                               </property>
                              </item>
                             </widget>

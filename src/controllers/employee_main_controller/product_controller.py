@@ -222,3 +222,24 @@ class ProductController:
         self.update_total_bill()  # Tính lại tổng tiền
         print(f"DEBUG: [Controller] Removed item '{product_data.get('product_name')}'")
         self.update_checkout_button_state()
+
+    def clear_order_display(self):
+        """
+        Xóa tất cả các widget ItemCard khỏi giao diện và reset lại bản đồ ánh xạ.
+        Hàm này được gọi từ CheckoutController sau khi thanh toán thành công.
+        """
+        print("DEBUG: [ProductController] Clearing order display...")
+
+        # Xóa tất cả các widget khỏi bản đồ ánh xạ
+        # Lặp qua một bản copy của các keys để có thể xóa item trong dictionary gốc
+        for product_id in list(self.item_card_widgets.keys()):
+            card_to_remove = self.item_card_widgets.pop(product_id)
+            if card_to_remove:
+                # Xóa widget khỏi layout và bộ nhớ
+                self.order_list_layout.removeWidget(card_to_remove)
+                card_to_remove.deleteLater()
+
+        # Đảm bảo dictionary rỗng sau khi xóa
+        self.item_card_widgets.clear()
+
+        print("DEBUG: [ProductController] Order display cleared.")
