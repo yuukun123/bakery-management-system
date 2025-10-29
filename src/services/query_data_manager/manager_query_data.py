@@ -61,7 +61,7 @@ class QueryData:
         return new_id
 
     # SỬA LỖI 2: Thêm 'self' và bỏ tham số 'db_path'
-    def add_new_employee(self, name, password_hash, email, phone, address, role):
+    def add_new_employee(self,data):
         """
         Hàm an toàn để thêm một nhân viên mới với ID tự tạo (định dạng YYMMNNNNN).
         """
@@ -79,16 +79,16 @@ class QueryData:
 
             # Insert nhân viên mới
             insert_query = """
-                INSERT INTO employees (employee_id, employee_name, password_hash, email, phone, address, role)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO employees (employee_id, employee_name, password_hash, email, phone, address, role, starting_date, end_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            employee_data = (new_employee_id, name, password_hash, email, phone, address, role)
+            employee_data = (new_employee_id, data["name"], data["password"], data["email"], data["phoneNumber"], data["address"], data["role"], data["startDate"], data["endDate"])
             cursor.execute(insert_query, employee_data)
 
             # Commit transaction
             conn.commit()
-            print(f"Successfully added employee {name} with ID {new_employee_id}.")
-            return True, new_employee_id  # Trả về cả ID để có thể dùng sau này
+            print(f"Successfully added employee {data["name"]} with ID {new_employee_id}.")
+            return True # Trả về cả ID để có thể dùng sau này
 
         except sqlite3.Error as e:
             if conn:
@@ -120,4 +120,30 @@ class QueryData:
         except sqlite3.Error as e:
             print(f"Database error in get_data_product: {e}")
             return None
+    def check_mail_exists(self, email):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("select count(*) from employees where email = ?",(email,))
+            result = cursor.fetchone()
+            if result and result[0] > 0:
+                return True
+            else:
+                return False
+        except sqlite3.Error as e:
+            print(f"Database error in check_email_exists: {e}")
+            return None
 
+    def check_phone_exists(self, phone):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("select count(*) from employees where phone = ?",(phone,))
+            result = cursor.fetchone()
+            if result and result[0] > 0:
+                return True
+            else:
+                return False
+        except sqlite3.Error as e:
+            print(f"Database error in check_phone_exists: {e}")
+            return None

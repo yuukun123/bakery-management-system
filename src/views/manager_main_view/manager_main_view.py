@@ -39,10 +39,10 @@ class ManagerMainWindow(QMainWindow):
         self.load_employee_context(self.employee_id)
 
         self.set_default_stack(0, self.employee_btn)
-        self.employee_btn.clicked.connect(lambda: self.switch_stack(0, self.employee_btn))
-        self.product_btn.clicked.connect(lambda: self.switch_stack(1, self.product_btn))
-        self.import_invoice_btn.clicked.connect(lambda: self.switch_stack(2, self.import_invoice_btn))
-        self.statistical_btn.clicked.connect(lambda: self.switch_stack(3, self.statistical_btn))
+        self.employee_btn.clicked.connect(lambda: self.handle_nav_click(0, self.employee_btn))
+        self.product_btn.clicked.connect(lambda: self.handle_nav_click(1, self.product_btn))
+        self.import_invoice_btn.clicked.connect(lambda: self.handle_nav_click(2, self.import_invoice_btn))
+        self.statistical_btn.clicked.connect(lambda: self.handle_nav_click(3, self.statistical_btn))
 
         if not self._employee_context:
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{self.employee_id}'.")
@@ -104,3 +104,11 @@ class ManagerMainWindow(QMainWindow):
     def setup_views(self):
         self.employee_view = EmployeeViewWidget(self)
         self.product_view = ProductViewWidget(self)
+
+    def handle_nav_click(self, index, button):
+        self.switch_stack(index, button)
+        # Nếu có bảng nhân sự thì clear
+        if index == 0 and hasattr(self.employee_view, "employee_tableWidget"):
+            self.employee_view.employee_tableWidget.clearSelection()
+        if index == 1 and hasattr(self.product_view, "product_tableWidget"):
+            self.product_view.product_tableWidget.clearSelection()
