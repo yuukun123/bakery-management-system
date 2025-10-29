@@ -72,8 +72,8 @@ def create_table():
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_name TEXT NOT NULL,
             customer_phone TEXT NOT NULL UNIQUE,
-            customer_address TEXT NOT NULL,
-            customer_email TEXT NOT NULL UNIQUE
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Vẫn OK ở đây
+            updated_at DATETIME
         )
     """)
 
