@@ -771,7 +771,7 @@ background-color: #a2d2ff;</string>
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="employee_page">
                 <property name="styleSheet">
@@ -888,11 +888,7 @@ background-color: #a2d2ff;</string>
 </string>
                          </property>
                          <property name="text">
-                          <string>Xóa</string>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="../../../resources/resources.qrc">
-                           <normaloff>:/UI/icons/delete.ico</normaloff>:/UI/icons/delete.ico</iconset>
+                          <string>Nghỉ việc</string>
                          </property>
                         </widget>
                        </item>

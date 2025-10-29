@@ -663,12 +663,12 @@ QComboBox#status_comboBox::down-arrow {
                  </property>
                  <item>
                   <property name="text">
-                   <string>Đang làm việc</string>
+                   <string>active</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>Đã nghỉ việc</string>
+                   <string>inactive</string>
                   </property>
                  </item>
                 </widget>

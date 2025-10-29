@@ -5,7 +5,7 @@ from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QToolButton, QStackedWidget, QLabel, QPushButton, QFrame, QLineEdit, QMessageBox, QComboBox
 
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
-from src.utils.employee_tab.validators import is_valid_phone_number
+from src.utils.validators import is_valid_phone_number
 
 class CheckoutController:
     def __init__(self, ui_page, main_window, order_service):

@@ -1,8 +1,9 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QAbstractScrollArea
-
+from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QAbstractItemView, QHeaderView, QAbstractScrollArea, QDialog, \
+    QMessageBox
 from src.services.query_data_manager.manager_query_data import QueryData
+from src.controllers.manager_main_controller.employee_controller import open_add_employee_dialog
 
 class EmployeeViewWidget(QWidget):
     def __init__(self, parent=None):
@@ -11,6 +12,11 @@ class EmployeeViewWidget(QWidget):
         self.employee_tableWidget = parent.employee_tableWidget
         self.delete_employee_btn = parent.delete_employee_btn
         self.update_employee_btn = parent.update_employee_btn
+        self.add_employee_btn = parent.add_employee_btn
+
+        self.parent().installEventFilter(self)
+
+        self.add_employee_btn.clicked.connect(lambda: open_add_employee_dialog(parent))
 
         # Khởi tạo các service cần thiết
         self.query_data = QueryData()
@@ -58,3 +64,16 @@ class EmployeeViewWidget(QWidget):
         is_selection_non_empty = bool(selected_rows)
         self.delete_employee_btn.setEnabled(is_selection_non_empty)
         self.update_employee_btn.setEnabled(is_selection_non_empty)
+
+    def eventFilter(self, obj, event):
+        table = self.employee_tableWidget
+        if obj == self.parent() and event.type() == QEvent.MouseButtonPress:
+            mapped_pos = self.mapFromParent(event.pos())
+            table_rect = table.geometry()
+
+            # Nếu click ngoài bảng -> bỏ chọn
+            if not table_rect.contains(mapped_pos):
+                table.clearSelection()
+
+        return super().eventFilter(obj, event)
+
