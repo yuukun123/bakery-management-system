@@ -101,7 +101,7 @@ class CreateSampleData:
         INSERT INTO customers (customer_id, customer_name, customer_phone)
         SELECT customer_id, customer_name, customer_phone FROM customers_old;
         """)
-        cursor.execute("DROP TABLE customers_old;")
+        cursor.execute("DROP TABLE customers_old;") 
 
         conn.commit()
         conn.close()
