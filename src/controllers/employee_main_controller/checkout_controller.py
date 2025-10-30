@@ -18,6 +18,7 @@ class CheckoutController:
         self.product_stackedWidget = self.page.findChild(QStackedWidget, 'product_stackedWidget')
         self.search_customer = self.page.findChild(QLineEdit, 'search_customer')
         self.customer_name_label = self.page.findChild(QLabel, 'customer_name_label')
+        self.customer_name_label.setText("Khách vãng lai")
         self.customer_phone_label = self.page.findChild(QLabel, 'customer_phone_label')
         self.search_customer_btn = self.page.findChild(QPushButton, 'search_customer_btn')
         self.contain_customer = self.page.findChild(QFrame, 'contain_customer')
@@ -290,8 +291,10 @@ class CheckoutController:
         """Dọn dẹp giao diện sau khi thanh toán thành công."""
         # Xóa thông tin khách hàng
         self.search_customer.clear()
-        self.customer_name_label.setText("Khách vãng lai")
+        self.customer_name_label.setText("")
         self.customer_phone_label.setText("")
+        self.customer_name.clear()
+        self.customer_phone.clear()
         self.contain_customer.hide()
 
         # Xóa thông tin thanh toán

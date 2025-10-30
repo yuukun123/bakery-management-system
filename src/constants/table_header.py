@@ -5,12 +5,10 @@ CUSTOMER_HEADER = [
 ]
 
 INVOICE_HEADER = [
-    "Invoice ID",
-    "Invoice Date",
-    "Total Amount",
-    "Employee ID",
-    "Customer ID",
-    "Payment Method",
-    "Cash Received",
-    "Change Given",
+    "Mã hóa đơn",
+    "Ngày tạo",
+    "Tên nhân viên",
+    "Tên khách hàng",
+    "Phương thức thanh toán",
+    "Tổng tiền"
 ]

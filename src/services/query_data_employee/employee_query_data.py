@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from datetime import datetime
+from datetime import datetime, time
 
 
 class EmployeeQueryData:
@@ -281,11 +281,12 @@ class EmployeeQueryData:
         cursor = conn.cursor()
         try:
             sql = """
-                SELECT invoice_code, invoice_date, 
-                        total_amount, employee_id, 
-                        customer_id, payment_method, 
-                        cash_received, change_given 
-                        FROM invoices
+                SELECT i.invoice_code, i.invoice_date, 
+                e.employee_name, c.customer_name, 
+                i.payment_method, i.total_amount 
+                FROM 'invoices' i, 'employees' e, 'customers' c 
+                where i.employee_id = e.employee_id 
+                and i.customer_id = c.customer_id 
             """
             cursor.execute(sql)
             conn.commit()
@@ -301,6 +302,72 @@ class EmployeeQueryData:
             print(f"❌ Database error in get all invoice: {e}")
             return None
 
+        finally:
+            if conn:
+                conn.close()
+
+    def filter_invoices_by_date(self, start_date, end_date):
+        """
+        Lọc và lấy danh sách hóa đơn trong một khoảng thời gian.
+
+        Args:
+            start_date (datetime.date or QDate): Ngày bắt đầu.
+            end_date (datetime.date or QDate): Ngày kết thúc.
+
+        Returns:
+            list: Một danh sách các dictionary, mỗi dictionary là một hóa đơn.
+            None: Nếu có lỗi xảy ra.
+        """
+        conn = None
+        try:
+            # --- XỬ LÝ ĐẦU VÀO NGÀY THÁNG ---
+            # Chuyển đổi start_date thành datetime lúc bắt đầu ngày
+            start_datetime = datetime.combine(start_date, time.min)
+            # Chuyển đổi end_date thành datetime lúc kết thúc ngày
+            end_datetime = datetime.combine(end_date, time.max)
+
+            # Định dạng thành chuỗi YYYY-MM-DD HH:MM:SS mà SQLite hiểu
+            start_str = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
+            end_str = end_datetime.strftime('%Y-%m-%d %H:%M:%S')
+
+            conn = self._get_connection()
+            # Thiết lập row_factory để kết quả trả về dưới dạng dictionary
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # --- SỬA LẠI CÂU LỆNH SQL ---
+            # Sử dụng cú pháp LEFT JOIN rõ ràng và tường minh
+            sql = """
+                SELECT 
+                    i.invoice_code, 
+                    i.invoice_date, 
+                    e.employee_name, 
+                    c.customer_name, 
+                    i.payment_method, 
+                    i.total_amount
+                FROM 
+                    invoices AS i
+                LEFT JOIN 
+                    employees AS e ON i.employee_id = e.employee_id
+                LEFT JOIN 
+                    customers AS c ON i.customer_id = c.customer_id
+                WHERE 
+                    i.invoice_date BETWEEN ? AND ?
+                ORDER BY
+                    i.invoice_date DESC;
+            """
+
+            cursor.execute(sql, (start_str, end_str))
+
+            rows = cursor.fetchall()
+
+            # Chuyển đổi list của sqlite3.Row thành list của dict
+            return [dict(row) for row in rows] if rows else []
+
+        except sqlite3.Error as e:
+            # Bỏ qua IntegrityError vì SELECT không gây ra lỗi này
+            print(f"❌ Database error in filter_invoices_by_date: {e}")
+            return None
         finally:
             if conn:
                 conn.close()

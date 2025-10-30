@@ -1,9 +1,11 @@
-from PyQt5.QtCore import Qt, QRegExp
+from datetime import datetime
+
+from PyQt5.QtCore import Qt, QRegExp, QDate
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView
 
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
-from src.constants.table_header import CUSTOMER_HEADER
+from src.constants.table_header import INVOICE_HEADER
 
 class InvoiceController:
     def __init__(self, parent):
@@ -17,8 +19,12 @@ class InvoiceController:
         self.customer_name_invoice = self.parent.customer_name_invoice
         self.customer_phone_invoice = self.parent.customer_phone_invoice
         self.search_invoice_btn = self.parent.search_invoice_btn
+        self.clear_btn = self.parent.clear_btn
 
-        self.table = self.parent.table_customer
+        self.start_day.setDate(QDate.currentDate())
+        self.end_day.setDate(QDate.currentDate())
+
+        self.table = self.parent.table_invoice
 
         regex = QRegExp("^0[0-9]{9}$")
         self.customer_phone_invoice.setValidator(QRegExpValidator(regex))
@@ -31,30 +37,30 @@ class InvoiceController:
             print("DEBUG: ProductController setup is running for the first time.")
             self.setup_ui_connections()
             self._setup_table_header_and_properties()
-            self.load_customer_data()
+            self.load_invoice_data()
             self._initialized = True
 
     def setup_ui_connections(self):
         """Kết nối tất cả các signal và slot cho trang này."""
-        # self.search_customer_btn_2.clicked.connect(self.search_customer_with_phone)
-        # print("DEBUG: Checkout button connected to show_checkout_page.")
-        # self.show_update_customer_btn.clicked.connect(self.toggle_show_add_customer)
-        # print("DEBUG: Cancel button connected to show_product_selection_page.")
-        # self.update_customer_btn.clicked.connect(self.handle_update_customer_infor)
-        # print("DEBUG: Cancel button connected to show_product_selection_page.")
-        # self.table.selectionModel().selectionChanged.connect(self.handle_selection_change)
+        self.start_day.dateChanged.connect(self.filter_date)
+        self.end_day.dateChanged.connect(self.filter_date)
+        self.search_invoice_btn.clicked.connect(self.filter_date)
+        self.clear_btn.clicked.connect(self.clear_search_input)
 
     def search_customer_with_phone(self):
-        customer_phone = self.search_customer_2.text().strip()
-        customer_data = self.query_data.get_customer_with_phone(customer_phone)
+        customer_name = self.customer_name_invoice.text().strip()
+        customer_phone = self.customer_phone_invoice.text().strip()
+        invoice_code = self.invoice_code.text().strip()
 
-        if not customer_phone:
-            print("DEBUG: Vui lòng nhập số điện thoại khách hàng.")
-            return
-
-        if not customer_data:
-            QMessageBox.warning(self.parent, "Thông báo", "Không tìm thấy khách hàng hãy thêm mới vào")
-            return
+        # customer_data = self.query_data.get_customer_with_phone(customer_phone)
+        #
+        # if not customer_phone:
+        #     print("DEBUG: Vui lòng nhập số điện thoại khách hàng.")
+        #     return
+        #
+        # if not customer_data:
+        #     QMessageBox.warning(self.parent, "Thông báo", "Không tìm thấy khách hàng hãy thêm mới vào")
+        #     return
 
     def _setup_table_header_and_properties(self):
         if not self.table:
@@ -68,102 +74,115 @@ class InvoiceController:
         print("DEBUG: Table selection behavior set to SelectRows.")
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
 
-        self.table.setColumnCount(len(CUSTOMER_HEADER))
-        self.table.setHorizontalHeaderLabels(CUSTOMER_HEADER)
+        self.table.setColumnCount(len(INVOICE_HEADER))
+        self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
 
-    def load_customer_data(self):
-        customer_data = self.query_data.get_all_invoice()
-        print(f"DEBUG (EmployeeView): data manager: {customer_data}")
-        if not customer_data:
+    def load_invoice_data(self):
+        invoice_data = self.query_data.get_all_invoice()
+        print(f"DEBUG (EmployeeView): data manager: {invoice_data}")
+        if not invoice_data:
             print("Không có dữ liệu nhân viên")
             self.table.setRowCount(0) # Xóa dữ liệu cũ nếu không có dữ liệu mới
             return
 
-        self.table.setRowCount(len(customer_data))
+        self.table.setRowCount(len(invoice_data))
 
-        for row_index, row_data in enumerate(customer_data):
+        for row_index, row_data in enumerate(invoice_data):
             for col_index, cell_data in enumerate(row_data):
                 item = QTableWidgetItem(str(cell_data))
                 if item:
                     item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row_index, col_index, item)
 
-        # # Cấu hình giao diện cho bảng
-        # table.resizeColumnsToContents()
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        # table.setAlternatingRowColors(True)
-        # table.setSortingEnabled(True)
-        # table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        # table.verticalHeader().setVisible(False)
-        # table.setFocusPolicy(Qt.NoFocus)
-        # table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-
-    def handle_selection_change(self):
+    def filter_date(self):
         """
-        Được gọi khi người dùng thay đổi lựa chọn (click vào một dòng khác) trên bảng.
-        Lấy dữ liệu từ dòng được chọn và điền vào form cập nhật.
+        Lấy ngày bắt đầu và kết thúc từ giao diện,
+        gọi hàm truy vấn CSDL và hiển thị kết quả lên bảng.
         """
-        self.clear_search_input()
+        # --- BƯỚC 1: LẤY VÀ CHUYỂN ĐỔI NGÀY THÁNG ---
 
-        selected_rows = self.table.selectionModel().selectedRows()
+        # .date() trả về một đối tượng QDate
+        start_qdate = self.start_day.date()
+        end_qdate = self.end_day.date()
 
-        if not selected_rows:
-            # Nếu không có dòng nào được chọn (ví dụ: người dùng click ra ngoài)
-            # thì ẩn form và dừng lại.
-            self.contain_update_customer.hide()
-            # (Tùy chọn) Bạn có thể xóa dữ liệu trên form ở đây
-            # self.clear_update_form()
+        # (Tùy chọn nhưng khuyến nghị) Chuyển đổi QDate thành đối tượng date của Python
+        # để truyền vào hàm truy vấn. Điều này giúp lớp QueryData không phụ thuộc vào PyQt.
+        start_date_py = start_qdate.toPyDate()
+        end_date_py = end_qdate.toPyDate()
+
+        print(f"DEBUG: Filtering invoices from {start_date_py} to {end_date_py}")
+
+        # --- BƯỚC 2: GỌI HÀM TRUY VẤN CSDL ---
+
+        # Giả sử self.query_data là instance của lớp QueryData của bạn
+        # Gọi hàm filter_invoices_by_date mà chúng ta đã tạo
+        filtered_invoices = self.query_data.filter_invoices_by_date(start_date_py, end_date_py)
+
+        # --- BƯỚC 3: HIỂN THỊ KẾT QUẢ LÊN BẢNG ---
+
+        if filtered_invoices is None:
+            # Lỗi CSDL đã xảy ra
+            QMessageBox.critical(self.parent, "Lỗi", "Đã có lỗi xảy ra khi truy vấn cơ sở dữ liệu.")
             return
 
-        # --- LẤY DỮ LIỆU TỪ DÒNG ĐƯỢC CHỌN ---
+        if not filtered_invoices:
+            # Không tìm thấy hóa đơn nào
+            print("INFO: No invoices found in the selected date range.")
+            # Xóa sạch bảng
+            self.table.setRowCount(0)
+            QMessageBox.information(self.parent, "Thông báo", "Không tìm thấy hóa đơn nào trong khoảng thời gian đã chọn.")
+            return
 
-        # 1. Lấy chỉ số của dòng đầu tiên được chọn
-        # Vì thường chỉ cho chọn 1 dòng, nên ta lấy phần tử đầu tiên của list
-        first_selected_row_index = selected_rows[0].row()
+        # Nếu có dữ liệu, đổ nó vào bảng
+        self.populate_invoice_table(filtered_invoices)
 
-        # 2. Tạo một dictionary để chứa dữ liệu
-        customer_data = {}
+    def populate_invoice_table(self, invoices_data):
+        """
+        Hàm này nhận một danh sách các dictionary hóa đơn và hiển thị chúng lên QTableWidget.
+        """
+        self.table.setRowCount(len(invoices_data))
 
-        # 3. Ánh xạ từ chỉ số cột sang tên key trong dictionary
-        # QUAN TRỌNG: Thứ tự và tên key phải khớp với dữ liệu bạn cần
-        # Ví dụ: Cột 0 là customer_id, Cột 1 là customer_name, ...
-        column_map = {
-            0: 'customer_id',
-            1: 'customer_name',
-            2: 'customer_phone',
-            3: 'customer_address',
-            4: 'customer_email',
-            5: 'points',
-            6: 'created_at',
-            7: 'updated_at'
-        }
+        # Định nghĩa thứ tự các cột để hiển thị
+        column_order = [
+            'invoice_code', 'invoice_date', 'employee_name',
+            'customer_name', 'payment_method', 'total_amount'
+        ]
 
-        # 4. Lặp qua các cột để lấy dữ liệu
-        for col_index, key_name in column_map.items():
-            # Lấy item (ô) tại dòng và cột tương ứng
-            item = self.table.item(first_selected_row_index, col_index)
+        for row_index, invoice in enumerate(invoices_data):
+            for col_index, key in enumerate(column_order):
+                value = invoice.get(key)
 
-            if item:
-                # Lấy nội dung text từ item và gán vào dictionary
-                customer_data[key_name] = item.text()
-            else:
-                # Nếu ô đó trống, gán giá trị rỗng
-                customer_data[key_name] = ""
+                # Định dạng lại các giá trị cho đẹp trước khi hiển thị
+                if key == 'total_amount':
+                    # Định dạng số tiền
+                    display_text = f"{value:,.0f}đ".replace(',', '.')
+                elif key == 'invoice_date':
+                    # Định dạng lại ngày giờ (nếu cần)
+                    # Ví dụ: '2024-05-22 10:30:00' -> '10:30 22-05-2024'
+                    try:
+                        dt_object = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                        display_text = dt_object.strftime('%H:%M %d-%m-%Y')
+                    except (ValueError, TypeError):
+                        display_text = str(value)
+                else:
+                    display_text = str(value if value is not None else '')
 
-        print(f"DEBUG: Selected customer data: {customer_data}")
+                item = QTableWidgetItem(display_text)
+                if item:
+                    item.setTextAlignment(Qt.AlignCenter)
 
-        # --- BÂY GIỜ BẠN ĐÃ CÓ `customer_data`, HÃY SỬ DỤNG NÓ ---
-        # Hiển thị form cập nhật
-        self.contain_update_customer.show()
-        self.fill_customer(customer_data)
+                self.table.setItem(row_index, col_index, item)
+
+        print(f"DEBUG: Displayed {len(invoices_data)} invoices in the table.")
+
+
 
     def clear_search_input(self):
         """
         Xóa nội dung trong ô tìm kiếm.
         """
-        if self.search_customer_2:
-            self.search_customer_2.clear()
+        if self.invoice_code or self.customer_name_invoice or self.customer_phone_invoice:
+            self.invoice_code.clear()
+            self.customer_name_invoice.clear()
+            self.customer_phone_invoice.clear()
             print("DEBUG: Search input cleared.")

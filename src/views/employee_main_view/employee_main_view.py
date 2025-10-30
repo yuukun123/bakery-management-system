@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 from src.controllers.buttonController import buttonController
 from src.controllers.employee_main_controller.checkout_controller import CheckoutController
 from src.controllers.employee_main_controller.customer_controller import CustomerController
+from src.controllers.employee_main_controller.invoice_controller import InvoiceController
 from src.controllers.employee_main_controller.product_controller import ProductController
 from src.models.order_service import OrderService
 from src.services.query_user_name import QueryUserName
@@ -57,6 +58,7 @@ class EmployeeMainWindow(QMainWindow):
         self.checkout_controller = CheckoutController(self.checkout_page, self, self.order_service)
 
         self.customer_controller = CustomerController(self)
+        self.invoice_controller = InvoiceController(self)
 
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
@@ -91,3 +93,5 @@ class EmployeeMainWindow(QMainWindow):
 
         elif current_widget == self.invoice_page:
             print("Đã chuyển đến trang Invoice")
+            self.invoice_controller.setup_page()
+

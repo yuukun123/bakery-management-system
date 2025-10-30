@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QRegExp
+from PyQt5.QtCore import Qt, QRegExp, QEvent, QObject
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView
 
@@ -7,8 +7,9 @@ from src.constants.table_header import CUSTOMER_HEADER
 from src.utils.validators import is_valid_phone_number
 
 
-class CustomerController:
+class CustomerController(QObject):
     def __init__(self, parent):
+        super().__init__(parent)
         self.customer_info = {}
         self.parent = parent
         self._initialized = False  # Cờ để chắc rằng chúng ta chỉ setup 1 lần
@@ -38,6 +39,7 @@ class CustomerController:
             print("DEBUG: ProductController setup is running for the first time.")
             self.setup_ui_connections()
             self._setup_table_header_and_properties()
+            self._install_event_filter()
             self.load_customer_data()
             self._initialized = True
 
@@ -100,6 +102,36 @@ class CustomerController:
 
         self.table.setColumnCount(len(CUSTOMER_HEADER))
         self.table.setHorizontalHeaderLabels(CUSTOMER_HEADER)
+
+    def _install_event_filter(self):
+        """Cài đặt bộ lọc sự kiện cho cửa sổ chính để xử lý click ngoài bảng."""
+        # Dòng này bây giờ sẽ hoạt động
+        self.parent.installEventFilter(self)
+        print("DEBUG: [CustomerController] Event filter installed on MainWindow.")
+
+    def clear_table_selection(self):
+        """Phương thức công khai để xóa lựa chọn trên bảng."""
+        if self.table:
+            self.table.clearSelection()
+            print("DEBUG: [CustomerController] Table selection cleared.")
+            self.contain_update_customer.hide()
+
+    # --- BƯỚC 4: THÊM HÀM eventFilter VÀO ---
+    def eventFilter(self, source, event):
+        """
+        Bộ lọc sự kiện, sẽ được gọi cho mọi sự kiện trên self.parent (MainWindow).
+        """
+        # Chỉ quan tâm đến sự kiện click chuột trái
+        if event.type() == QEvent.MouseButtonPress and event.button() == Qt.LeftButton:
+            # Kiểm tra xem con trỏ chuột có đang nằm trên bảng không
+            if not self.table.underMouse():
+                # Nếu không, và nếu bảng đang có lựa chọn
+                if self.table.selectionModel().hasSelection():
+                    # Xóa lựa chọn
+                    self.clear_table_selection()
+
+        # Rất quan trọng: Trả về False để các sự kiện được xử lý bình thường
+        return super().eventFilter(source, event)
 
     def load_customer_data(self):
         customer_data = self.query_data.get_all_customer()

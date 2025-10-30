@@ -243,8 +243,6 @@ class ProductController:
                 card_to_remove.deleteLater()
                 self.update_total_bill()
 
-
         # Đảm bảo dictionary rỗng sau khi xóa
         self.item_card_widgets.clear()
-
         print("DEBUG: [ProductController] Order display cleared.")
