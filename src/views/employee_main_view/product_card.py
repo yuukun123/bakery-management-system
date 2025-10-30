@@ -9,7 +9,7 @@ class ProductCard(QWidget):
     def __init__(self, product_data, parent=None):
         super().__init__(parent)
         uic.loadUi("UI/forms/employee/product_card.ui", self)
-
+        self.setFixedSize(275, 330)
         self.product_data = product_data
         self.set_data(product_data)
 

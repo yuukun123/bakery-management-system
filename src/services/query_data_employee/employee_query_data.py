@@ -24,18 +24,18 @@ class EmployeeQueryData:
         conn.row_factory = sqlite3.Row
         return conn
 
-    def get_all_products(self):
-        conn = self._get_connection()
-        cursor = conn.cursor()
-        try:
-            cursor.execute("SELECT product_id, product_name, selling_price, image_path FROM products")
-            products = [dict(row) for row in cursor.fetchall()]
-            return products
-        except sqlite3.Error as e:
-            print(f"Database error in get product:  {e}")
-            return None
-        finally:
-            conn.close()
+    # def get_all_products(self):
+    #     conn = self._get_connection()
+    #     cursor = conn.cursor()
+    #     try:
+    #         cursor.execute("SELECT product_id, product_name, selling_price, image_path FROM products")
+    #         products = [dict(row) for row in cursor.fetchall()]
+    #         return products
+    #     except sqlite3.Error as e:
+    #         print(f"Database error in get product:  {e}")
+    #         return None
+    #     finally:
+    #         conn.close()
 
     def get_guest_customer_info(self):
         """
@@ -64,6 +64,86 @@ class EmployeeQueryData:
 
         except sqlite3.Error as e:
             print(f"Database error in get_guest_customer_info: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_all_product_types(self):
+        """Lấy danh sách tất cả các loại sản phẩm."""
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            sql = "SELECT type_id, type_name FROM type_product ORDER BY type_name"
+            cursor.execute(sql)
+
+            rows = cursor.fetchall()
+            return [dict(row) for row in rows] if rows else []
+        except sqlite3.Error as e:
+            print(f"❌ Database error in get_all_product_types: {e}")
+            return []  # Trả về list rỗng nếu có lỗi
+        finally:
+            if conn:
+                conn.close()
+
+    def filter_products(self, type_id=None, keyword=None):
+        """
+        Lọc danh sách sản phẩm một cách linh hoạt.
+
+        Args:
+            type_id (int, optional): ID của loại sản phẩm để lọc.
+                                     Nếu là 0 hoặc None, sẽ bỏ qua bộ lọc này.
+            keyword (str, optional): Từ khóa để tìm kiếm trong tên sản phẩm.
+                                     Nếu rỗng hoặc None, sẽ bỏ qua bộ lọc này.
+
+        Returns:
+            list: Một danh sách các dictionary chứa thông tin sản phẩm.
+            None: Nếu có lỗi xảy ra.
+        """
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            # --- XÂY DỰNG CÂU LỆNH SQL ĐỘNG ---
+
+            # Phần SELECT cơ bản
+            base_sql = "SELECT * FROM products"
+
+            conditions = []
+            params = []
+
+            # 1. Thêm điều kiện lọc theo Loại sản phẩm
+            # Giả sử type_id=0 có nghĩa là "Tất cả các loại"
+            if type_id is not None and type_id > 0:
+                conditions.append("type_id = ?")
+                params.append(type_id)
+
+            # 2. Thêm điều kiện lọc theo Từ khóa (tên sản phẩm)
+            if keyword:
+                conditions.append("product_name LIKE ?")
+                params.append(f"%{keyword}%")
+
+            # Ghép các điều kiện lại
+            if conditions:
+                final_sql = base_sql + " WHERE " + " AND ".join(conditions)
+            else:
+                final_sql = base_sql
+
+            final_sql += " ORDER BY product_name;"  # Sắp xếp theo tên cho dễ nhìn
+
+            print(f"DEBUG: Executing SQL: {final_sql}")
+            print(f"DEBUG: With params: {params}")
+
+            cursor.execute(final_sql, tuple(params))
+            rows = cursor.fetchall()
+
+            return [dict(row) for row in rows] if rows else []
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in filter_products: {e}")
             return None
         finally:
             if conn:
@@ -276,7 +356,7 @@ class EmployeeQueryData:
             if conn:
                 conn.close()
 
-    def get_all_invoice(self):
+    def get_all_invoices(self):
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
@@ -289,10 +369,10 @@ class EmployeeQueryData:
                 and i.customer_id = c.customer_id 
             """
             cursor.execute(sql)
-            conn.commit()
+            rows = cursor.fetchall()  # rows là một list của sqlite3.Row
 
-            rows = cursor.fetchall()
-            return rows
+            # <<< THÊM BƯỚC CHUYỂN ĐỔI QUAN TRỌNG NÀY VÀO >>>
+            return [dict(row) for row in rows] if rows else []
 
         except sqlite3.IntegrityError as e:
             print(f"⚠️ Error: Could not get any invoice. Details: {e}")
@@ -306,7 +386,8 @@ class EmployeeQueryData:
             if conn:
                 conn.close()
 
-    def filter_invoices_by_date(self, start_date, end_date):
+    def filter_invoices (self, start_date=None, end_date=None, invoice_code=None,
+                        customer_name=None, customer_phone=None):
         """
         Lọc và lấy danh sách hóa đơn trong một khoảng thời gian.
 
@@ -320,54 +401,65 @@ class EmployeeQueryData:
         """
         conn = None
         try:
-            # --- XỬ LÝ ĐẦU VÀO NGÀY THÁNG ---
-            # Chuyển đổi start_date thành datetime lúc bắt đầu ngày
-            start_datetime = datetime.combine(start_date, time.min)
-            # Chuyển đổi end_date thành datetime lúc kết thúc ngày
-            end_datetime = datetime.combine(end_date, time.max)
-
-            # Định dạng thành chuỗi YYYY-MM-DD HH:MM:SS mà SQLite hiểu
-            start_str = start_datetime.strftime('%Y-%m-%d %H:%M:%S')
-            end_str = end_datetime.strftime('%Y-%m-%d %H:%M:%S')
-
             conn = self._get_connection()
-            # Thiết lập row_factory để kết quả trả về dưới dạng dictionary
-            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
+            base_sql = """
+                            SELECT 
+                                i.invoice_code, i.invoice_date, e.employee_name, 
+                                c.customer_name, i.payment_method, i.total_amount
+                            FROM invoices AS i
+                            LEFT JOIN employees AS e ON i.employee_id = e.employee_id
+                            LEFT JOIN customers AS c ON i.customer_id = c.customer_id
+                        """
 
-            # --- SỬA LẠI CÂU LỆNH SQL ---
-            # Sử dụng cú pháp LEFT JOIN rõ ràng và tường minh
-            sql = """
-                SELECT 
-                    i.invoice_code, 
-                    i.invoice_date, 
-                    e.employee_name, 
-                    c.customer_name, 
-                    i.payment_method, 
-                    i.total_amount
-                FROM 
-                    invoices AS i
-                LEFT JOIN 
-                    employees AS e ON i.employee_id = e.employee_id
-                LEFT JOIN 
-                    customers AS c ON i.customer_id = c.customer_id
-                WHERE 
-                    i.invoice_date BETWEEN ? AND ?
-                ORDER BY
-                    i.invoice_date DESC;
-            """
+            conditions = []
+            params = []
 
-            cursor.execute(sql, (start_str, end_str))
+            # 1. Thêm điều kiện lọc theo ngày
+            if start_date and end_date:
+                start_datetime = datetime.combine(start_date, time.min)
+                end_datetime = datetime.combine(end_date, time.max)
+                conditions.append("i.invoice_date BETWEEN ? AND ?")
+                params.extend([
+                    start_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                    end_datetime.strftime('%Y-%m-%d %H:%M:%S')
+                ])
 
+            # 2. Thêm điều kiện lọc theo Mã hóa đơn
+            if invoice_code:
+                conditions.append("i.invoice_code LIKE ?")
+                params.append(f"%{invoice_code}%")  # Dùng LIKE để tìm kiếm gần đúng
+
+            # 3. Thêm điều kiện lọc theo Tên khách hàng
+            if customer_name:
+                conditions.append("c.customer_name LIKE ?")
+                params.append(f"%{customer_name}%")
+
+            # 4. Thêm điều kiện lọc theo SĐT khách hàng
+            if customer_phone:
+                conditions.append("c.customer_phone LIKE ?")
+                params.append(f"%{customer_phone}%")
+
+            # Ghép các điều kiện lại với nhau
+            if conditions:
+                final_sql = base_sql + " WHERE " + " AND ".join(conditions)
+            else:
+                final_sql = base_sql
+
+            final_sql += " ORDER BY i.invoice_date DESC;"
+
+            print(f"DEBUG: Executing SQL: {final_sql}")
+            print(f"DEBUG: With params: {params}")
+
+            cursor.execute(final_sql, tuple(params))
             rows = cursor.fetchall()
 
-            # Chuyển đổi list của sqlite3.Row thành list của dict
             return [dict(row) for row in rows] if rows else []
 
         except sqlite3.Error as e:
-            # Bỏ qua IntegrityError vì SELECT không gây ra lỗi này
-            print(f"❌ Database error in filter_invoices_by_date: {e}")
+            print(f"❌ Database error in filter_invoices: {e}")
             return None
         finally:
             if conn:
                 conn.close()
+

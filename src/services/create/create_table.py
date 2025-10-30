@@ -220,6 +220,19 @@ def create_table():
         END;
     """)
 
+    print("Creating indexes for performance...")
+
+    # Index cho bảng products
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_type_id ON products (type_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_product_name ON products (product_name);")
+
+    # Index cho bảng invoices
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_invoices_invoice_date ON invoices (invoice_date);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_invoices_customer_id ON invoices (customer_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_invoices_employee_id ON invoices (employee_id);")
+
+    print("Indexes created successfully.")
+
     print("Tables and Triggers created successfully.")
 
     conn.commit()

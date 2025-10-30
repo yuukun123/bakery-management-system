@@ -1,7 +1,7 @@
 from logging import disable
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHeaderView, QTableWidgetItem, QStackedWidget, QToolButton, QWidget, QGridLayout, QLabel, QMessageBox
+from PyQt5.QtWidgets import QHeaderView, QTableWidgetItem, QStackedWidget, QToolButton, QWidget, QGridLayout, QLabel, QMessageBox, QComboBox, QLineEdit
 
 from src.views.employee_main_view.product_card import ProductCard
 from src.views.employee_main_view.item_card import ItemCard
@@ -27,6 +27,10 @@ class ProductController:
         self.total_bill_label = self.page.findChild(QLabel, 'total_bill_label')
         self.total_bill_label.setText("0")
 
+        self.filter_CB = self.page.findChild(QComboBox, 'filter_CB')
+        self.search_product = self.page.findChild(QLineEdit, 'search_product')
+        self.search_product_btn = self.page.findChild(QToolButton, 'search_product_btn')
+
         self.contain_customer = self.page.findChild(QWidget, 'contain_customer')
         self.contain_customer.hide()
 
@@ -39,6 +43,9 @@ class ProductController:
             self.product_layout = QGridLayout(self.product_container)
         else:
             self.product_layout = self.product_container.layout()
+
+        self.product_layout.setColumnStretch(99, 1)
+        self.product_layout.setRowStretch(99, 1)
 
         self.product_layout.setHorizontalSpacing(15)
         self.product_layout.setVerticalSpacing(15)
@@ -68,7 +75,8 @@ class ProductController:
             print("DEBUG: ProductController setup is running for the first time.")
             self.setup_ui_connections()
             self.update_checkout_button_state()
-            self.load_product_data()
+            self.load_product_types_into_combobox()
+            self.apply_product_filters()
             self.product_stackedWidget.setCurrentIndex(0)  # Đặt trang mặc định
             self._initialized = True
 
@@ -78,6 +86,12 @@ class ProductController:
         print("DEBUG: Checkout button connected to show_checkout_page.")
         self.cancel_btn.clicked.connect(self.show_product_selection_page)
         print("DEBUG: Cancel button connected to show_product_selection_page.")
+        self.filter_CB.currentIndexChanged.connect(self.apply_product_filters)
+        print("DEBUG: Filter combo box connected to apply_product_filters.")
+        self.search_product_btn.clicked.connect(self.apply_product_filters)
+        print("DEBUG: Search button connected to apply_product_filters.")
+
+        self.search_product.textChanged.connect(self.on_search_text_changed)
 
     def show_checkout_page(self):
         """Chuyển sang trang thanh toán."""
@@ -92,6 +106,68 @@ class ProductController:
         """Chuyển sang trang chọn sản phẩm."""
         print("DEBUG: [ProductController] Switching to product selection page.")
         self.product_stackedWidget.setCurrentIndex(0)
+
+    def load_product_types_into_combobox(self):
+        """
+        Tải danh sách các loại sản phẩm từ CSDL và điền vào ComboBox.
+        """
+        print("DEBUG: Loading product types into ComboBox...")
+
+        self.filter_CB.blockSignals(True)
+
+        try:
+            # --- BƯỚC 2: THỰC HIỆN THAY ĐỔI ---
+            self.filter_CB.clear()
+            self.filter_CB.addItem("Tất cả các loại", 0)
+
+            product_types = self.query_data.get_all_product_types()
+
+            if product_types:
+                for p_type in product_types:
+                    type_name = p_type.get('type_name')
+                    type_id = p_type.get('type_id')
+                    self.filter_CB.addItem(type_name, type_id)
+
+        finally:
+            # --- BƯỚC 3: MỞ LẠI TÍN HIỆU (RẤT QUAN TRỌNG!) ---
+            # Dùng finally để đảm bảo tín hiệu luôn được mở lại, kể cả khi có lỗi
+            self.filter_CB.blockSignals(False)
+
+        print(f"DEBUG: ComboBox loaded with {self.filter_CB.count()} items. Signals unblocked.")
+
+    def apply_product_filters(self):
+        """
+        Thu thập các bộ lọc từ UI và gọi hàm truy vấn.
+        """
+        # === LẤY ID TỪ COMBOBOX ===
+        # .currentData() sẽ trả về userData của mục hiện tại
+        # (0 cho "Tất cả", 1 cho "Croissant", 2 cho "Mousse", ...)
+        selected_type_id = self.filter_CB.currentData()
+
+        # Lấy từ khóa tìm kiếm từ QLineEdit
+        keyword = self.search_product.text().strip()
+
+        print(f"DEBUG: Applying filters -> Type ID: {selected_type_id}, Keyword: '{keyword}'")
+
+        # Gọi hàm lọc với các giá trị đã lấy
+        products = self.query_data.filter_products(
+            type_id=selected_type_id,
+            keyword=keyword
+        )
+
+        if products is not None:
+            # Gọi hàm hiển thị ProductCard của bạn, giả sử nó tên là `display_product_cards`
+            self.display_product_cards(products)
+        else:
+            QMessageBox.critical(self.main_window, "Lỗi", "Có lỗi xảy ra khi lọc sản phẩm.")
+
+    def on_search_text_changed(self, text):
+        """
+        Nếu ô tìm kiếm rỗng, tự động áp dụng lại bộ lọc.
+        """
+        if not text.strip():
+            print("DEBUG: Search input is empty, triggering filter reload.")
+            self.apply_product_filters()
 
     def update_checkout_button_state(self):
         """
@@ -108,8 +184,6 @@ class ProductController:
             self.checkout_btn.setToolTip("Vui lòng thêm sản phẩm vào giỏ hàng để thanh toán.")
             self.checkout_btn.setProperty("disabled", True)
 
-            # <<< XÓA DÒNG QMESSAGEBOX Ở ĐÂY >>>
-            # Người dùng đã có đủ thông tin qua việc nút bị mờ và tooltip.
         else:
             # Bật nút khi có ít nhất 1 sản phẩm
             self.checkout_btn.setEnabled(True)
@@ -119,35 +193,36 @@ class ProductController:
         # Yêu cầu cập nhật lại style của nút
         self.checkout_btn.style().polish(self.checkout_btn)
 
-    def load_product_data(self):
+    def display_product_cards(self, products_data):
         """Tải dữ liệu sản phẩm."""
         employee_role = self.main_window._employee_role.get('role')
         print(f"DEBUG: Loading product page for user with role: {employee_role}")
 
         # Xóa layout cũ
         while self.product_layout.count():
-            child = self.product_layout.takeAt(0)
-            if child.widget(): child.widget().deleteLater()
+            item = self.product_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+            # Cần xóa cả spacer/stretch item
+            elif item.spacerItem():
+                self.product_layout.removeItem(item)
 
-        print("DEBUG: [ProductController] Querying all products from database...")
-        all_products = self.query_data.get_all_products()
-
-        if not all_products:
-            print("WARNING: Không có sản phẩm nào trong cơ sở dữ liệu.")
+        if not products_data:
+            print("INFO: No products to display based on current filters.")
+            # (Tùy chọn) Bạn có thể hiển thị một QLabel thông báo "Không tìm thấy sản phẩm" ở đây
             return
 
-        print(f"DEBUG: [ProductController] Found {len(all_products)} products. Now creating cards...")
-        # Tạo và thêm card (thao tác GUI)
         num_columns = 4
-        for index, product_data in enumerate(all_products):
-            # topic_card = TopicCardWidget(topic_data, parent=self.topic_container)
+        for index, product_data in enumerate(products_data):
             product_card = ProductCard(product_data, parent=self.product_container)
-
             product_card.product_clicked.connect(self.handle_click_product)
-
             row = index // num_columns
             col = index % num_columns
             self.product_layout.addWidget(product_card, row, col)
+
+        self.product_layout.setColumnStretch(num_columns, 1)  # Cột ngay sau cột cuối cùng
+        self.product_layout.setRowStretch(len(products_data) // num_columns + 1, 1)  # Hàng ngay sau hàng cuối cùng
         print("DEBUG: [ProductController] Finished creating product cards.")
 
     def handle_click_product(self, product_data):

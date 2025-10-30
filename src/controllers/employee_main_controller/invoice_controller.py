@@ -19,6 +19,7 @@ class InvoiceController:
         self.customer_name_invoice = self.parent.customer_name_invoice
         self.customer_phone_invoice = self.parent.customer_phone_invoice
         self.search_invoice_btn = self.parent.search_invoice_btn
+        self.filter_btn = self.parent.filter_btn
         self.clear_btn = self.parent.clear_btn
 
         self.start_day.setDate(QDate.currentDate())
@@ -42,12 +43,12 @@ class InvoiceController:
 
     def setup_ui_connections(self):
         """Kết nối tất cả các signal và slot cho trang này."""
-        self.start_day.dateChanged.connect(self.filter_date)
-        self.end_day.dateChanged.connect(self.filter_date)
-        self.search_invoice_btn.clicked.connect(self.filter_date)
+        self.filter_btn.clicked.connect(self.apply_filters)
+        self.search_invoice_btn.clicked.connect(self.apply_filters)
         self.clear_btn.clicked.connect(self.clear_search_input)
 
-    def search_customer_with_phone(self):
+
+    def search_customer_invoice(self):
         customer_name = self.customer_name_invoice.text().strip()
         customer_phone = self.customer_phone_invoice.text().strip()
         invoice_code = self.invoice_code.text().strip()
@@ -78,7 +79,7 @@ class InvoiceController:
         self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
 
     def load_invoice_data(self):
-        invoice_data = self.query_data.get_all_invoice()
+        invoice_data = self.query_data.get_all_invoices()
         print(f"DEBUG (EmployeeView): data manager: {invoice_data}")
         if not invoice_data:
             print("Không có dữ liệu nhân viên")
@@ -94,47 +95,32 @@ class InvoiceController:
                     item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row_index, col_index, item)
 
-    def filter_date(self):
-        """
-        Lấy ngày bắt đầu và kết thúc từ giao diện,
-        gọi hàm truy vấn CSDL và hiển thị kết quả lên bảng.
-        """
-        # --- BƯỚC 1: LẤY VÀ CHUYỂN ĐỔI NGÀY THÁNG ---
+    def apply_filters(self):
+        # 1. Lấy ngày tháng
+        start_date = self.start_day.date().toPyDate()
+        end_date = self.end_day.date().toPyDate()
 
-        # .date() trả về một đối tượng QDate
-        start_qdate = self.start_day.date()
-        end_qdate = self.end_day.date()
+        # 2. Lấy các từ khóa
+        invoice_code_keyword = self.invoice_code.text().strip()
+        customer_name_keyword = self.customer_name_invoice.text().strip()
+        customer_phone_keyword = self.customer_phone_invoice.text().strip()
 
-        # (Tùy chọn nhưng khuyến nghị) Chuyển đổi QDate thành đối tượng date của Python
-        # để truyền vào hàm truy vấn. Điều này giúp lớp QueryData không phụ thuộc vào PyQt.
-        start_date_py = start_qdate.toPyDate()
-        end_date_py = end_qdate.toPyDate()
+        # 3. Gọi hàm lọc linh hoạt mới
+        results = self.query_data.filter_invoices(
+            start_date=start_date,
+            end_date=end_date,
+            invoice_code=invoice_code_keyword,
+            customer_name=customer_name_keyword,
+            customer_phone=customer_phone_keyword
+        )
 
-        print(f"DEBUG: Filtering invoices from {start_date_py} to {end_date_py}")
-
-        # --- BƯỚC 2: GỌI HÀM TRUY VẤN CSDL ---
-
-        # Giả sử self.query_data là instance của lớp QueryData của bạn
-        # Gọi hàm filter_invoices_by_date mà chúng ta đã tạo
-        filtered_invoices = self.query_data.filter_invoices_by_date(start_date_py, end_date_py)
-
-        # --- BƯỚC 3: HIỂN THỊ KẾT QUẢ LÊN BẢNG ---
-
-        if filtered_invoices is None:
-            # Lỗi CSDL đã xảy ra
-            QMessageBox.critical(self.parent, "Lỗi", "Đã có lỗi xảy ra khi truy vấn cơ sở dữ liệu.")
-            return
-
-        if not filtered_invoices:
-            # Không tìm thấy hóa đơn nào
-            print("INFO: No invoices found in the selected date range.")
-            # Xóa sạch bảng
-            self.table.setRowCount(0)
-            QMessageBox.information(self.parent, "Thông báo", "Không tìm thấy hóa đơn nào trong khoảng thời gian đã chọn.")
-            return
-
-        # Nếu có dữ liệu, đổ nó vào bảng
-        self.populate_invoice_table(filtered_invoices)
+        # 4. Hiển thị kết quả
+        if results is not None:
+            self.populate_invoice_table(results)
+            if not results:
+                QMessageBox.information(self.parent, "Thông báo", "Không tìm thấy kết quả nào phù hợp.")
+        else:
+            QMessageBox.critical(self.parent, "Lỗi", "Có lỗi xảy ra khi lọc hóa đơn.")
 
     def populate_invoice_table(self, invoices_data):
         """
@@ -175,14 +161,28 @@ class InvoiceController:
 
         print(f"DEBUG: Displayed {len(invoices_data)} invoices in the table.")
 
-
-
     def clear_search_input(self):
         """
-        Xóa nội dung trong ô tìm kiếm.
+        Xóa nội dung trong các ô tìm kiếm, reset ngày về hiện tại,
+        và tải lại toàn bộ danh sách hóa đơn ban đầu.
         """
-        if self.invoice_code or self.customer_name_invoice or self.customer_phone_invoice:
-            self.invoice_code.clear()
-            self.customer_name_invoice.clear()
-            self.customer_phone_invoice.clear()
-            print("DEBUG: Search input cleared.")
+        # 1. Reset các ô input
+        self.invoice_code.clear()
+        self.customer_name_invoice.clear()
+        self.customer_phone_invoice.clear()
+        self.start_day.setDate(QDate.currentDate())
+        self.end_day.setDate(QDate.currentDate())
+        print("DEBUG: Search inputs cleared and dates reset.")
+
+        # 2. Tải lại toàn bộ dữ liệu (để xóa kết quả lọc cũ)
+        # Giả sử bạn có một hàm tên là `load_all_invoices`
+        self.load_all_invoices()
+
+    def load_all_invoices(self):
+        """Tải tất cả các hóa đơn từ CSDL và hiển thị lên bảng."""
+        print("DEBUG: Loading all invoices...")
+        all_invoices = self.query_data.get_all_invoices()  # Bạn cần tạo hàm này
+        if all_invoices is not None:
+            self.populate_invoice_table(all_invoices)
+        else:
+            QMessageBox.critical(self.parent, "Lỗi", "Không thể tải danh sách hóa đơn.")
