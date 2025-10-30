@@ -69,9 +69,9 @@ class CustomerController:
     def fill_customer(self, customer_data):
         if not customer_data: return
 
+        self.customer_id.setText(f"{customer_data.get('customer_id')}")
         self.new_customer_name.setText(customer_data.get('customer_name'))
         self.new_customer_phone.setText(customer_data.get('customer_phone'))
-        self.customer_id.setText(customer_data.get('customer_id'))
 
         self.customer_info = customer_data
         print(f"Debug: Customer updated with customer: {customer_data.get('customer_name')} and stored in customer_info: {self.customer_info}")
