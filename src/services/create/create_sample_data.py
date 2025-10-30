@@ -2,6 +2,8 @@ import os
 import sqlite3
 from datetime import datetime
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class CreateSampleData:
     def __init__(self):
@@ -31,28 +33,37 @@ class CreateSampleData:
         return conn
 
     def create_sample_data(self):
-        self.cursor.executescript("""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        cursor.executescript("""
+                INSERT INTO type_product (type_id, type_name)
+                VALUES 
+                    (1, 'Croissant'),
+                    (2, 'Mousse'),
+                    (3, 'Tart');
+                
                 INSERT INTO products (product_id, product_name, selling_price, stock, import_price, created_at, updated_at, status, type_id, image_path)
                 VALUES 
-                    ('1', 'Avocado_Croissant', 100000, 10, 90000, datetime('now'), datetime('now'), 'active', 1, 'UI/images/Croissant/Avocado_Croissant.jpg'),
-                    ('2', 'Choco_Mallow_Croissant', 110000, 10, 100000, datetime('now'), datetime('now'), 'active', 1, 'UI/images/Croissant/Choco_Mallow_Croissant.png'),
-                    ('3', 'Dinosaur_Almond_Croissant', 120000, 10, 110000, datetime('now'), datetime('now'), 'active', 1, 'UI/images/Croissant/Dinosaur_Almond_Croissant.png'),
-                    ('4', 'Honey_Almond_Croissant', 130000, 10, 120000, datetime('now'), datetime('now'), 'active', 1, 'UI/images/Croissant/Honey_Almond_Croissant.png'),
-                    ('5', 'Matcha_Croissant', 140000, 10, 130000, datetime('now'), datetime('now'), 'active', 1, 'UI/images/Croissant/Matcha_Croissant.jpg'),
-                    ('6', 'Avocado_Mousse', 200000, 10, 190000, datetime('now'), datetime('now'), 'active', 2, 'UI/images/Mousse/Avocado_Mousse.jpg'),
-                    ('7', 'Blueberry_Mousse', 210000, 10, 200000, datetime('now'), datetime('now'), 'active', 2, 'UI/images/Mousse/Blueberry_Mousse.jpg'),
-                    ('8', 'Corn_Mousse', 220000, 10, 210000, datetime('now'), datetime('now'), 'active', 2, 'UI/images/Mousse/Corn_Mousse.jpg'),
-                    ('9', 'Longan_Mousse', 230000, 10, 220000, datetime('now'), datetime('now'), 'active', 2, 'UI/images/Mousse/Longan_Mousse.jpg'),
-                    ('10', 'Mango_Mousse', 240000, 10, 230000, datetime('now'), datetime('now'), 'active', 2, 'UI/images/Mousse/Mango_Mousse.jpg'),
-                    ('11', 'Coffee_Tart', 50000, 10, 40000, datetime('now'), datetime('now'), 'active', 3, 'UI/images/Tart/Coffee_Tart.jpg'),
-                    ('12', 'Cherry_Tart', 550000, 10, 45000, datetime('now'), datetime('now'), 'active', 3, 'UI/images/Tart/Cherry_Tart.jpg'),
-                    ('13', 'Matcha_Tart', 600000, 10, 50000, datetime('now'), datetime('now'), 'active', 3, 'UI/images/Tart/Matcha_Tart.jpg'),
-                    ('14', 'Strawberry_Tart', 650000, 10, 55000, datetime('now'), datetime('now'), 'active', 3, 'UI/images/Tart/Strawberry_Tart.jpg'),
-                    ('15', 'Tiramisu_Tart', 70000, 10, 60000, datetime('now'), datetime('now'), 'active', 3, 'UI/images/Tart/Tiramisu_Tart.jpg');
+                    ('1', 'Avocado_Croissant', 100000, 10, 90000, datetime('now'), datetime('now'), 'đang kinh doanh', 1, 'UI/images/Croissant/Avocado_Croissant.jpg'),
+                    ('2', 'Choco_Mallow_Croissant', 110000, 10, 100000, datetime('now'), datetime('now'), 'đang kinh doanh', 1, 'UI/images/Croissant/Choco_Mallow_Croissant.png'),
+                    ('3', 'Dinosaur_Almond_Croissant', 120000, 10, 110000, datetime('now'), datetime('now'), 'đang kinh doanh', 1, 'UI/images/Croissant/Dinosaur_Almond_Croissant.png'),
+                    ('4', 'Honey_Almond_Croissant', 130000, 10, 120000, datetime('now'), datetime('now'), 'đang kinh doanh', 1, 'UI/images/Croissant/Honey_Almond_Croissant.png'),
+                    ('5', 'Matcha_Croissant', 140000, 10, 130000, datetime('now'), datetime('now'), 'đang kinh doanh', 1, 'UI/images/Croissant/Matcha_Croissant.jpg'),
+                    ('6', 'Avocado_Mousse', 200000, 10, 190000, datetime('now'), datetime('now'), 'đang kinh doanh', 2, 'UI/images/Mousse/Avocado_Mousse.jpg'),
+                    ('7', 'Blueberry_Mousse', 210000, 10, 200000, datetime('now'), datetime('now'), 'đang kinh doanh', 2, 'UI/images/Mousse/Blueberry_Mousse.jpg'),
+                    ('8', 'Corn_Mousse', 220000, 10, 210000, datetime('now'), datetime('now'), 'đang kinh doanh', 2, 'UI/images/Mousse/Corn_Mousse.jpg'),
+                    ('9', 'Longan_Mousse', 230000, 10, 220000, datetime('now'), datetime('now'), 'đang kinh doanh', 2, 'UI/images/Mousse/Longan_Mousse.jpg'),
+                    ('10', 'Mango_Mousse', 240000, 10, 230000, datetime('now'), datetime('now'), 'đang kinh doanh', 2, 'UI/images/Mousse/Mango_Mousse.jpg'),
+                    ('11', 'Coffee_Tart', 50000, 10, 40000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Coffee_Tart.jpg'),
+                    ('12', 'Cherry_Tart', 550000, 10, 45000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Cherry_Tart.jpg'),
+                    ('13', 'Matcha_Tart', 600000, 10, 50000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Matcha_Tart.jpg'),
+                    ('14', 'Strawberry_Tart', 650000, 10, 55000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Strawberry_Tart.jpg'),
+                    ('15', 'Tiramisu_Tart', 70000, 10, 60000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Tiramisu_Tart.jpg');
                 
-                INSERT INTO import_invoice (import_id, employee_id, import_date, total_amount)
+                INSERT INTO import_invoice (import_id, import_code, employee_id, import_date, total_amount)
                 VALUES     
-                    (1, 1, datetime('now'), 18500000);
+                    (1, 'PN251000001' ,1, date('now'), 18500000);
                     
                 INSERT INTO import_invoice_details (import_id, product_id, quantity, unit_price)
                 VALUES
@@ -71,8 +82,19 @@ class CreateSampleData:
                     (1, 13, 10, 50000),
                     (1, 14, 10, 55000),
                     (1, 15, 10, 60000);
+                    
+                INSERT INTO customers (customer_id, customer_name, customer_phone, created_at)
+                VALUES
+                    (1, 'Khách vãng lai', '', datetime('now')),
+                    (2, 'Jane Smith', '0987654321', datetime('now'));
+                    
+                INSERT INTO employees (employee_id, employee_name, phone, address, email, password_hash, role, gender, starting_date, status, created_at)
+                VALUES
+                    (251000001, 'hao', '0808080808', '123 Main St', 'john.doe@example.com', '1', 'quản lý', 'nữ', date('now'), 'đang làm', datetime('now')),
+                    (251000002, 'phong', '0987654321', '456 Elm St', 'jane.smith@example.com', '1', 'nhân viên', 'nam', date('now'), 'đang làm', datetime('now'));
             """)
-        self.connection.commit()
+        conn.commit()
+        conn.close()
         print("Sample data inserted successfully.")
 
     def update_element(self):
@@ -342,9 +364,59 @@ class CreateSampleData:
         # """)
 
 
-
         # conn.commit()
         # conn.close()
+
+        # try:
+        #
+        #     print("Đã kết nối tới database.")
+        #
+        #     # 1. Lấy ID và mật khẩu plain text của tất cả nhân viên
+        #     print(" -> Đang đọc thông tin nhân viên...")
+        #     cursor.execute("SELECT employee_id, password_hash FROM employees")
+        #     all_employees = cursor.fetchall()
+        #
+        #     if not all_employees:
+        #         print("Không có nhân viên nào để cập nhật.")
+        #         return
+        #
+        #     updates_to_perform = []
+        #     print(" -> Bắt đầu băm mật khẩu...")
+        #
+        #     for employee_id, plain_password in all_employees:
+        #         # Kiểm tra xem mật khẩu có phải là hash hay không (rất cơ bản)
+        #         # Hash của Werkzeug thường bắt đầu bằng một tiền tố như "pbkdf2:sha256:..."
+        #         # Nếu mật khẩu không chứa ký tự '$', khả năng cao nó là plain text
+        #         if '$' in plain_password and ':' in plain_password:
+        #             print(f"    - Bỏ qua Employee ID {employee_id}: Mật khẩu có vẻ đã được băm.")
+        #             continue
+        #
+        #         # 2. Băm mật khẩu bằng hàm của werkzeug
+        #         hashed_password = generate_password_hash(plain_password)
+        #         updates_to_perform.append((hashed_password, employee_id))
+        #         print(f"    - Employee ID {employee_id}: Chuẩn bị cập nhật mật khẩu từ '{plain_password}' sang hash.")
+        #
+        #     if not updates_to_perform:
+        #         print("Tất cả mật khẩu đã được băm. Không có gì để làm.")
+        #         return
+        #
+        #     # 3. Cập nhật lại CSDL với mật khẩu đã băm
+        #     print(f" -> Đang cập nhật {len(updates_to_perform)} mật khẩu vào CSDL...")
+        #     sql_update = "UPDATE employees SET password_hash = ? WHERE employee_id = ?"
+        #     cursor.executemany(sql_update, updates_to_perform)
+        #
+        #     conn.commit()
+        #     print("\nCập nhật mật khẩu thành công!")
+        #
+        # except sqlite3.Error as e:
+        #     print(f"\nCó lỗi xảy ra: {e}")
+        #     if conn:
+        #         conn.rollback()
+        # finally:
+        #     if conn:
+        #         conn.close()
+        #         print("Đã đóng kết nối database.")
+
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object

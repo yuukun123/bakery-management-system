@@ -3,7 +3,6 @@ from src.services.login_query.login_query import Login
 from src.services.query_user_name import QueryUserName
 from src.windows.manager_window.manager_window_manage import open_manager_main_window
 
-
 class LoginController:
     def __init__(self, view):
         self.view = view

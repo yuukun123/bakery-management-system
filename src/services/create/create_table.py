@@ -34,13 +34,13 @@ def create_table():
             email TEXT NOT NULL UNIQUE,
             phone TEXT NOT NULL,
             address TEXT NOT NULL,
-            role TEXT NOT NULL CHECK(role IN ('Quản lý', 'Nhân viên')),
-            sex TEXT NOT NULL CHECK(sex IN ('nam', 'nữ')),
+            role TEXT NOT NULL CHECK(role IN ('quản lý', 'nhân viên')),
+            gender TEXT NOT NULL CHECK(gender IN ('nam', 'nữ')),
             -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
             status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
-            starting_date DATE,
+            starting_date DATE NOT NULL,
             end_date DATE,
-            created_at DATE DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATE
         )
     """)
@@ -60,10 +60,10 @@ def create_table():
             stock INTEGER NOT NULL CHECK(stock >= 0),
             import_price REAL NOT NULL CHECK(import_price >= 0),
             image_path TEXT NOT NULL, -- nếu bạn lưu đường dẫn tương đối (ví dụ: "images/cake1.jpg")
-            created_at DATE DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATE,
             -- hỗ trợ xóa sản phẩm nhưng chỉ là xóa mềm
-            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('đang kinh doanh', 'ngừng kình doanh')),
+            status TEXT NOT NULL DEFAULT 'đang kinh doanh' CHECK(status IN ('đang kinh doanh', 'ngừng kinh doanh')),
             type_id INTEGER NOT NULL,
             FOREIGN KEY(type_id) REFERENCES type_product(type_id)
         )
@@ -74,7 +74,7 @@ def create_table():
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_name TEXT NOT NULL,
             customer_phone TEXT NOT NULL UNIQUE,
-            created_at DATE DEFAULT CURRENT_TIMESTAMP, -- Vẫn OK ở đây
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Vẫn OK ở đây
             updated_at DATE
         )
     """)
