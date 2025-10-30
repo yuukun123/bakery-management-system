@@ -79,10 +79,10 @@ class QueryData:
 
             # Insert nhân viên mới
             insert_query = """
-                INSERT INTO employees (employee_id, employee_name, password_hash, email, phone, address, role, starting_date, end_date)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO employees (employee_id, employee_name, password_hash, email, sex, phone, address, role, starting_date, end_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            employee_data = (new_employee_id, data["name"], data["password"], data["email"], data["phoneNumber"], data["address"], data["role"], data["startDate"], data["endDate"])
+            employee_data = (new_employee_id, data["name"], data["password"], data["email"],data["sex"], data["phoneNumber"], data["address"], data["role"], data["startDate"], data["endDate"])
             cursor.execute(insert_query, employee_data)
 
             # Commit transaction
@@ -146,4 +146,77 @@ class QueryData:
                 return False
         except sqlite3.Error as e:
             print(f"Database error in check_phone_exists: {e}")
+            return None
+    def update_inactive_employee(self, update_data):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("update employees set status = ?, end_date = ? where employee_id = ?",("inactive", update_data["end_date"], update_data["employee_id"]))
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Database error in update_inactive_employee: {e}")
+            return None
+    def update_employee(self, data):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                update employees
+                set employee_id = ?, employee_name = ?, password_hash = ?, email = ?, sex = ?, phone = ?, address = ?, role = ?, starting_date = ?, end_date = ?
+                where employee_id = ?
+            """,(data["employee_id"],
+                            data["name"],
+                            data["password"],
+                            data["email"],
+                            data["sex"],
+                            data["phoneNumber"],
+                            data["address"],
+                            data["role"],
+                            data["startDate"],
+                            data["endDate"],
+                            data["employee_id"]))
+            if cursor.rowcount == 0:
+                print(f"CẢNH BÁO: Lệnh UPDATE đã chạy nhưng không tìm thấy employee_id = {data['employee_id']} để cập nhật.")
+                conn.rollback()
+                return False
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Database error in update_inactive_employee: {e}")
+            return None
+
+    def search_employees(self, role, status, search_term):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            base_query = """
+                SELECT 
+                    employee_id, employee_name, sex, role, status, 
+                    email, phone, address, starting_date, end_date 
+                FROM employees
+            """
+            conditions = []
+            parameters = []
+            if role != "Tất cả":
+                conditions.append("role = ?")
+                parameters.append(role)
+            if status != "Tất cả":
+                conditions.append("status = ?")
+                parameters.append(status)
+            if search_term:
+                search_like = f"%{search_term}%"
+                conditions.append("(employee_id LIKE ? OR employee_name LIKE ?)")
+                parameters.append(search_like)
+                parameters.append(search_like)
+            if conditions:
+                base_query += " WHERE " + " AND ".join(conditions)
+            base_query += " ORDER BY employee_name"
+            cursor.execute(base_query, tuple(parameters))
+            results = cursor.fetchall()
+            conn.commit()
+            return results
+        except sqlite3.Error as e:
+            print(f"Database error in get_data_product: {e}")
+            conn.rollback()
             return None
