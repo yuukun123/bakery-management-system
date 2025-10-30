@@ -209,8 +209,9 @@ class ProductController:
 
         total = self.order_service.get_total_amount()
         # Cập nhật tổng tiền lên một QLabel trên giao diện
-        self.total_bill_label.setText(f"{total}")
-        print(f"DEBUG: [Controller] Total bill updated to: {total}")
+        formatted_amount = f"{total:,.0f}"
+        self.total_bill_label.setText(f"{formatted_amount}")
+        print(f"DEBUG: [Controller] Total bill updated to: {formatted_amount}")
 
     def remove_item_from_order(self, product_data):
         """Xóa một item khỏi hóa đơn."""

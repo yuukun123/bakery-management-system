@@ -48,12 +48,12 @@ class LoginController:
                 print(f"LỖI: Không tìm thấy thông tin user '{employee_id}'.")
                 return
             print(f"DEBUG: {self.role}")
-            if self.role == "Quản lý":
+            if self.role == "quản lý":
                 self.main_window_instance = open_manager_main_window(employee_id)
                 self.view.close()
                 print("DEBUG: MainWindow instance created via window_manage and shown.")
 
-            elif self.role == "Nhân viên":
+            elif self.role == "nhân viên":
                 self.main_window_instance = open_employee_main_window(employee_id)
                 self.view.close()
                 print("DEBUG: MainWindow instance created via window_manage and shown.")
