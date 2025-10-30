@@ -223,6 +223,97 @@ class CreateSampleData:
         #         conn.close()
         #         print("Đã đóng kết nối database.")
 
+        # try:
+        #     # --- BẮT ĐẦU GIAO DỊCH AN TOÀN ---
+        #     cursor.execute("BEGIN TRANSACTION;")
+        #     cursor.execute("PRAGMA foreign_keys=OFF;")  # Tắt khóa ngoại để có thể sửa bảng
+        #
+        #     # === BƯỚC 1: TẠO BẢNG MỚI VỚI CẤU TRÚC ĐÚNG (TIẾNG VIỆT) ===
+        #     print(" -> Bước 1: Tạo bảng tạm 'employees_new' với cấu trúc tiếng Việt...")
+        #     cursor.execute("""
+        #         CREATE TABLE employees_new (
+        #             employee_id BIGINT PRIMARY KEY,
+        #             employee_name TEXT NOT NULL,
+        #             password_hash TEXT NOT NULL,
+        #             email TEXT NOT NULL UNIQUE,
+        #             phone TEXT NOT NULL,
+        #             address TEXT NOT NULL,
+        #             role TEXT NOT NULL CHECK(role IN ('Quản lý', 'Nhân viên')),
+        #             sex TEXT NOT NULL CHECK(sex IN ('Nam', 'Nữ')), -- Đã sửa 'Name' thành 'Nam'
+        #             status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
+        #             created_at DATETIME,
+        #             updated_at DATETIME
+        #         )
+        #     """)
+        #
+        #     # === BƯỚC 2: SAO CHÉP VÀ "DỊCH" DỮ LIỆU TỪ BẢNG CŨ SANG BẢNG MỚI ===
+        #     print(" -> Bước 2: Chuyển đổi và sao chép dữ liệu từ 'employees' sang 'employees_new'...")
+        #     # Dùng câu lệnh CASE để "dịch" các giá trị từ tiếng Anh sang tiếng Việt
+        #     cursor.execute("""
+        #         INSERT INTO employees_new (
+        #             employee_id, employee_name, password_hash, email, phone, address,
+        #             role, sex, status, created_at, updated_at
+        #         )
+        #         SELECT
+        #             employee_id, employee_name, password_hash, email, phone, address,
+        #             CASE role
+        #                 WHEN 'Manager' THEN 'Quản lý'
+        #                 WHEN 'Employee' THEN 'Nhân viên'
+        #                 ELSE role
+        #             END,
+        #             CASE sex
+        #                 WHEN 'Male' THEN 'Nam'
+        #                 WHEN 'Female' THEN 'Nữ'
+        #                 ELSE sex
+        #             END,
+        #             CASE status
+        #                 WHEN 'active' THEN 'đang làm'
+        #                 WHEN 'inactive' THEN 'đã nghỉ'
+        #                 ELSE status
+        #             END,
+        #             created_at,
+        #             updated_at
+        #         FROM employees;
+        #     """)
+        #
+        #     row_count = cursor.rowcount
+        #     print(f" -> Đã chuyển đổi thành công {row_count} bản ghi.")
+        #
+        #     # === BƯỚC 3: XÓA BẢNG CŨ VÀ ĐỔI TÊN BẢNG MỚI ===
+        #     print(" -> Bước 3: Xóa bảng cũ 'employees'...")
+        #     cursor.execute("DROP TABLE employees;")
+        #
+        #     print(" -> Bước 4: Đổi tên 'employees_new' thành 'employees'...")
+        #     cursor.execute("ALTER TABLE employees_new RENAME TO employees;")
+        #
+        #     # === BƯỚC 4: TẠO LẠI CÁC TRIGGER LIÊN QUAN ===
+        #     print(" -> Bước 5: Tạo lại trigger 'trg_employees_updated_at'...")
+        #     cursor.execute("""
+        #         CREATE TRIGGER IF NOT EXISTS trg_employees_updated_at
+        #         AFTER UPDATE ON employees
+        #         FOR EACH ROW
+        #         BEGIN
+        #             UPDATE employees
+        #             SET updated_at = CURRENT_TIMESTAMP
+        #             WHERE employee_id = OLD.employee_id;
+        #         END;
+        #     """)
+        #
+        #     # --- KẾT THÚC GIAO DỊCH ---
+        #     conn.commit()
+        #     print("\nCập nhật bảng 'employees' sang tiếng Việt thành công!")
+        #
+        # except sqlite3.Error as e:
+        #     print(f"\nCó lỗi xảy ra: {e}")
+        #     if conn:
+        #         print("Đang rollback lại các thay đổi...")
+        #         conn.rollback()
+        # finally:
+        #     if conn:
+        #         cursor.execute("PRAGMA foreign_keys=ON;")  # Bật lại khóa ngoại
+        #         conn.close()
+        #         print("Đã đóng kết nối database.")
+
         # cursor.execute("ALTER TABLE customers add column create_at DATETIME DEFAULT CURRENT_TIMESTAMP")
         # cursor.execute("ALTER TABLE customers add column update_at DATETIME DEFAULT CURRENT_TIMESTAMP")
         # cursor.execute("ALTER TABLE invoices add column payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản'))")

@@ -34,10 +34,10 @@ def create_table():
             email TEXT NOT NULL UNIQUE,
             phone TEXT NOT NULL,
             address TEXT NOT NULL,
-            role TEXT NOT NULL CHECK(role IN ('Manager', 'Employee')),
-            sex TEXT NOT NULL CHECK(sex IN ('Male', 'Female')),
+            role TEXT NOT NULL CHECK(role IN ('Quản lý', 'Nhân viên')),
+            sex TEXT NOT NULL CHECK(sex IN ('Name', 'Nữ')),
             -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
-            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'inactive')),
+            status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME
         )
