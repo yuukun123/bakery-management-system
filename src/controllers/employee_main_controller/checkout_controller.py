@@ -1,5 +1,3 @@
-from functools import total_ordering
-
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QToolButton, QStackedWidget, QLabel, QPushButton, QFrame, QLineEdit, QMessageBox, QComboBox

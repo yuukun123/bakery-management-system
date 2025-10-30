@@ -203,3 +203,75 @@ class EmployeeQueryData:
         finally:
             if conn:
                 conn.close()
+
+    def get_all_customer(self):
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM customers")
+            rows = cursor.fetchall()
+            return rows
+
+        except sqlite3.Error as e:
+            print(f"DATABASE ERROR in save_invoice: {e}")
+            if conn:
+                print("ROLLING BACK transaction...")
+                conn.rollback()
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def update_customer(self, customer_id, new_customer_name, new_customer_phone):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                UPDATE customers
+                SET customer_name = ?, customer_phone = ?
+                WHERE customer_id = ?
+            """, (new_customer_name, new_customer_phone, customer_id))
+            conn.commit()
+
+            if cursor.rowcount > 0:
+                print(f"✅ Successfully updated customer ID {customer_id} to '{new_customer_name}', phone '{new_customer_phone}'.")
+                return True
+            else:
+                print(f"⚠️ No customer found with ID {customer_id}.")
+                return False
+
+        except sqlite3.IntegrityError as e:
+            print(f"⚠️ Error: Could not update customer. Phone number may already exist. Details: {e}")
+            return None
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in update_customer: {e}")
+            return None
+
+        finally:
+            if conn:
+                conn.close()
+
+    def get_customer_phone(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""select customer_id, customer_phone from customers""")
+            conn.commit()
+
+            rows = cursor.fetchall()
+            return rows
+
+        except sqlite3.IntegrityError as e:
+            print(f"⚠️ Error: Could not get any customer phone. Details: {e}")
+            return None
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in get customer phone: {e}")
+            return None
+
+        finally:
+            if conn:
+                conn.close()

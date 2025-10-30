@@ -4,12 +4,12 @@ from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
 from src.controllers.buttonController import buttonController
 from src.controllers.employee_main_controller.checkout_controller import CheckoutController
+from src.controllers.employee_main_controller.customer_controller import CustomerController
 from src.controllers.employee_main_controller.product_controller import ProductController
 from src.models.order_service import OrderService
 from src.services.query_user_name import QueryUserName
 from src.utils.employee_tab.changeTab import MenuNavigator
 from src.utils.username_ui import set_employee_info, set_employee_role
-from src.views.moveable_window import MoveableWindow
 from resources import resources_rc
 
 class EmployeeMainWindow(QMainWindow):
@@ -17,7 +17,6 @@ class EmployeeMainWindow(QMainWindow):
         # self.username = username
         super().__init__()
         uic.loadUi("UI/forms/employee/employee_main_screen.ui", self)
-        MoveableWindow.__init__(self)
 
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -53,29 +52,11 @@ class EmployeeMainWindow(QMainWindow):
         index_map = {btn: i for i, btn in enumerate(buttons)}
         self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.product_btn)
 
-        # self.dashboardController = dashboardController(parent=self)
-        #
-        # self.classroomController = ClassroomController(
-        #     self.area2,
-        #     parent=self,
-        #     # classroom_page = self.Classroom_page
-        # )
-        #
-        # self.studentListController = StudentListController(
-        #     self.studentList,
-        #     parent=self,
-        #     student_page=self.Student_page
-        # )
-        #
-        # self.studentScoreController = StudentScoreController(
-        #     self.scoresList,
-        #     parent=self,
-        #     edit_button=self.editScoreBtn,
-        #     score_page=self.Scores_page
-        # )
         self.order_service = OrderService()
         self.product_controller = ProductController(self.product_page, self, self.order_service)
         self.checkout_controller = CheckoutController(self.checkout_page, self, self.order_service)
+
+        self.customer_controller = CustomerController(self)
 
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
@@ -106,10 +87,7 @@ class EmployeeMainWindow(QMainWindow):
 
         elif current_widget == self.customer_page:
             print("Đã chuyển đến trang Customer")
-            # if not self.studentListController._initialized_for_user:
-            #     self.studentListController.setup_for_user(self.teacher_context)
+            self.customer_controller.setup_page()
 
         elif current_widget == self.invoice_page:
             print("Đã chuyển đến trang Invoice")
-            # if not self.studentListController._initialized_for_user:
-            #     self.studentListController.setup_for_user(self.teacher_context)

@@ -25,6 +25,7 @@ class ProductController:
         self.plus_btn = self.page.findChild(QToolButton, 'plus_btn')
         self.minus_btn = self.page.findChild(QToolButton, 'minus_btn')
         self.total_bill_label = self.page.findChild(QLabel, 'total_bill_label')
+        self.total_bill_label.setText("0")
 
         self.contain_customer = self.page.findChild(QWidget, 'contain_customer')
         self.contain_customer.hide()
@@ -205,6 +206,7 @@ class ProductController:
 
     def update_total_bill(self):
         """Tính lại tổng tiền của toàn bộ hóa đơn."""
+
         total = self.order_service.get_total_amount()
         # Cập nhật tổng tiền lên một QLabel trên giao diện
         self.total_bill_label.setText(f"{total}")
@@ -216,7 +218,7 @@ class ProductController:
         self.order_service.remove_item(product_id)
 
         if product_id in self.item_card_widgets:
-            card_to_remove = self.current_order.pop(product_id)  # Xóa khỏi dictionary
+            card_to_remove = self.item_card_widgets.pop(product_id)  # Xóa khỏi dictionary
             card_to_remove.deleteLater()  # Xóa widget khỏi giao diện
 
         self.update_total_bill()  # Tính lại tổng tiền
@@ -238,6 +240,8 @@ class ProductController:
                 # Xóa widget khỏi layout và bộ nhớ
                 self.order_list_layout.removeWidget(card_to_remove)
                 card_to_remove.deleteLater()
+                self.update_total_bill()
+
 
         # Đảm bảo dictionary rỗng sau khi xóa
         self.item_card_widgets.clear()
