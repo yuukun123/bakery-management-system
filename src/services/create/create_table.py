@@ -38,10 +38,10 @@ def create_table():
             sex TEXT NOT NULL CHECK(sex IN ('Name', 'Nữ')),
             -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
             status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
-            starting_date DATETIME NOT NULL,
-            end_date DATETIME,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME
+            starting_date DATE NOT NULL,
+            end_date DATE,
+            created_at DATE DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATE
         )
     """)
     
@@ -60,8 +60,8 @@ def create_table():
             stock INTEGER NOT NULL CHECK(stock >= 0),
             import_price REAL NOT NULL CHECK(import_price >= 0),
             image_path TEXT NOT NULL, -- nếu bạn lưu đường dẫn tương đối (ví dụ: "images/cake1.jpg")
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME,
+            created_at DATE DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATE,
             -- hỗ trợ xóa sản phẩm nhưng chỉ là xóa mềm
             status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'discontinued')),
             type_id INTEGER NOT NULL,
@@ -74,8 +74,8 @@ def create_table():
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_name TEXT NOT NULL,
             customer_phone TEXT NOT NULL UNIQUE,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Vẫn OK ở đây
-            updated_at DATETIME
+            created_at DATE DEFAULT CURRENT_TIMESTAMP, -- Vẫn OK ở đây
+            updated_at DATE
         )
     """)
 
@@ -113,7 +113,7 @@ def create_table():
             import_id INTEGER PRIMARY KEY AUTOINCREMENT,
             invoice_date TEXT NOT NULL UNIQUE,
             employee_id INTEGER NOT NULL,
-            import_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            import_date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id)
         )
