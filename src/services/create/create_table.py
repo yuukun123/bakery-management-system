@@ -35,10 +35,10 @@ def create_table():
             phone TEXT NOT NULL,
             address TEXT NOT NULL,
             role TEXT NOT NULL CHECK(role IN ('Quản lý', 'Nhân viên')),
-            sex TEXT NOT NULL CHECK(sex IN ('Name', 'Nữ')),
+            sex TEXT NOT NULL CHECK(sex IN ('nam', 'nữ')),
             -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
             status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
-            starting_date DATE NOT NULL,
+            starting_date DATE,
             end_date DATE,
             created_at DATE DEFAULT CURRENT_TIMESTAMP,
             updated_at DATE
@@ -63,7 +63,7 @@ def create_table():
             created_at DATE DEFAULT CURRENT_TIMESTAMP,
             updated_at DATE,
             -- hỗ trợ xóa sản phẩm nhưng chỉ là xóa mềm
-            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'discontinued')),
+            status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('đang kinh doanh', 'ngừng kình doanh')),
             type_id INTEGER NOT NULL,
             FOREIGN KEY(type_id) REFERENCES type_product(type_id)
         )
@@ -88,8 +88,8 @@ def create_table():
             employee_id INTEGER NOT NULL,
             customer_id INTEGER NOT NULL,
             payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản')),
-            cash_received TEXT not null,
-            change_given TEXT not null,
+            cash_received REAL NOT NULL DEFAULT 0,
+            change_given REAL NOT NULL DEFAULT 0,
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id),
             FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
         )
@@ -111,9 +111,9 @@ def create_table():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS import_invoice (
             import_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            invoice_date TEXT NOT NULL UNIQUE,
+            import_code TEXT NOT NULL UNIQUE,
             employee_id INTEGER NOT NULL,
-            import_date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            import_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id)
         )
@@ -131,6 +131,50 @@ def create_table():
             FOREIGN KEY(product_id) REFERENCES products(product_id)
         )
     """)
+
+    cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS trg_restore_stock_on_sale_delete
+            AFTER DELETE ON invoice_details
+            FOR EACH ROW
+            BEGIN
+                UPDATE products
+                SET stock = stock + OLD.quantity
+                WHERE product_id = OLD.product_id;
+            END;
+        """)
+
+    cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS trg_update_stock_on_sale_update
+            AFTER UPDATE OF quantity ON invoice_details
+            FOR EACH ROW
+            BEGIN
+                UPDATE products
+                SET stock = stock + (OLD.quantity - NEW.quantity)
+                WHERE product_id = OLD.product_id;
+            END;
+        """)
+
+    cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_import_delete
+            AFTER DELETE ON import_invoice_details
+            FOR EACH ROW
+            BEGIN
+                UPDATE products
+                SET stock = stock - OLD.quantity
+                WHERE product_id = OLD.product_id;
+            END;
+        """)
+
+    cursor.execute("""
+            CREATE TRIGGER IF NOT EXISTS trg_update_stock_on_import_update
+            AFTER UPDATE OF quantity ON import_invoice_details
+            FOR EACH ROW
+            BEGIN
+                UPDATE products
+                SET stock = stock + (NEW.quantity - OLD.quantity)
+                WHERE product_id = OLD.product_id;
+            END;
+        """)
 
     cursor.execute("""
         CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_sale
