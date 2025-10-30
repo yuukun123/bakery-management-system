@@ -155,11 +155,17 @@ class ProductController:
             keyword=keyword
         )
 
-        if products is not None:
-            # Gọi hàm hiển thị ProductCard của bạn, giả sử nó tên là `display_product_cards`
+        if products is None:
+            # Trường hợp 1: Có lỗi CSDL
+            QMessageBox.critical(self.main_window, "Lỗi", "Có lỗi xảy ra khi lọc sản phẩm.")
+            return
+        if products:
+            print(f"DEBUG: Found {len(products)} products. Updating display.")
             self.display_product_cards(products)
         else:
-            QMessageBox.critical(self.main_window, "Lỗi", "Có lỗi xảy ra khi lọc sản phẩm.")
+            print("INFO: No products found for the current filters. Display remains unchanged.")
+            QMessageBox.information(self.main_window, "Không tìm thấy",
+                                    "Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn.")
 
     def on_search_text_changed(self, text):
         """
@@ -210,7 +216,7 @@ class ProductController:
 
         if not products_data:
             print("INFO: No products to display based on current filters.")
-            # (Tùy chọn) Bạn có thể hiển thị một QLabel thông báo "Không tìm thấy sản phẩm" ở đây
+            QMessageBox.information(self.main_window, "Thông báo", "Không tìm thấy sản phẩm")
             return
 
         num_columns = 4
