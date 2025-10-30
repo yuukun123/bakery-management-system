@@ -76,6 +76,10 @@ class CreateSampleData:
         print("Sample data inserted successfully.")
 
     def update_element(self):
+
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
         # employees_gender = [
         #     ("2025-10-14", "251000001"),
         #     ("2025-10-10", "251000002"),
@@ -84,13 +88,11 @@ class CreateSampleData:
         # ]
         #
         # for starting_date, emp_id in employees_gender:
-        #     self.cursor.execute("""
+        #     cursor.execute("""
         #         UPDATE employees
         #         SET starting_date = ?
         #         WHERE employee_id = ?
         #     """, (starting_date, emp_id))
-        conn = self._get_connection()
-        cursor = conn.cursor()
 
         # cursor.execute("ALTER TABLE customers RENAME TO customers_old;")
         # cursor.execute("""
@@ -224,57 +226,73 @@ class CreateSampleData:
         #         print("Đã đóng kết nối database.")
 
         # try:
+        #     print("Đã kết nối tới database.")
+        #
         #     # --- BẮT ĐẦU GIAO DỊCH AN TOÀN ---
         #     cursor.execute("BEGIN TRANSACTION;")
-        #     cursor.execute("PRAGMA foreign_keys=OFF;")  # Tắt khóa ngoại để có thể sửa bảng
+        #     cursor.execute("PRAGMA foreign_keys=OFF;")
         #
-        #     # === BƯỚC 1: TẠO BẢNG MỚI VỚI CẤU TRÚC ĐÚNG (TIẾNG VIỆT) ===
-        #     print(" -> Bước 1: Tạo bảng tạm 'employees_new' với cấu trúc tiếng Việt...")
+        #     # === BƯỚC 1: TẠO BẢNG MỚI VỚI CẤU TRÚC ĐÚNG (BAO GỒM CẢ CỘT MỚI) ===
+        #     print(" -> Bước 1: Tạo bảng tạm 'employees_new' với cấu trúc hoàn chỉnh...")
         #     cursor.execute("""
-        #         CREATE TABLE employees_new (
-        #             employee_id BIGINT PRIMARY KEY,
-        #             employee_name TEXT NOT NULL,
-        #             password_hash TEXT NOT NULL,
-        #             email TEXT NOT NULL UNIQUE,
-        #             phone TEXT NOT NULL,
-        #             address TEXT NOT NULL,
-        #             role TEXT NOT NULL CHECK(role IN ('Quản lý', 'Nhân viên')),
-        #             sex TEXT NOT NULL CHECK(sex IN ('Nam', 'Nữ')), -- Đã sửa 'Name' thành 'Nam'
-        #             status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
-        #             created_at DATETIME,
-        #             updated_at DATETIME
-        #         )
-        #     """)
+        #             CREATE TABLE employees_new (
+        #                 employee_id BIGINT PRIMARY KEY,
+        #                 employee_name TEXT NOT NULL,
+        #                 password_hash TEXT NOT NULL,
+        #                 email TEXT NOT NULL UNIQUE,
+        #                 phone TEXT NOT NULL,
+        #                 address TEXT NOT NULL,
+        #                 role TEXT NOT NULL CHECK(role IN ('Quản lý', 'Nhân viên')),
+        #                 sex TEXT NOT NULL CHECK(sex IN ('Nam', 'Nữ')),
+        #                 status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
         #
-        #     # === BƯỚC 2: SAO CHÉP VÀ "DỊCH" DỮ LIỆU TỪ BẢNG CŨ SANG BẢNG MỚI ===
-        #     print(" -> Bước 2: Chuyển đổi và sao chép dữ liệu từ 'employees' sang 'employees_new'...")
-        #     # Dùng câu lệnh CASE để "dịch" các giá trị từ tiếng Anh sang tiếng Việt
+        #                 -- <<< THÊM 2 CỘT MỚI VÀO ĐÂY >>>
+        #                 starting_date DATETIME NOT NULL,
+        #                 end_date DATETIME,
+        #
+        #                 created_at DATETIME,
+        #                 updated_at DATETIME
+        #             )
+        #         """)
+        #
+        #     # === BƯỚC 2: SAO CHÉP, "DỊCH" VÀ ĐIỀN DỮ LIỆU MẶC ĐỊNH ===
+        #     print(" -> Bước 2: Chuyển đổi và sao chép dữ liệu sang 'employees_new'...")
         #     cursor.execute("""
-        #         INSERT INTO employees_new (
-        #             employee_id, employee_name, password_hash, email, phone, address,
-        #             role, sex, status, created_at, updated_at
-        #         )
-        #         SELECT
-        #             employee_id, employee_name, password_hash, email, phone, address,
-        #             CASE role
-        #                 WHEN 'Manager' THEN 'Quản lý'
-        #                 WHEN 'Employee' THEN 'Nhân viên'
-        #                 ELSE role
-        #             END,
-        #             CASE sex
-        #                 WHEN 'Male' THEN 'Nam'
-        #                 WHEN 'Female' THEN 'Nữ'
-        #                 ELSE sex
-        #             END,
-        #             CASE status
-        #                 WHEN 'active' THEN 'đang làm'
-        #                 WHEN 'inactive' THEN 'đã nghỉ'
-        #                 ELSE status
-        #             END,
-        #             created_at,
-        #             updated_at
-        #         FROM employees;
-        #     """)
+        #             INSERT INTO employees_new (
+        #                 employee_id, employee_name, password_hash, email, phone, address,
+        #                 role, sex, status,
+        #                 starting_date, end_date, -- Thêm vào danh sách INSERT
+        #                 created_at, updated_at
+        #             )
+        #             SELECT
+        #                 employee_id, employee_name, password_hash, email, phone, address,
+        #                 -- "Dịch" các giá trị sang tiếng Việt
+        #                 CASE role
+        #                     WHEN 'Manager' THEN 'Quản lý'
+        #                     WHEN 'Employee' THEN 'Nhân viên'
+        #                     ELSE role
+        #                 END,
+        #                 CASE sex
+        #                     WHEN 'Male' THEN 'Nam'
+        #                     WHEN 'Female' THEN 'Nữ'
+        #                     ELSE sex
+        #                 END,
+        #                 CASE status
+        #                     WHEN 'active' THEN 'đang làm'
+        #                     WHEN 'inactive' THEN 'đã nghỉ'
+        #                     ELSE status
+        #                 END,
+        #
+        #                 -- <<< CUNG CẤP GIÁ TRỊ CHO 2 CỘT MỚI >>>
+        #                 -- Dùng `created_at` làm giá trị mặc định cho `starting_date`
+        #                 COALESCE(created_at, CURRENT_TIMESTAMP),
+        #                 -- Mặc định `end_date` là NULL cho các nhân viên cũ
+        #                 NULL,
+        #
+        #                 created_at,
+        #                 updated_at
+        #             FROM employees;
+        #         """)
         #
         #     row_count = cursor.rowcount
         #     print(f" -> Đã chuyển đổi thành công {row_count} bản ghi.")
@@ -289,19 +307,19 @@ class CreateSampleData:
         #     # === BƯỚC 4: TẠO LẠI CÁC TRIGGER LIÊN QUAN ===
         #     print(" -> Bước 5: Tạo lại trigger 'trg_employees_updated_at'...")
         #     cursor.execute("""
-        #         CREATE TRIGGER IF NOT EXISTS trg_employees_updated_at
-        #         AFTER UPDATE ON employees
-        #         FOR EACH ROW
-        #         BEGIN
-        #             UPDATE employees
-        #             SET updated_at = CURRENT_TIMESTAMP
-        #             WHERE employee_id = OLD.employee_id;
-        #         END;
-        #     """)
+        #             CREATE TRIGGER IF NOT EXISTS trg_employees_updated_at
+        #             AFTER UPDATE ON employees
+        #             FOR EACH ROW
+        #             BEGIN
+        #                 UPDATE employees
+        #                 SET updated_at = CURRENT_TIMESTAMP
+        #                 WHERE employee_id = OLD.employee_id;
+        #             END;
+        #         """)
         #
         #     # --- KẾT THÚC GIAO DỊCH ---
         #     conn.commit()
-        #     print("\nCập nhật bảng 'employees' sang tiếng Việt thành công!")
+        #     print("\nCập nhật bảng 'employees' thành công!")
         #
         # except sqlite3.Error as e:
         #     print(f"\nCó lỗi xảy ra: {e}")
@@ -310,7 +328,7 @@ class CreateSampleData:
         #         conn.rollback()
         # finally:
         #     if conn:
-        #         cursor.execute("PRAGMA foreign_keys=ON;")  # Bật lại khóa ngoại
+        #         cursor.execute("PRAGMA foreign_keys=ON;")
         #         conn.close()
         #         print("Đã đóng kết nối database.")
 

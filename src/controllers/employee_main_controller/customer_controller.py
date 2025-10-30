@@ -49,7 +49,7 @@ class CustomerController:
         print("DEBUG: Cancel button connected to show_product_selection_page.")
         self.update_customer_btn.clicked.connect(self.handle_update_customer_infor)
         print("DEBUG: Cancel button connected to show_product_selection_page.")
-        self.table.itemSelectionChanged.connect(self.handle_selection_change)
+        self.table.selectionModel().selectionChanged.connect(self.handle_selection_change)
 
     def search_customer_with_phone(self):
         customer_phone = self.search_customer_2.text().strip()
@@ -146,17 +146,60 @@ class CustomerController:
         QMessageBox.information(self.parent, "Thông báo", "Cập nhật thông tin khách hàng thành công.")
         self.load_customer_data()
 
-    def update_table_customer(self):
-        pass
-        # student_list =
-        #     teacher_id=teacher_id,
-        #     academic_year_id=academic_year_id,
-        #     semester_id=semester_id,
-        #     class_id=class_id,
-        #     faculty_id=faculty_id
-        # )
-
     def handle_selection_change(self):
-        """Kích hoạt/Vô hiệu hóa các nút dựa trên lựa chọn trong bảng."""
+        """
+        Được gọi khi người dùng thay đổi lựa chọn (click vào một dòng khác) trên bảng.
+        Lấy dữ liệu từ dòng được chọn và điền vào form cập nhật.
+        """
         selected_rows = self.table.selectionModel().selectedRows()
-        is_selection_non_empty = bool(selected_rows)
+
+        if not selected_rows:
+            # Nếu không có dòng nào được chọn (ví dụ: người dùng click ra ngoài)
+            # thì ẩn form và dừng lại.
+            self.contain_update_customer.hide()
+            # (Tùy chọn) Bạn có thể xóa dữ liệu trên form ở đây
+            # self.clear_update_form()
+            return
+
+        # --- LẤY DỮ LIỆU TỪ DÒNG ĐƯỢC CHỌN ---
+
+        # 1. Lấy chỉ số của dòng đầu tiên được chọn
+        # Vì thường chỉ cho chọn 1 dòng, nên ta lấy phần tử đầu tiên của list
+        first_selected_row_index = selected_rows[0].row()
+
+        # 2. Tạo một dictionary để chứa dữ liệu
+        customer_data = {}
+
+        # 3. Ánh xạ từ chỉ số cột sang tên key trong dictionary
+        # QUAN TRỌNG: Thứ tự và tên key phải khớp với dữ liệu bạn cần
+        # Ví dụ: Cột 0 là customer_id, Cột 1 là customer_name, ...
+        column_map = {
+            0: 'customer_id',
+            1: 'customer_name',
+            2: 'customer_phone',
+            3: 'customer_address',
+            4: 'customer_email',
+            5: 'points',
+            6: 'created_at',
+            7: 'updated_at'
+        }
+
+        # 4. Lặp qua các cột để lấy dữ liệu
+        for col_index, key_name in column_map.items():
+            # Lấy item (ô) tại dòng và cột tương ứng
+            item = self.table.item(first_selected_row_index, col_index)
+
+            if item:
+                # Lấy nội dung text từ item và gán vào dictionary
+                customer_data[key_name] = item.text()
+            else:
+                # Nếu ô đó trống, gán giá trị rỗng
+                customer_data[key_name] = ""
+
+        print(f"DEBUG: Selected customer data: {customer_data}")
+
+        # --- BÂY GIỜ BẠN ĐÃ CÓ `customer_data`, HÃY SỬ DỤNG NÓ ---
+        # Hiển thị form cập nhật
+        self.contain_update_customer.show()
+        self.fill_customer(customer_data)
+

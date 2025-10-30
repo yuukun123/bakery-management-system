@@ -38,6 +38,8 @@ def create_table():
             sex TEXT NOT NULL CHECK(sex IN ('Name', 'Nữ')),
             -- hỗ trợ xóa nhân viên nhưng chỉ là xóa mềm
             status TEXT NOT NULL DEFAULT 'đang làm' CHECK(status IN ('đang làm', 'đã nghỉ')),
+            starting_date DATETIME NOT NULL,
+            end_date DATETIME,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME
         )
