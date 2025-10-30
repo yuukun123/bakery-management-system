@@ -3628,6 +3628,34 @@ border: none;</string>
                      <number>0</number>
                     </property>
                     <item>
+                     <widget class="QLineEdit" name="customer_id">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">#customer_id{
+border: 1px solid #ccc;
+border-radius: 10px;
+padding: 5 5px;
+}</string>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="placeholderText">
+                       <string>Mã khách hàng</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QLineEdit" name="new_customer_name">
                       <property name="minimumSize">
                        <size>

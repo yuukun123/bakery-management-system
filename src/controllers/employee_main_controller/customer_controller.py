@@ -18,6 +18,7 @@ class CustomerController:
         self.show_update_customer_btn = self.parent.show_update_customer_btn
         self.search_customer_2 = self.parent.search_customer_2
         self.search_customer_btn_2 = self.parent.search_customer_btn_2
+        self.customer_id = self.parent.customer_id
         self.new_customer_name = self.parent.new_customer_name
         self.new_customer_phone = self.parent.new_customer_phone
         self.update_customer_btn = self.parent.update_customer_btn
@@ -70,6 +71,7 @@ class CustomerController:
 
         self.new_customer_name.setText(customer_data.get('customer_name'))
         self.new_customer_phone.setText(customer_data.get('customer_phone'))
+        self.customer_id.setText(customer_data.get('customer_id'))
 
         self.customer_info = customer_data
         print(f"Debug: Customer updated with customer: {customer_data.get('customer_name')} and stored in customer_info: {self.customer_info}")
