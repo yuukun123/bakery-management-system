@@ -87,7 +87,7 @@ class QueryData:
 
             # Commit transaction
             conn.commit()
-            print(f"Successfully added employee {data["name"]} with ID {new_employee_id}.")
+            print(f"Successfully added employee {data['name']} with ID {new_employee_id}.")
             return True # Trả về cả ID để có thể dùng sau này
 
         except sqlite3.Error as e:
