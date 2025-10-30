@@ -275,3 +275,32 @@ class EmployeeQueryData:
         finally:
             if conn:
                 conn.close()
+
+    def get_all_invoice(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            sql = """
+                SELECT invoice_code, invoice_date, 
+                        total_amount, employee_id, 
+                        customer_id, payment_method, 
+                        cash_received, change_given 
+                        FROM invoices
+            """
+            cursor.execute(sql)
+            conn.commit()
+
+            rows = cursor.fetchall()
+            return rows
+
+        except sqlite3.IntegrityError as e:
+            print(f"⚠️ Error: Could not get any invoice. Details: {e}")
+            return None
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in get all invoice: {e}")
+            return None
+
+        finally:
+            if conn:
+                conn.close()
