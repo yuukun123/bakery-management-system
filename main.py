@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # auto fill login for testing
     login_window = Login_Window()
     if login_window.login_controller:
-        login_window.login_controller.auto_fill_login("251000003")
+        login_window.login_controller.auto_fill_login("251000002")
     login_window.show()
 
     sys.exit(app.exec_())
