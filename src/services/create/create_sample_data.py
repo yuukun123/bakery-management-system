@@ -1,5 +1,7 @@
 import os
 import sqlite3
+from datetime import datetime
+
 
 class CreateSampleData:
     def __init__(self):
@@ -161,8 +163,68 @@ class CreateSampleData:
         #         conn.close()
         #         print("Đã đóng kết nối database.")
 
-        # cursor.execute("ALTER TABLE invoices add column cash_received TEXT")
-        # cursor.execute("ALTER TABLE invoices add column change_given TEXT")
+        # try:
+        #     conn.execute("BEGIN TRANSACTION;")  # Bắt đầu giao dịch
+        #
+        #     # --- KIỂM TRA VÀ THÊM CỘT ---
+        #     cursor.execute("PRAGMA table_info(customers)")
+        #     columns = [info[1] for info in cursor.fetchall()]
+        #
+        #     # 1. Thêm cột 'created_at' nếu chưa tồn tại
+        #     if 'created_at' not in columns:
+        #         print(" -> Thêm cột 'created_at'...")
+        #
+        #         # BƯỚC 1: Thêm cột với giá trị mặc định là NULL
+        #         cursor.execute("ALTER TABLE customers ADD COLUMN created_at DATETIME")
+        #
+        #         # BƯỚC 2: Cập nhật giá trị cho các dòng đã có
+        #         # Dùng strftime để có định dạng YYYY-MM-DD HH:MM:SS
+        #         now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        #         cursor.execute("UPDATE customers SET created_at = ? WHERE created_at IS NULL", (now_str,))
+        #         print(" -> Đã cập nhật giá trị mặc định cho 'created_at'.")
+        #     else:
+        #         print(" -> Cột 'created_at' đã tồn tại.")
+        #
+        #     # 2. Thêm cột 'updated_at' nếu chưa tồn tại
+        #     if 'updated_at' not in columns:
+        #         print(" -> Thêm cột 'updated_at'...")
+        #
+        #         # BƯỚC 1: Thêm cột
+        #         cursor.execute("ALTER TABLE customers ADD COLUMN updated_at DATETIME")
+        #
+        #         # BƯỚC 2: Cập nhật giá trị, sao chép từ created_at
+        #         cursor.execute("UPDATE customers SET updated_at = created_at WHERE updated_at IS NULL")
+        #         print(" -> Đã cập nhật giá trị mặc định cho 'updated_at'.")
+        #     else:
+        #         print(" -> Cột 'updated_at' đã tồn tại.")
+        #
+        #     # --- TẠO TRIGGER ĐỂ TỰ ĐỘNG CẬP NHẬT 'updated_at' ---
+        #     print(" -> Tạo/Tạo lại trigger 'trg_customers_updated_at'...")
+        #     cursor.execute("""
+        #             CREATE TRIGGER IF NOT EXISTS trg_customers_updated_at
+        #             AFTER UPDATE ON customers
+        #             FOR EACH ROW
+        #             BEGIN
+        #                 UPDATE customers
+        #                 SET updated_at = CURRENT_TIMESTAMP
+        #                 WHERE customer_id = OLD.customer_id;
+        #             END;
+        #         """)
+        #
+        #     conn.commit()  # Lưu tất cả các thay đổi
+        #     print("\nCập nhật bảng 'customers' thành công!")
+        #
+        # except sqlite3.Error as e:
+        #     print(f"\nCó lỗi xảy ra: {e}")
+        #     if conn:
+        #         conn.rollback()  # Hủy bỏ nếu có lỗi
+        # finally:
+        #     if conn:
+        #         conn.close()
+        #         print("Đã đóng kết nối database.")
+
+        # cursor.execute("ALTER TABLE customers add column create_at DATETIME DEFAULT CURRENT_TIMESTAMP")
+        # cursor.execute("ALTER TABLE customers add column update_at DATETIME DEFAULT CURRENT_TIMESTAMP")
         # cursor.execute("ALTER TABLE invoices add column payment_method TEXT NOT NULL CHECK(payment_method IN ('Tiền mặt', 'Chuyển khoản'))")
 
         # cursor.execute(
@@ -170,8 +232,10 @@ class CreateSampleData:
         #     VALUES (1, 'Khách vãng lai', 'N/A')
         # """)
 
-        conn.commit()
-        conn.close()
+
+
+        # conn.commit()
+        # conn.close()
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
