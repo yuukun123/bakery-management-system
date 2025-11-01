@@ -9,14 +9,16 @@ class ProductCard(QWidget):
     def __init__(self, product_data, parent=None):
         super().__init__(parent)
         uic.loadUi("UI/forms/employee/product_card.ui", self)
-        self.setFixedSize(275, 330)
+        self.setFixedSize(227, 330)
         self.product_data = product_data
         self.set_data(product_data)
 
     def set_data(self, data):
         # Điền dữ liệu vào các label
         self.product_name_label.setText(data.get('product_name'))
-        self.product_price_label.setText(f"{data.get('selling_price')}")
+        product_price = data.get('selling_price')
+        formatted_price = f"{product_price:,.0f}"
+        self.product_price_label.setText(f"{formatted_price}")
 
         # Set ảnh
         pixmap = QPixmap(data.get('image_path'))

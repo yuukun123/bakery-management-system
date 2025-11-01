@@ -1,6 +1,7 @@
+import time
 from logging import disable
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QHeaderView, QTableWidgetItem, QStackedWidget, QToolButton, QWidget, QGridLayout, QLabel, QMessageBox, QComboBox, QLineEdit
 
 from src.views.employee_main_view.product_card import ProductCard
@@ -34,6 +35,10 @@ class ProductController:
         self.contain_customer = self.page.findChild(QWidget, 'contain_customer')
         self.contain_customer.hide()
 
+        self.reset_timer = QTimer(self.page)
+        self.reset_timer.setSingleShot(True)  # Rất quan trọng, chỉ chạy 1 lần
+        self.reset_timer.timeout.connect(self.apply_product_filters)
+
         # --- Setup UI ---
         self.product_container = self.main_window.container_list
         print(f"DEBUG: Container được chọn là: {self.product_container.objectName()}")
@@ -47,8 +52,8 @@ class ProductController:
         self.product_layout.setColumnStretch(99, 1)
         self.product_layout.setRowStretch(99, 1)
 
-        self.product_layout.setHorizontalSpacing(15)
-        self.product_layout.setVerticalSpacing(15)
+        self.product_layout.setHorizontalSpacing(5)
+        self.product_layout.setVerticalSpacing(5)
         self.product_layout.setContentsMargins(0, 0, 0, 0)
         self.product_layout.setAlignment(Qt.AlignTop)
 
@@ -90,7 +95,6 @@ class ProductController:
         print("DEBUG: Filter combo box connected to apply_product_filters.")
         self.search_product_btn.clicked.connect(self.apply_product_filters)
         print("DEBUG: Search button connected to apply_product_filters.")
-
         self.search_product.textChanged.connect(self.on_search_text_changed)
 
     def show_checkout_page(self):
@@ -168,12 +172,12 @@ class ProductController:
                                     "Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn.")
 
     def on_search_text_changed(self, text):
-        """
-        Nếu ô tìm kiếm rỗng, tự động áp dụng lại bộ lọc.
-        """
+        self.reset_timer.stop()
+
         if not text.strip():
-            print("DEBUG: Search input is empty, triggering filter reload.")
-            self.apply_product_filters()
+            # Nếu text là rỗng, khởi động timer với một độ trễ nhỏ (ví dụ 500ms)
+            print("DEBUG: Search input is empty. Starting reset timer (500ms)...")
+            self.reset_timer.start(50)
 
     def update_checkout_button_state(self):
         """
@@ -219,7 +223,7 @@ class ProductController:
             QMessageBox.information(self.main_window, "Thông báo", "Không tìm thấy sản phẩm")
             return
 
-        num_columns = 4
+        num_columns = 5
         for index, product_data in enumerate(products_data):
             product_card = ProductCard(product_data, parent=self.product_container)
             product_card.product_clicked.connect(self.handle_click_product)

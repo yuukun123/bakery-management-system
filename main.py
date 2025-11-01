@@ -7,12 +7,32 @@ from src.views.login_view.login_view import Login_Window
 # from src.windows.login_window import open_login_window
 from src.views.employee_main_view.product_card import ProductCard  # nếu bạn lưu class trên vào file product_card.py
 
+def load_stylesheet(file_path):
+    """Đọc và trả về nội dung của một file stylesheet."""
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"WARNING: Stylesheet file not found at '{file_path}'")
+        return ""
+
+
 if __name__ == "__main__":
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
     app = QtWidgets.QApplication(sys.argv)
     # open_login_window()
+
+    stylesheet_path = "UI/styles/container.css"
+
+    # Đọc file
+    stylesheet = load_stylesheet(stylesheet_path)
+
+    # Áp dụng cho toàn bộ ứng dụng
+    if stylesheet:
+        app.setStyleSheet(stylesheet)
+        print("Stylesheet loaded successfully.")
 
     # auto fill login for testing
     login_window = Login_Window()
