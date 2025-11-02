@@ -38,7 +38,8 @@ class InvoiceController:
             print("DEBUG: ProductController setup is running for the first time.")
             self.setup_ui_connections()
             self._setup_table_header_and_properties()
-            self.load_invoice_data()
+            # self.load_invoice_data()
+            self.load_all_invoices()
             self._initialized = True
 
     def setup_ui_connections(self):
@@ -46,7 +47,6 @@ class InvoiceController:
         self.filter_btn.clicked.connect(self.apply_filters)
         self.search_invoice_btn.clicked.connect(self.apply_filters)
         self.clear_btn.clicked.connect(self.clear_search_input)
-
 
     def search_customer_invoice(self):
         customer_name = self.customer_name_invoice.text().strip()
@@ -77,23 +77,6 @@ class InvoiceController:
 
         self.table.setColumnCount(len(INVOICE_HEADER))
         self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
-
-    def load_invoice_data(self):
-        invoice_data = self.query_data.get_all_invoices()
-        print(f"DEBUG (EmployeeView): data manager: {invoice_data}")
-        if not invoice_data:
-            print("Không có dữ liệu nhân viên")
-            self.table.setRowCount(0) # Xóa dữ liệu cũ nếu không có dữ liệu mới
-            return
-
-        self.table.setRowCount(len(invoice_data))
-
-        for row_index, row_data in enumerate(invoice_data):
-            for col_index, cell_data in enumerate(row_data):
-                item = QTableWidgetItem(str(cell_data))
-                if item:
-                    item.setTextAlignment(Qt.AlignCenter)
-                self.table.setItem(row_index, col_index, item)
 
     def apply_filters(self):
         # 1. Lấy ngày tháng

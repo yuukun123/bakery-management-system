@@ -1,48 +1,72 @@
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QSpinBox
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5 import uic
 
 class ItemCard(QWidget):
-    quantity_updated = pyqtSignal(int)
+    # Gửi đi ID sản phẩm và số lượng MỚI mà người dùng đã nhập
+    quantity_set_requested = pyqtSignal(int, int)
+    quantity_change_requested = pyqtSignal(int, int)
     # Tín hiệu để yêu cầu xóa item này khỏi hóa đơn
     delete_requested = pyqtSignal(dict)
 
     def __init__(self, product_data, parent=None):
         super().__init__(parent)
         uic.loadUi("UI/forms/employee/item_card.ui", self)
-        self.quantity = 1
-        self.item_quantity.setValue(self.quantity)
-        self.unit_price = product_data.get('selling_price', 0)
+        self.item_quantity = self.findChild(QSpinBox, 'item_quantity')
+        if self.item_quantity is None:
+            raise RuntimeError("Không tìm thấy QSpinBox 'item_quantity_spinbox'")
 
         self.product_data = product_data
-        self.set_data(self.product_data)
+        self.unit_price = product_data.get('selling_price', 0)
+        self.product_id = product_data.get('product_id')
+
+        self.set_data()
+        self.quantity = 1
+        self.set_quantity(1)
 
         # Kết nối các nút với các hàm xử lý (slot)
-        self.plus_btn.clicked.connect(self.increase_quantity)
-        self.minus_btn.clicked.connect(self.decrease_quantity)
-        # Giả sử bạn có một nút xóa tên là 'delete_btn'
+        self.item_quantity.editingFinished.connect(self.on_quantity_edited)
+
+        self.plus_btn.clicked.connect(self.request_increase)
+        self.minus_btn.clicked.connect(self.request_decrease)
         self.delete_btn.clicked.connect(self.request_delete)
 
-    def set_data(self, data):
+    def set_data(self):
         # Điền dữ liệu vào các label
-        item_name = data.get('product_name', 'Unknown Item')
+        item_name = self.product_data.get('product_name', 'Unknown Item')
         self.item_name_label.setText(item_name)
 
     def set_quantity(self, quantity):
-        self.quantity = quantity
-        # Bây giờ ItemCard tự biết phải làm gì với widget của nó
-        self.item_quantity.setValue(self.quantity)
+        """
+        Một phương thức công khai để Controller ra lệnh cho ItemCard cập nhật số lượng.
+        Hàm này chỉ cập nhật UI, không chứa logic.
+        """
+        try:
+            self.item_quantity.editingFinished.disconnect(self.on_quantity_edited)
+        except TypeError:
+            # Bỏ qua lỗi nếu nó chưa bao giờ được kết nối
+            pass
 
-    def increase_quantity(self):
-        """Tăng số lượng của item này lên 1."""
-        self.quantity += 1
-        self.update_ui()
+        try:
+            # Cập nhật giá trị nội bộ và giao diện
+            self.quantity = quantity
+            self.item_quantity.setValue(self.quantity)
+        finally:
+            # --- KẾT NỐI LẠI TÍN HIỆU ---
+            self.item_quantity.editingFinished.connect(self.on_quantity_edited)
 
-    def decrease_quantity(self):
-        if self.quantity > 1:
-            self.quantity -= 1
-            self.update_ui()
+        print(f"DEBUG: [ItemCard] UI quantity set to {self.quantity} for pid={self.product_id}")
+
+    def request_increase(self):
+        """Phát tín hiệu yêu cầu tăng số lượng lên 1."""
+        print(f"DEBUG: [ItemCard] Requesting to increase quantity for product {self.product_id}.")
+        self.quantity_change_requested.emit(self.product_id, 1)  # Gửi đi +1
+
+    def request_decrease(self):
+        """Phát tín hiệu yêu cầu giảm số lượng đi 1."""
+        print(f"DEBUG: [ItemCard] Requesting to decrease quantity for product {self.product_id}.")
+        self.quantity_change_requested.emit(self.product_id, -1)  # Gửi đi -1
 
     def request_delete(self):
         """Phát tín hiệu yêu cầu xóa chính nó."""
@@ -52,7 +76,14 @@ class ItemCard(QWidget):
         """Trả về tổng tiền cho item này (giá * số lượng)."""
         return self.unit_price * self.quantity
 
-    def update_ui(self):
-        self.item_quantity.setValue(self.quantity)
-        self.quantity_updated.emit(self.quantity)
-        print(f"DEBUG: [ItemCard] '{self.product_data.get('product_name')}' quantity changed to {self.quantity}")
+    def on_quantity_edited(self):
+        """
+        Được gọi khi người dùng nhập xong số lượng.
+        Phát tín hiệu yêu cầu đặt số lượng mới.
+        """
+        new_quantity = self.item_quantity.value()
+
+        # Chỉ phát tín hiệu nếu giá trị thực sự thay đổi
+        if new_quantity != self.quantity:
+            print(f"DEBUG: [ItemCard] User edited quantity for pid={self.product_id} to {new_quantity}.")
+            self.quantity_set_requested.emit(self.product_id, new_quantity)

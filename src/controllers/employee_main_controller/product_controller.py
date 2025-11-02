@@ -39,6 +39,8 @@ class ProductController:
         self.reset_timer.setSingleShot(True)  # Rất quan trọng, chỉ chạy 1 lần
         self.reset_timer.timeout.connect(self.apply_product_filters)
 
+        self._is_processing_quantity_change = False
+
         # --- Setup UI ---
         self.product_container = self.main_window.container_list
         print(f"DEBUG: Container được chọn là: {self.product_container.objectName()}")
@@ -237,57 +239,189 @@ class ProductController:
 
     def handle_click_product(self, product_data):
         """
-        Xử lý khi click vào một sản phẩm.
-        Kiểm tra xem sản phẩm đã có trong hóa đơn chưa,
-        nếu có thì tăng số lượng, nếu chưa thì thêm mới.
+        Xử lý khi click vào một sản phẩm từ danh sách.
+        Bao gồm kiểm tra tồn kho trước khi thêm hoặc tăng số lượng.
         """
         product_id = product_data.get('product_id')
         if product_id is None:
             print("ERROR: Sản phẩm không có ID.")
             return
-        print(f"DEBUG: [Controller] Clicked on product ID: {product_id}")
-        # KIỂM TRA XEM SẢN PHẨM ĐÃ CÓ TRONG HÓA ĐƠN CHƯA
-        if product_id in self.order_service.items:
-            # Nếu đã có, chỉ cần tăng số lượng
-            print(f"DEBUG: [Controller] Product ID {product_id} already in order. Increasing quantity.")
-            # 1. Cập nhật dữ liệu trong Service
-            self.order_service.increase_item_quantity(product_id)  # Bạn cần thêm hàm này vào OrderService
 
-            # 2. Lấy widget tương ứng và yêu cầu nó cập nhật giao diện
+        print(f"DEBUG: [Controller] User clicked on ProductCard for pid={product_id}")
+
+        # === BƯỚC 1: LUÔN LẤY TỒN KHO MỚI NHẤT ===
+        current_stock = self.query_data.get_check_stock_product(product_id)
+
+        if current_stock is None:
+            QMessageBox.critical(self.main_window, "Lỗi", "Không thể lấy thông tin tồn kho cho sản phẩm này.")
+            return
+
+        # === BƯỚC 2: KIỂM TRA XEM SẢN PHẨM ĐÃ CÓ TRONG GIỎ CHƯA ===
+        if product_id in self.order_service.items:
+            # SẢN PHẨM ĐÃ TỒN TẠI TRONG GIỎ HÀNG
+
+            # Lấy số lượng hiện tại trong giỏ
+            quantity_in_cart = self.order_service.items[product_id]['quantity']
+
+            # --- KIỂM TRA TỒN KHO TRƯỚC KHI TĂNG ---
+            if quantity_in_cart >= current_stock:
+                QMessageBox.warning(self.main_window, "Số lượng tối đa",
+                                    f"Bạn đã đạt số lượng tồn kho tối đa ({current_stock}) cho sản phẩm này.")
+                return  # Dừng lại, không cho thêm nữa
+
+            # Nếu hợp lệ, tiến hành tăng số lượng
+            print(f"DEBUG: [Controller] Product ID {product_id} is in order. Increasing quantity.")
+
+            # 1. Cập nhật Model
+            self.order_service.increase_item_quantity(product_id)
+            new_quantity = self.order_service.items[product_id]['quantity']
+
+            # 2. Cập nhật View
             if product_id in self.item_card_widgets:
                 card_widget = self.item_card_widgets[product_id]
-                new_quantity = self.order_service.items[product_id]['quantity']
-                card_widget.set_quantity(new_quantity)  # Cập nhật UI
-        else:
-            # Nếu chưa có, tạo card mới và thêm vào
-            print(f"DEBUG: [Controller] Product ID {product_id} not in order. Creating new card.")
-            if self.order_list_layout is None:
-                print("ERROR: [Controller] order_list_layout is None! Cannot add item card.")
-                return
-            self.order_service.add_item(product_data)
-            new_card = ItemCard(product_data)
+                card_widget.set_quantity(new_quantity)
 
-            new_card.quantity_updated.connect(
-                lambda new_qty, pid=product_id: self.on_item_quantity_change(pid, new_qty)
-            )
+            # (Tùy chọn) Hiển thị thông báo nếu vừa đạt đến giới hạn
+            if new_quantity == current_stock:
+                QMessageBox.information(self.main_window, "Thông báo",
+                                        f"Đã đạt số lượng tồn kho tối đa cho sản phẩm '{product_data.get('product_name')}'.")
+
+        else:
+            # SẢN PHẨM CHƯA CÓ TRONG GIỎ HÀNG (THÊM MỚI)
+
+            # --- KIỂM TRA TỒN KHO TRƯỚC KHI THÊM MỚI ---
+            if current_stock <= 0:
+                QMessageBox.warning(self.main_window, "Hết hàng",
+                                    f"Sản phẩm '{product_data.get('product_name')}' hiện đã hết hàng.")
+                return  # Dừng lại, không cho thêm sản phẩm đã hết hàng
+
+            # Nếu còn hàng, tiến hành thêm mới
+            print(f"DEBUG: [Controller] Product ID {product_id} is not in order. Creating new card.")
+
+            # 1. Cập nhật Model
+            self.order_service.add_item(product_data)
+
+            # 2. Tạo View (ItemCard) và kết nối các tín hiệu
+            new_card = ItemCard(product_data)
+            new_card.quantity_change_requested.connect(self.on_item_quantity_change_requested)
+            new_card.quantity_set_requested.connect(self.on_item_quantity_set_requested)
             new_card.delete_requested.connect(self.remove_item_from_order)
 
-            # Thêm card vào layout
-            insert_position = self.order_list_layout.count() - 1  # -1 vì cái stretch cũng được tính là 1 item
+            # 3. Thêm View vào layout
+            insert_position = self.order_list_layout.count() - 1
             self.order_list_layout.insertWidget(insert_position, new_card)
 
-            # LƯU card mới vào dictionary để theo dõi
+            # 4. Lưu lại widget để có thể tham chiếu sau này
             self.item_card_widgets[product_id] = new_card
 
+        # === BƯỚC 3: LUÔN CẬP NHẬT GIAO DIỆN CHUNG SAU MỖI THAY ĐỔI ===
         self.update_checkout_button_state()
         self.update_total_bill()
 
-        if product_id in self.item_card_widgets:
-            print(f"Debug quantity for product {product_id}: {self.item_card_widgets[product_id].quantity}")
+    # hàm check và cập nhật số lượng khi người dùng nhập tay
+    def on_item_quantity_set_requested(self, product_id, requested_quantity):
+        """
+        Slot này được gọi khi người dùng nhập tay một số lượng cụ thể.
+        Nó sẽ kiểm tra tồn kho và cập nhật hoặc reset lại giá trị.
+        """
+        if self._is_processing_quantity_change:
+            print("DEBUG: [Controller] Already processing a quantity change. Ignoring subsequent request.")
+            return  # Nếu đang xử lý, bỏ qua yêu cầu mới
 
-    def on_item_quantity_change(self, product_id, new_quantity):
-        self.order_service.update_quantity(product_id, new_quantity)
-        self.update_total_bill()
+            # --- BƯỚC 2: KHÓA LẠI ---
+        self._is_processing_quantity_change = True
+        try:
+            print(f"DEBUG: [Controller] Received request to SET quantity for pid={product_id} to {requested_quantity}.")
+
+            # 1. Kiểm tra số lượng yêu cầu có hợp lệ không
+            if requested_quantity < 1:
+                print("INFO: Requested quantity is less than 1. Resetting to 1.")
+                requested_quantity = 1  # Tự động đặt lại là 1 nếu người dùng nhập 0 hoặc số âm
+
+            # 2. Lấy tồn kho mới nhất từ CSDL
+            current_stock = self.query_data.get_check_stock_product(product_id)
+            if current_stock is None:
+                QMessageBox.critical(self.main_window, "Lỗi", "Không thể kiểm tra tồn kho.")
+                # Lấy lại số lượng cũ từ service và reset UI
+                old_quantity = self.order_service.items.get(product_id, {}).get('quantity', 1)
+                if product_id in self.item_card_widgets:
+                    self.item_card_widgets[product_id].set_quantity(old_quantity)
+                return
+
+            final_quantity = requested_quantity
+
+            # 3. So sánh với tồn kho
+            if requested_quantity > current_stock:
+                QMessageBox.warning(self.main_window, "Vượt quá tồn kho",
+                                    f"Chỉ còn {current_stock} sản phẩm trong kho. "
+                                    f"Số lượng đã được tự động điều chỉnh.")
+                final_quantity = current_stock  # Tự động điều chỉnh về số lượng tối đa
+
+            # 4. Cập nhật Model và View
+            self.order_service.update_quantity(product_id, final_quantity)
+
+            if product_id in self.item_card_widgets:
+                card_widget = self.item_card_widgets[product_id]
+                card_widget.set_quantity(final_quantity)  # Ra lệnh cho View hiển thị số lượng đúng
+
+            # 5. Cập nhật lại tổng tiền
+            self.update_total_bill()
+        finally:
+            self._is_processing_quantity_change = False
+            print("DEBUG: [Controller] Finished processing quantity change. Unlocked.")
+
+    def on_item_quantity_change_requested(self, product_id, change_amount):
+        """
+        Slot này được gọi khi người dùng bấm nút + hoặc - trên một ItemCard.
+        Nó sẽ kiểm tra tồn kho trước khi thay đổi số lượng.
+
+        Args:
+            product_id (int): ID của sản phẩm cần thay đổi.
+            change_amount (int): Số lượng thay đổi (+1 hoặc -1).
+        """
+        if self._is_processing_quantity_change:
+            return
+
+        self._is_processing_quantity_change = True
+        try:
+            print(f"DEBUG: [Controller] Received request to change quantity for pid={product_id} by {change_amount}.")
+
+            # 1. Lấy số lượng hiện tại trong giỏ hàng
+            if product_id not in self.order_service.items:
+                return  # Trường hợp hiếm gặp, bỏ qua
+            current_quantity_in_cart = self.order_service.items[product_id]['quantity']
+
+            # 2. Tính toán số lượng mới
+            new_quantity = current_quantity_in_cart + change_amount
+
+            # 3. Kiểm tra các điều kiện
+            if new_quantity < 1:
+                # Nếu giảm xuống dưới 1, không làm gì cả (hoặc có thể xóa item)
+                return
+
+            # Lấy tồn kho mới nhất từ CSDL
+            current_stock = self.query_data.get_check_stock_product(product_id)
+            if current_stock is None:
+                QMessageBox.critical(self.main_window, "Lỗi", "Không thể kiểm tra tồn kho.")
+                return
+
+            if new_quantity > current_stock:
+                QMessageBox.warning(self.main_window, "Số lượng tối đa",
+                                    f"Chỉ còn {current_stock} sản phẩm trong kho.")
+                return  # Không cho phép tăng
+
+            # 4. Nếu tất cả đều hợp lệ, cập nhật Model
+            self.order_service.update_quantity(product_id, new_quantity)
+
+            # 5. Lấy widget và ra lệnh cho nó cập nhật View
+            if product_id in self.item_card_widgets:
+                card_widget = self.item_card_widgets[product_id]
+                card_widget.set_quantity(new_quantity)
+
+            # 6. Cập nhật lại tổng tiền
+            self.update_total_bill()
+        finally:
+            self._is_processing_quantity_change = False
 
     def update_total_bill(self):
         """Tính lại tổng tiền của toàn bộ hóa đơn."""

@@ -88,51 +88,82 @@ class EmployeeQueryData:
             if conn:
                 conn.close()
 
-    def filter_products(self, type_id=None, keyword=None):
+    def get_check_stock_product(self, product_id):
         """
-        Lọc danh sách sản phẩm một cách linh hoạt.
+        Lấy số lượng tồn kho (stock) của một sản phẩm.
 
         Args:
-            type_id (int, optional): ID của loại sản phẩm để lọc.
-                                     Nếu là 0 hoặc None, sẽ bỏ qua bộ lọc này.
-            keyword (str, optional): Từ khóa để tìm kiếm trong tên sản phẩm.
-                                     Nếu rỗng hoặc None, sẽ bỏ qua bộ lọc này.
+            product_id (int): ID của sản phẩm.
 
         Returns:
-            list: Một danh sách các dictionary chứa thông tin sản phẩm.
-            None: Nếu có lỗi xảy ra.
+            int: Số lượng tồn kho nếu tìm thấy sản phẩm.
+            None: Nếu sản phẩm không tồn tại hoặc có lỗi xảy ra.
         """
         conn = None
         try:
             conn = self._get_connection()
             cursor = conn.cursor()
 
-            # --- XÂY DỰNG CÂU LỆNH SQL ĐỘNG ---
+            # Chỉ cần SELECT cột 'stock'
+            sql = "SELECT stock FROM products WHERE product_id = ?"
 
-            # Phần SELECT cơ bản
+            cursor.execute(sql, (product_id,))
+
+            result = cursor.fetchone()
+
+            # fetchone() sẽ trả về một tuple, ví dụ: (10,)
+            # Nếu tìm thấy, trả về phần tử đầu tiên của tuple. Nếu không, trả về None.
+            return result[0] if result is not None else None
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in get_product_stock: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def get_product_stock(self):
+        pass
+
+
+    def filter_products(self, type_id=None, keyword=None):
+        """
+        Lọc danh sách các sản phẩm đang kinh doanh và còn hàng.
+        """
+        conn = None
+        try:
+            conn = self._get_connection()
+            conn.row_factory = sqlite3.Row  # Rất quan trọng để trả về dict-like
+            cursor = conn.cursor()
+
             base_sql = "SELECT * FROM products"
 
-            conditions = []
+            # --- THÊM CÁC ĐIỀU KIỆN CỐ ĐỊNH Ở ĐÂY ---
+            # Luôn luôn chỉ lấy sản phẩm 'đang kinh doanh' và 'còn hàng'
+            conditions = [
+                "status = 'đang kinh doanh'",
+                "stock > 0"
+            ]
             params = []
 
-            # 1. Thêm điều kiện lọc theo Loại sản phẩm
-            # Giả sử type_id=0 có nghĩa là "Tất cả các loại"
+            # --- CÁC ĐIỀU KIỆN ĐỘNG (TỪ BỘ LỌC) ---
+            # 1. Lọc theo Loại sản phẩm
             if type_id is not None and type_id > 0:
                 conditions.append("type_id = ?")
                 params.append(type_id)
 
-            # 2. Thêm điều kiện lọc theo Từ khóa (tên sản phẩm)
+            # 2. Lọc theo Từ khóa
             if keyword:
                 conditions.append("product_name LIKE ?")
                 params.append(f"%{keyword}%")
 
-            # Ghép các điều kiện lại
+            # Ghép tất cả các điều kiện lại bằng "AND"
             if conditions:
                 final_sql = base_sql + " WHERE " + " AND ".join(conditions)
             else:
                 final_sql = base_sql
 
-            final_sql += " ORDER BY product_name;"  # Sắp xếp theo tên cho dễ nhìn
+            final_sql += " ORDER BY product_name;"
 
             print(f"DEBUG: Executing SQL: {final_sql}")
             print(f"DEBUG: With params: {params}")
