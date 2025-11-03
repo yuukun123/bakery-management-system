@@ -1,8 +1,9 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
 from src.controllers.buttonController import buttonController
+from src.controllers.employee_main_controller.check_warehouse_controller import WarehouseController
 from src.controllers.employee_main_controller.checkout_controller import CheckoutController
 from src.controllers.employee_main_controller.customer_controller import CustomerController
 from src.controllers.employee_main_controller.invoice_controller import InvoiceController
@@ -40,7 +41,6 @@ class EmployeeMainWindow(QMainWindow):
         print(f"DEBUG: Employee name: {employee_name}")
         print(f"DEBUG: Employee role: {employee_role}")
 
-
         set_employee_info(self.username_label, employee_name)
         set_employee_role(self.role_label, employee_role)
 
@@ -49,7 +49,7 @@ class EmployeeMainWindow(QMainWindow):
         self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
-        buttons = [ self.product_btn, self.customer_btn, self.invoice_btn ]
+        buttons = [ self.product_btn, self.customer_btn, self.invoice_btn, self.warehouse_btn ]
         index_map = {btn: i for i, btn in enumerate(buttons)}
         self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.product_btn)
 
@@ -59,6 +59,7 @@ class EmployeeMainWindow(QMainWindow):
 
         self.customer_controller = CustomerController(self)
         self.invoice_controller = InvoiceController(self)
+        self.warehouse_controller = WarehouseController(self)
 
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
@@ -94,4 +95,9 @@ class EmployeeMainWindow(QMainWindow):
         elif current_widget == self.invoice_page:
             print("Đã chuyển đến trang Invoice")
             self.invoice_controller.setup_page()
+
+        elif current_widget == self.check_warehouse_page:
+            print("Đã chuyển đến trang Warehouse")
+            self.warehouse_controller.setup_page()
+
 

@@ -1,7 +1,5 @@
-
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
 from src.controllers.login_controllers.login_controller import LoginController

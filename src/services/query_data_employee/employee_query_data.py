@@ -129,17 +129,22 @@ class EmployeeQueryData:
             conn = self._get_connection()
             cursor = conn.cursor()
 
-            # Chỉ cần SELECT cột 'stock'
-            sql = "SELECT product_id, product_name, stock FROM products WHERE product_id = ?"
+            sql = """SELECT p.product_id, p.product_name, tp.type_name, p.stock, p.selling_price 
+                        FROM products p
+                        LEFT JOIN type_product tp ON tp.type_id = p.type_id
+                        ORDER BY product_id """
+            cursor.execute(sql)
 
-            cursor.execute(sql,)
+            # Dùng fetchall() để lấy TẤT CẢ các dòng kết quả
+            product_rows = cursor.fetchall()
 
-            product_row = cursor.fetchone()
-            return dict(product_row)
+            # Dùng list comprehension để chuyển đổi mỗi sqlite3.Row trong danh sách thành dict
+            return [dict(row) for row in product_rows] if product_rows else []
 
         except sqlite3.Error as e:
-            print(f"❌ Database error in get_product_stock: {e}")
-            return None
+            print(f"❌ Database error in get_all_products_for_display: {e}")
+            # Trả về list rỗng khi có lỗi để Controller dễ xử lý
+            return []
         finally:
             if conn:
                 conn.close()

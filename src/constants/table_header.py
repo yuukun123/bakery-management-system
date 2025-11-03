@@ -15,6 +15,7 @@ INVOICE_HEADER = [
 PRODUCT_HEADER = [
     "Mã sản phẩm",
     "Tên sản phẩm",
+    "Loại sản phẩm",
     "Số lượng",
     "Đơn giá"
 ]

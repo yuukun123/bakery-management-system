@@ -150,18 +150,6 @@ class CustomerController(QObject):
                     item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row_index, col_index, item)
 
-        # # Cấu hình giao diện cho bảng
-        # table.resizeColumnsToContents()
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        # table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        # table.setAlternatingRowColors(True)
-        # table.setSortingEnabled(True)
-        # table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # table.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        # table.verticalHeader().setVisible(False)
-        # table.setFocusPolicy(Qt.NoFocus)
-        # table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
     def handle_update_customer_infor(self):
         new_customer_name = self.new_customer_name.text()
         new_customer_phone = self.new_customer_phone.text()
