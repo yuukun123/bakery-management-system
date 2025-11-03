@@ -90,7 +90,7 @@ class EmployeeQueryData:
 
     def get_check_stock_product(self, product_id):
         """
-        Lấy số lượng tồn kho (stock) của một sản phẩm.
+        Lấy số lượng tồn kho (stock) của một sản phẩm để kiểm tra
 
         Args:
             product_id (int): ID của sản phẩm.
@@ -123,8 +123,26 @@ class EmployeeQueryData:
                 conn.close()
 
     def get_product_stock(self):
-        pass
+        """lấy tồn kho sản phẩm"""
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
 
+            # Chỉ cần SELECT cột 'stock'
+            sql = "SELECT stock FROM products WHERE product_id = ?"
+
+            cursor.execute(sql,)
+
+            product_row = cursor.fetchone()
+            return dict(product_row)
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in get_product_stock: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
 
     def filter_products(self, type_id=None, keyword=None):
         """
@@ -493,4 +511,3 @@ class EmployeeQueryData:
         finally:
             if conn:
                 conn.close()
-

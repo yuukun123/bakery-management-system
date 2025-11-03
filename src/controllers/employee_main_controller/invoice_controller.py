@@ -1,14 +1,15 @@
 from datetime import datetime
 
-from PyQt5.QtCore import Qt, QRegExp, QDate
+from PyQt5.QtCore import Qt, QRegExp, QDate, QObject
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView
 
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
 from src.constants.table_header import INVOICE_HEADER
 
-class InvoiceController:
+class InvoiceController(QObject):
     def __init__(self, parent):
+        super().__init__(parent)
         self.parent = parent
         self._initialized = False  # Cờ để chắc rằng chúng ta chỉ setup 1 lần
         self.query_data = EmployeeQueryData()
@@ -48,21 +49,6 @@ class InvoiceController:
         self.search_invoice_btn.clicked.connect(self.apply_filters)
         self.clear_btn.clicked.connect(self.clear_search_input)
 
-    def search_customer_invoice(self):
-        customer_name = self.customer_name_invoice.text().strip()
-        customer_phone = self.customer_phone_invoice.text().strip()
-        invoice_code = self.invoice_code.text().strip()
-
-        # customer_data = self.query_data.get_customer_with_phone(customer_phone)
-        #
-        # if not customer_phone:
-        #     print("DEBUG: Vui lòng nhập số điện thoại khách hàng.")
-        #     return
-        #
-        # if not customer_data:
-        #     QMessageBox.warning(self.parent, "Thông báo", "Không tìm thấy khách hàng hãy thêm mới vào")
-        #     return
-
     def _setup_table_header_and_properties(self):
         if not self.table:
             print("WARNING: Không tìm thấy QTableWidget.")
@@ -79,31 +65,62 @@ class InvoiceController:
         self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
 
     def apply_filters(self):
-        # 1. Lấy ngày tháng
-        start_date = self.start_day.date().toPyDate()
-        end_date = self.end_day.date().toPyDate()
+        """
+        Thu thập và áp dụng các bộ lọc dựa trên nút nào đã được bấm.
+        - Nếu nút 'filter_btn' được bấm, sẽ lọc theo ngày VÀ các từ khóa.
+        - Nếu nút 'search_invoice_btn' được bấm, sẽ CHỈ lọc theo các từ khóa.
+        """
+        # --- XÁC ĐỊNH NÚT NÀO ĐÃ GỌI HÀM NÀY ---
+        sender_button = self.sender()
 
-        # 2. Lấy các từ khóa
+        start_date_param = None
+        end_date_param = None
+
+        # 1. KIỂM TRA XEM CÓ NÊN ÁP DỤNG BỘ LỌC NGÀY KHÔNG
+        if sender_button == self.filter_btn:
+            # Nếu người dùng bấm nút "Filter", chúng ta sẽ lấy ngày tháng
+            print("DEBUG: Filter button clicked. Applying date filter.")
+            start_date_param = self.start_day.date().toPyDate()
+            end_date_param = self.end_day.date().toPyDate()
+        else:
+            # Nếu là nút khác (nút kính lúp), chúng ta bỏ qua bộ lọc ngày
+            print("DEBUG: Search button clicked. Ignoring date filter.")
+            # start_date_param và end_date_param vẫn là None
+
+        # 2. LẤY CÁC TỪ KHÓA (LUÔN LUÔN LẤY)
         invoice_code_keyword = self.invoice_code.text().strip()
         customer_name_keyword = self.customer_name_invoice.text().strip()
         customer_phone_keyword = self.customer_phone_invoice.text().strip()
 
-        # 3. Gọi hàm lọc linh hoạt mới
+        # Kiểm tra xem có bất kỳ điều kiện lọc nào không (để tránh truy vấn rỗng)
+        has_date_filter = start_date_param is not None
+        has_keyword_filter = any([invoice_code_keyword, customer_name_keyword, customer_phone_keyword])
+
+        if not has_date_filter and not has_keyword_filter:
+            # Nếu không có bộ lọc nào được áp dụng (ví dụ: người dùng bấm kính lúp khi ô trống)
+            # thì tải lại toàn bộ danh sách
+            self.load_all_invoices()
+            return
+
+        # 3. GỌI HÀM LỌC LINH HOẠT
         results = self.query_data.filter_invoices(
-            start_date=start_date,
-            end_date=end_date,
+            start_date=start_date_param,
+            end_date=end_date_param,
             invoice_code=invoice_code_keyword,
             customer_name=customer_name_keyword,
             customer_phone=customer_phone_keyword
         )
 
-        # 4. Hiển thị kết quả
-        if results is not None:
-            self.populate_invoice_table(results)
-            if not results:
-                QMessageBox.information(self.parent, "Thông báo", "Không tìm thấy kết quả nào phù hợp.")
-        else:
+        if results is None:
+            # Trường hợp 1: Có lỗi CSDL
             QMessageBox.critical(self.parent, "Lỗi", "Có lỗi xảy ra khi lọc hóa đơn.")
+            return
+
+        # 4. HIỂN THỊ KẾT QUẢ (Không thay đổi)
+        if results:
+            self.populate_invoice_table(results)
+        else:
+            QMessageBox.information(self.parent, "Thông báo", "Không tìm thấy kết quả nào phù hợp.")
 
     def populate_invoice_table(self, invoices_data):
         """
