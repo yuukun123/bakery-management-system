@@ -130,7 +130,7 @@ class EmployeeQueryData:
             cursor = conn.cursor()
 
             # Chỉ cần SELECT cột 'stock'
-            sql = "SELECT stock FROM products WHERE product_id = ?"
+            sql = "SELECT product_id, product_name, stock FROM products WHERE product_id = ?"
 
             cursor.execute(sql,)
 
