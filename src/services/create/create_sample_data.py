@@ -417,6 +417,63 @@ class CreateSampleData:
         #         conn.close()
         #         print("Đã đóng kết nối database.")
 
+        # --- ĐỊNH NGHĨA DANH SÁCH CẦN CẬP NHẬT ---
+        # Cấu trúc: (tên_mới, product_id)
+        products_to_update = [
+            ("Avocado Croissant", 1),
+            ("Choco Mallow Croissant", 2),
+            ("Dinosaur Almond Croissant", 3),
+            ("Honey Almond Croissant", 4),
+            ("Matcha Croissant", 5),
+            ("Avocado Mousse", 6),
+            ("Blueberry Mousse", 7),
+            ("Corn Mousse", 8),
+            ("Longan Mousse", 9),
+            ("Mango Mousse", 10),
+            ("Coffee Tart", 11),
+            ("Cherry Tart", 12),
+            ("Matcha Tart", 13),
+            ("Strawberry Tart", 14),
+            ("Tiramisu Tart", 15)
+        ]
+
+        if not products_to_update:
+            print("Danh sách sản phẩm cần cập nhật đang rỗng. Bỏ qua.")
+            return
+
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            # Câu lệnh SQL để cập nhật tên sản phẩm
+            sql_update = "UPDATE products SET product_name = ? WHERE product_id = ?"
+
+            print("Bắt đầu cập nhật hàng loạt tên sản phẩm...")
+
+            # Sử dụng executemany để thực thi lệnh UPDATE cho tất cả các item trong danh sách
+            # Nó hiệu quả hơn nhiều so-với-việc chạy trong vòng lặp for
+            cursor.executemany(sql_update, products_to_update)
+
+            conn.commit()
+
+            # cursor.rowcount sẽ cho biết tổng số dòng đã được cập nhật
+            print(f"\nCập nhật thành công! Tổng cộng {cursor.rowcount} sản phẩm đã được đổi tên.")
+
+            # (Tùy chọn) In ra danh sách đã cập nhật để kiểm tra
+            print("Danh sách các sản phẩm đã được cập nhật:")
+            for new_name, product_id in products_to_update:
+                print(f"  - ID: {product_id} -> Tên mới: {new_name}")
+
+        except sqlite3.Error as e:
+            print(f"\n❌ Có lỗi xảy ra trong quá trình cập nhật: {e}")
+            if conn:
+                conn.rollback()
+        finally:
+            if conn:
+                conn.close()
+                print("Đã đóng kết nối CSDL.")
+
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object

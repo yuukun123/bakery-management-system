@@ -25,24 +25,24 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     # open_login_window()
 
-    # stylesheet_path = "UI/styles/container.css"
-    #
-    # # Đọc file
-    # stylesheet = load_stylesheet(stylesheet_path)
-    #
-    # # Áp dụng cho toàn bộ ứng dụng
-    # if stylesheet:
-    #     app.setStyleSheet(stylesheet)
-    #     print("Stylesheet loaded successfully.")
-    #
-    # # auto fill login for testing
-    # login_window = Login_Window()
-    # if login_window.login_controller:
-    #     login_window.login_controller.auto_fill_login("251000002")
-    # login_window.show()
+    stylesheet_path = "UI/styles/container.css"
 
-    invoice_detail = InvoiceDetailView()
-    invoice_detail.show()
+    # Đọc file
+    stylesheet = load_stylesheet(stylesheet_path)
+
+    # Áp dụng cho toàn bộ ứng dụng
+    if stylesheet:
+        app.setStyleSheet(stylesheet)
+        print("Stylesheet loaded successfully.")
+
+    # auto fill login for testing
+    login_window = Login_Window()
+    if login_window.login_controller:
+        login_window.login_controller.auto_fill_login("251000002")
+    login_window.show()
+
+    # invoice_detail = InvoiceDetailView()
+    # invoice_detail.show()
 
     sys.exit(app.exec_())
 

@@ -516,3 +516,58 @@ class EmployeeQueryData:
         finally:
             if conn:
                 conn.close()
+
+    def get_invoice_detail_by_code(self, invoice_code):
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+
+            sql_info = """
+                            SELECT 
+                                i.invoice_id, i.invoice_code, i.invoice_date, i.total_amount, i.payment_method,
+                                e.employee_name, c.customer_name, i.cash_received, i.change_given, sum(id.quantity) as total_quantity
+                            FROM invoices AS i
+                            LEFT JOIN employees AS e ON i.employee_id = e.employee_id
+                            LEFT JOIN customers AS c ON i.customer_id = c.customer_id
+                            LEFT JOIN invoice_details id on id.invoice_id = i.invoice_id
+                            WHERE i.invoice_code = ?
+                        """
+            cursor.execute(sql_info, (invoice_code,))
+            info_row = cursor.fetchone()
+
+            if not info_row:
+                print(f"INFO: Không tìm thấy hóa đơn với mã: {invoice_code}")
+                return None
+
+            invoice_info_dict = dict(info_row)
+            # Lấy invoice_id để dùng cho truy vấn tiếp theo
+            invoice_id = invoice_info_dict['invoice_id']
+
+            # --- BƯỚC 2: LẤY DANH SÁCH SẢN PHẨM TRONG HÓA ĐƠN ĐÓ ---
+            sql_products = """
+                            SELECT 
+                                p.product_name,
+                                id.quantity,
+                                id.unit_price,
+                                id.subtotal_amount_invoice
+                            FROM invoice_details AS id
+                            JOIN products AS p ON id.product_id = p.product_id
+                            WHERE id.invoice_id = ?
+                        """
+            cursor.execute(sql_products, (invoice_id,))
+            product_rows = cursor.fetchall()
+
+            # --- BƯỚC 3: GỘP KẾT QUẢ VÀ TRẢ VỀ ---
+            result = {
+                'info': invoice_info_dict,
+                'products': product_rows
+            }
+            return result
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in get_full_invoice_details_by_code: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()

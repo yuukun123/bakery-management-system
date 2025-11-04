@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView, QH
 
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
 from src.constants.table_header import INVOICE_HEADER
+from src.views.employee_main_view.invoice_detail_view import InvoiceDetailView
 
 class InvoiceController(QObject):
     def __init__(self, parent):
@@ -47,27 +48,37 @@ class InvoiceController(QObject):
         self.filter_btn.clicked.connect(self.apply_filters)
         self.search_invoice_btn.clicked.connect(self.apply_filters)
         self.clear_btn.clicked.connect(self.clear_search_input)
+        self.table.itemDoubleClicked.connect(self.handle_double_click_on_invoice)
 
     def _setup_table_header_and_properties(self):
-        if not self.summary_table:
+        if not self.table:
             print("WARNING: Không tìm thấy QTableWidget.")
             return
 
             # YÊU CẦU 1: CHỌN CẢ DÒNG KHI CLICK
             # --------------------------------------------------
             # setSelectionBehavior sẽ quyết định đơn vị lựa chọn là Ô (Item), Dòng (Row), hay Cột (Column)
-        self.summary_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         print("DEBUG: Table selection behavior set to SelectRows.")
-        self.summary_table.setWordWrap(True)
+        self.table.setWordWrap(True)
 
         # Các cột tự chia đều không gian
-        self.summary_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-        self.summary_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
 
 
-        self.summary_table.setColumnCount(len(INVOICE_HEADER))
-        self.summary_table.setHorizontalHeaderLabels(INVOICE_HEADER)
+        self.table.setColumnCount(len(INVOICE_HEADER))
+        self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
+
+    def load_all_invoices(self):
+        """Tải tất cả các hóa đơn từ CSDL và hiển thị lên bảng."""
+        print("DEBUG: Loading all invoices...")
+        all_invoices = self.query_data.get_all_invoices()  # Bạn cần tạo hàm này
+        if all_invoices is not None:
+            self.populate_invoice_table(all_invoices)
+        else:
+            QMessageBox.critical(self.parent, "Lỗi", "Không thể tải danh sách hóa đơn.")
 
     def apply_filters(self):
         """
@@ -183,11 +194,35 @@ class InvoiceController(QObject):
         # Giả sử bạn có một hàm tên là `load_all_invoices`
         self.load_all_invoices()
 
-    def load_all_invoices(self):
-        """Tải tất cả các hóa đơn từ CSDL và hiển thị lên bảng."""
-        print("DEBUG: Loading all invoices...")
-        all_invoices = self.query_data.get_all_invoices()  # Bạn cần tạo hàm này
-        if all_invoices is not None:
-            self.populate_invoice_table(all_invoices)
-        else:
-            QMessageBox.critical(self.parent, "Lỗi", "Không thể tải danh sách hóa đơn.")
+    def handle_double_click_on_invoice(self, item):
+        if not item:
+            return
+
+        # 1. Lấy chỉ số dòng được click
+        current_row = item.row()
+
+        # 2. Lấy mã hóa đơn (invoice_code) từ cột đầu tiên (cột 0)
+        invoice_code_item = self.table.item(current_row, 0)
+
+        if not invoice_code_item:
+            QMessageBox.warning(self.parent, "Lỗi", "Không thể xác định mã hóa đơn.")
+            return
+
+        invoice_code = invoice_code_item.text()
+        print(f"DEBUG: User double-clicked on invoice with code: {invoice_code}")
+
+        # 3. Mở dialog chi tiết
+        self.open_invoice_detail_dialog(invoice_code)
+
+    def open_invoice_detail_dialog(self, invoice_code):
+        # invoice_code = self.query_data.get_invoice_by_code(invoice_code)
+
+        if invoice_code is None:
+            QMessageBox.critical(self.parent, "Lỗi", f"Không tìm thấy hóa đơn với mã {invoice_code} trong CSDL.")
+            return
+
+        # Truyền invoice_id và cửa sổ cha (self.parent) vào dialog
+        detail_dialog = InvoiceDetailView(invoice_code = invoice_code)
+
+        # .exec_() sẽ mở dialog dưới dạng modal (chặn tương tác với cửa sổ cha)
+        detail_dialog.exec_()

@@ -1,7 +1,6 @@
 from PyQt5.QtCore import Qt, QPoint, QSize, pyqtSignal
 from PyQt5.QtWidgets import QApplication
 
-
 class MoveableWindow:
     size_state_changed = pyqtSignal(bool)
 
