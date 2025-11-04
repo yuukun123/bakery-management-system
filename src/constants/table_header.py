@@ -12,10 +12,18 @@ INVOICE_HEADER = [
     "Phương thức thanh toán",
     "Tổng tiền"
 ]
+
 PRODUCT_HEADER = [
     "Mã sản phẩm",
     "Tên sản phẩm",
     "Loại sản phẩm",
     "Số lượng",
     "Đơn giá"
+]
+
+INVOICE_DETAIL_HEADER = [
+    "Tên sản phẩm",
+    "Số lượng",
+    "Đơn giá",
+    "Thành tiền"
 ]

@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets, QtCore
 
+from src.views.employee_main_view.invoice_detail_view import InvoiceDetailView
 from src.views.employee_main_view.item_card import ItemCard
 from src.views.login_view.login_view import Login_Window
 # from src.windows.login_window import open_login_window
@@ -24,21 +25,24 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     # open_login_window()
 
-    stylesheet_path = "UI/styles/container.css"
+    # stylesheet_path = "UI/styles/container.css"
+    #
+    # # Đọc file
+    # stylesheet = load_stylesheet(stylesheet_path)
+    #
+    # # Áp dụng cho toàn bộ ứng dụng
+    # if stylesheet:
+    #     app.setStyleSheet(stylesheet)
+    #     print("Stylesheet loaded successfully.")
+    #
+    # # auto fill login for testing
+    # login_window = Login_Window()
+    # if login_window.login_controller:
+    #     login_window.login_controller.auto_fill_login("251000002")
+    # login_window.show()
 
-    # Đọc file
-    stylesheet = load_stylesheet(stylesheet_path)
-
-    # Áp dụng cho toàn bộ ứng dụng
-    if stylesheet:
-        app.setStyleSheet(stylesheet)
-        print("Stylesheet loaded successfully.")
-
-    # auto fill login for testing
-    login_window = Login_Window()
-    if login_window.login_controller:
-        login_window.login_controller.auto_fill_login("251000002")
-    login_window.show()
+    invoice_detail = InvoiceDetailView()
+    invoice_detail.show()
 
     sys.exit(app.exec_())
 

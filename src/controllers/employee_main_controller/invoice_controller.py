@@ -2,7 +2,7 @@ from datetime import datetime
 
 from PyQt5.QtCore import Qt, QRegExp, QDate, QObject
 from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView
+from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView, QHeaderView
 
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
 from src.constants.table_header import INVOICE_HEADER
@@ -39,7 +39,6 @@ class InvoiceController(QObject):
             print("DEBUG: ProductController setup is running for the first time.")
             self.setup_ui_connections()
             self._setup_table_header_and_properties()
-            # self.load_invoice_data()
             self.load_all_invoices()
             self._initialized = True
 
@@ -50,19 +49,25 @@ class InvoiceController(QObject):
         self.clear_btn.clicked.connect(self.clear_search_input)
 
     def _setup_table_header_and_properties(self):
-        if not self.table:
+        if not self.summary_table:
             print("WARNING: Không tìm thấy QTableWidget.")
             return
 
             # YÊU CẦU 1: CHỌN CẢ DÒNG KHI CLICK
             # --------------------------------------------------
             # setSelectionBehavior sẽ quyết định đơn vị lựa chọn là Ô (Item), Dòng (Row), hay Cột (Column)
-        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.summary_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         print("DEBUG: Table selection behavior set to SelectRows.")
-        self.table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.summary_table.setWordWrap(True)
 
-        self.table.setColumnCount(len(INVOICE_HEADER))
-        self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
+        # Các cột tự chia đều không gian
+        self.summary_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.summary_table.setSelectionMode(QAbstractItemView.SingleSelection)
+
+
+        self.summary_table.setColumnCount(len(INVOICE_HEADER))
+        self.summary_table.setHorizontalHeaderLabels(INVOICE_HEADER)
 
     def apply_filters(self):
         """
