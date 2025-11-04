@@ -64,8 +64,11 @@ class InvoiceDetailController:
         self.customer_name_label.setText(str(info.get('customer_name', 'N/A')))
         self.invoice_date_label.setText(str(info.get('invoice_date', 'N/A')))
         self.total_quantity.setText(str(info.get('total_quantity', 'N/A')))
-        self.total_amount.setText(str(info.get('total_amount', 'N/A')))
-        self.total_pay.setText(str(info.get('cash_received', 'N/A')))
+
+        total_amount = info.get('total_amount', 'N/A')
+        self.total_amount.setText(f"{total_amount:,.0f}")
+        cash_received = info.get('cash_received', 0)
+        self.total_pay.setText(f"{cash_received:,.0f}")
         payment_method = info.get('payment_method', 'N/A')
         self.pay_method.setText(payment_method)  # Sửa lỗi setText
 
@@ -74,23 +77,51 @@ class InvoiceDetailController:
         if payment_method == "Tiền mặt":
             # Nếu là tiền mặt, hiển thị khu vực này
             self.change_frame.show()
-
             # Lấy và format giá trị tiền thối
             change_amount = info.get('change_given', 0)
-            self.change_label.setText(f"{change_amount:,.0f}đ")  # Format cho đẹp
-
-            # (Tùy chọn) Hiển thị cả tiền khách đưa
-            cash_received = info.get('cash_received', 0)
-            self.change_label.setText(f"{cash_received:,.0f}đ")
+            self.change_label.setText(f"{change_amount:,.0f}")  # Format cho đẹp
 
         # --- B. ĐIỀN DANH SÁCH SẢN PHẨM ---
+        column_order = [
+            'product_name',
+            'quantity',
+            'unit_price',
+            'subtotal_amount_invoice'
+        ]
+
         products = details.get('products', [])
         print(f"DEBUG: [InvoiceDetailController] Products: {products}")
         self.summary_table.setRowCount(len(products))
 
-        for row_index, row_data in enumerate(products):
-            for col_index, cell_data in enumerate(row_data):
-                item = QTableWidgetItem(str(cell_data))
-                if item:
-                    item.setTextAlignment(Qt.AlignCenter)
+        for row_index, product_dict in enumerate(products):
+            # 3. LẶP QUA TỪNG CỘT THEO THỨ TỰ ĐÃ ĐỊNH
+            for col_index, key in enumerate(column_order):
+
+                # a. Lấy giá trị từ dictionary dựa vào key
+                value = product_dict.get(key)
+
+                # b. Tạo chuỗi hiển thị và áp dụng format nếu cần
+                if value is None:
+                    display_text = ""
+                elif key in ['unit_price', 'subtotal_amount_invoice']:
+                    # Nếu là cột tiền tệ
+                    try:
+                        display_text = f"{float(value):,.0f}"
+                    except (ValueError, TypeError):
+                        display_text = "0"
+                else:
+                    # Các cột khác (tên, số lượng)
+                    display_text = str(value)
+
+                # c. Tạo widget item
+                item = QTableWidgetItem(display_text)
+
+                # d. Căn lề dựa trên key hoặc col_index
+                if key == 'product_name':
+                    item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                else:
+                    # Căn phải cho các cột số/tiền
+                    item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+
+                # e. Đặt item vào bảng
                 self.summary_table.setItem(row_index, col_index, item)

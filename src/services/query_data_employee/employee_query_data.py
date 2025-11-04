@@ -561,7 +561,7 @@ class EmployeeQueryData:
             # --- BƯỚC 3: GỘP KẾT QUẢ VÀ TRẢ VỀ ---
             result = {
                 'info': invoice_info_dict,
-                'products': product_rows
+                'products': [dict(row) for row in product_rows]
             }
             return result
 

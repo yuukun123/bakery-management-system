@@ -153,7 +153,7 @@ class InvoiceController(QObject):
         for row_index, invoice in enumerate(invoices_data):
             for col_index, key in enumerate(column_order):
                 value = invoice.get(key)
-
+                display_text = ""
                 # Định dạng lại các giá trị cho đẹp trước khi hiển thị
                 if key == 'total_amount':
                     # Định dạng số tiền

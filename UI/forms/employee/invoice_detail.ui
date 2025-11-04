@@ -447,7 +447,7 @@ border: none;</string>
              <widget class="QTableWidget" name="summary_table">
               <property name="font">
                <font>
-                <pointsize>11</pointsize>
+                <pointsize>9</pointsize>
                </font>
               </property>
               <property name="styleSheet">
@@ -469,7 +469,7 @@ QTableWidget {
     gridline-color: #ccc;
 	border-bottom: 1px solid rgb(0, 0, 0);
 	border-radius: 0px;
-	font-size: 11pt;
+	font-size: 9pt;
 }
 
 QTableWidget::item {
