@@ -1,4 +1,4 @@
-from PyQt5 import uic
+from PyQt5 import uic, QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
@@ -19,6 +19,11 @@ class EmployeeMainWindow(QMainWindow):
         # self.username = username
         super().__init__()
         uic.loadUi("UI/forms/employee/employee_main_screen.ui", self)
+
+        QtGui.QFontDatabase.addApplicationFont(":/UI/fonts/LuckiestGuy-Regular.ttf")
+        font = QtGui.QFont("Luckiest Guy", 50)
+        self.label_3.setFont(font)
+        self.label_3.setStyleSheet("color: #1A5276;")
 
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)

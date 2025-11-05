@@ -1,4 +1,4 @@
-from PyQt5 import uic
+from PyQt5 import uic, QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QLineEdit
 
@@ -13,6 +13,14 @@ class Login_Window(QMainWindow , MoveableWindow):
         uic.loadUi("UI/forms/login.ui", self)
         MoveableWindow.__init__(self)
         # bên login_query đặt mặc định ẩn khi mở vì login_query luôn mở lên đầu tiên
+        QtGui.QFontDatabase.addApplicationFont(":/UI/fonts/LuckiestGuy-Regular.ttf")
+        font = QtGui.QFont("Luckiest Guy", 50)
+        self.label.setFont(font)
+        self.label.setStyleSheet("color: #1A5276;")
+
+        font = QtGui.QFont("Luckiest Guy", 50)
+        self.label_7.setFont(font)
+
         self.errors_5.hide()
         self.errors_6.hide()
         # Thêm frameless + trong suốt
