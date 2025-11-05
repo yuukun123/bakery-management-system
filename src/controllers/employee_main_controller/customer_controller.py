@@ -105,7 +105,6 @@ class CustomerController(QObject):
 
     def _install_event_filter(self):
         """Cài đặt bộ lọc sự kiện cho cửa sổ chính để xử lý click ngoài bảng."""
-        # Dòng này bây giờ sẽ hoạt động
         self.parent.installEventFilter(self)
         print("DEBUG: [CustomerController] Event filter installed on MainWindow.")
 
@@ -194,7 +193,6 @@ class CustomerController(QObject):
         # --- LẤY DỮ LIỆU TỪ DÒNG ĐƯỢC CHỌN ---
 
         # 1. Lấy chỉ số của dòng đầu tiên được chọn
-        # Vì thường chỉ cho chọn 1 dòng, nên ta lấy phần tử đầu tiên của list
         first_selected_row_index = selected_rows[0].row()
 
         # 2. Tạo một dictionary để chứa dữ liệu

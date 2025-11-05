@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtCore import Qt, QEvent, QTimer
 from PyQt5.QtWidgets import (QMessageBox, QTableWidgetItem,
                              QAbstractItemView)
 
@@ -9,142 +9,117 @@ class WarehouseController():
     def __init__(self, parent):
         self.customer_info = {}
         self.parent = parent
-        self._initialized = False  # Cờ để chắc rằng chúng ta chỉ setup 1 lần
+        self._initialized = False
         self.query_data = EmployeeQueryData()
 
         self.filter_CB = self.parent.filter_CB_2
         self.search_product = self.parent.search_product_2
         self.search_product_btn = self.parent.search_product_btn_2
-
         self.table = self.parent.table_warehouse
 
+        # Timer này chỉ dùng để tự động reset bảng khi ô tìm kiếm rỗng
+        self.reset_timer = QTimer(self.parent)
+        self.reset_timer.setSingleShot(True)
+        self.reset_timer.timeout.connect(self.apply_product_filters)
+
     def setup_page(self):
-        """
-        Hàm này sẽ được gọi từ MainWindow để thiết lập toàn bộ trang.
-        """
         if not self._initialized:
-            print("DEBUG: ProductController setup is running for the first time.")
-            # self.setup_ui_connections()
+            print("DEBUG: WarehouseController setup is running for the first time.")
+            self.setup_ui_connections()
             self._setup_table_header_and_properties()
-            # self._install_event_filter()
-            self.load_product_data()
+            self.load_product_types_into_combobox()
+            self.apply_product_filters()
             self._initialized = True
 
     def setup_ui_connections(self):
         """Kết nối tất cả các signal và slot cho trang này."""
-        # self.search_customer_btn_2.clicked.connect(self.search_customer_with_phone)
-        # print("DEBUG: Checkout button connected to show_checkout_page.")
-        # self.show_update_customer_btn.clicked.connect(self.toggle_show_add_customer)
-        # print("DEBUG: Cancel button connected to show_product_selection_page.")
-        # self.update_customer_btn.clicked.connect(self.handle_update_customer_infor)
-        # print("DEBUG: Cancel button connected to show_product_selection_page.")
-        # self.table.selectionModel().selectionChanged.connect(self.handle_selection_change)
+        self.filter_CB.currentIndexChanged.connect(self.apply_product_filters)
+        self.search_product_btn.clicked.connect(self.apply_product_filters)
+        # Kết nối này để theo dõi khi nào ô tìm kiếm bị xóa rỗng
+        self.search_product.textChanged.connect(self.on_search_text_changed)
 
     def _setup_table_header_and_properties(self):
         if not self.table:
             print("WARNING: Không tìm thấy QTableWidget.")
             return
 
-            # YÊU CẦU 1: CHỌN CẢ DÒNG KHI CLICK
-            # --------------------------------------------------
-            # setSelectionBehavior sẽ quyết định đơn vị lựa chọn là Ô (Item), Dòng (Row), hay Cột (Column)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        print("DEBUG: Table selection behavior set to SelectRows.")
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.table.setColumnCount(len(PRODUCT_HEADER))
         self.table.setHorizontalHeaderLabels(PRODUCT_HEADER)
 
-    # def _install_event_filter(self):
-    #     """Cài đặt bộ lọc sự kiện cho cửa sổ chính để xử lý click ngoài bảng."""
-    #     # Dòng này bây giờ sẽ hoạt động
-    #     self.parent.installEventFilter(self)
-    #     print("DEBUG: [CustomerController] Event filter installed on MainWindow.")
-    #
-    # def clear_table_selection(self):
-    #     """Phương thức công khai để xóa lựa chọn trên bảng."""
-    #     if self.table:
-    #         self.table.clearSelection()
-    #         print("DEBUG: [CustomerController] Table selection cleared.")
-    #
-    # # --- BƯỚC 4: THÊM HÀM eventFilter VÀO ---
-    # def eventFilter(self, source, event):
-    #     """
-    #     Bộ lọc sự kiện, sẽ được gọi cho mọi sự kiện trên self.parent (MainWindow).
-    #     """
-    #     # Chỉ quan tâm đến sự kiện click chuột trái
-    #     if event.type() == QEvent.MouseButtonPress and event.button() == Qt.LeftButton:
-    #         # Kiểm tra xem con trỏ chuột có đang nằm trên bảng không
-    #         if not self.table.underMouse():
-    #             # Nếu không, và nếu bảng đang có lựa chọn
-    #             if self.table.selectionModel().hasSelection():
-    #                 # Xóa lựa chọn
-    #                 self.clear_table_selection()
-    #
-    #     # Rất quan trọng: Trả về False để các sự kiện được xử lý bình thường
-    #     return super().eventFilter(source, event)
+    def load_product_types_into_combobox(self):
+        print("DEBUG: Loading product types into ComboBox...")
+        self.filter_CB.blockSignals(True)
+        try:
+            self.filter_CB.clear()
+            self.filter_CB.addItem("Tất cả các loại", 0)
+            product_types = self.query_data.get_all_product_types()
+            if product_types:
+                for p_type in product_types:
+                    type_name = p_type.get('type_name')
+                    type_id = p_type.get('type_id')
+                    self.filter_CB.addItem(type_name, type_id)
+        finally:
+            self.filter_CB.blockSignals(False)
 
-    def load_product_data(self):
-        """
-        Tải danh sách tất cả sản phẩm, định dạng dữ liệu,
-        và hiển thị chúng lên QTableWidget.
-        """
-        # 1. GỌI ĐÚNG HÀM ĐỂ LẤY TẤT CẢ SẢN PHẨM
-        # Giả định bạn đã có hàm get_all_products_for_display()
-        all_products = self.query_data.get_product_stock()
+    def apply_product_filters(self):
+        selected_type_id = self.filter_CB.currentData()
+        keyword = self.search_product.text().strip()
+        print(f"DEBUG: Applying filters -> Type ID: {selected_type_id}, Keyword: '{keyword}'")
 
+        products = self.query_data.filter_products_for_warehouse(
+            type_id=selected_type_id,
+            keyword=keyword
+        )
+
+        if products is None:
+            QMessageBox.critical(self.parent, "Lỗi", "Có lỗi xảy ra khi truy vấn dữ liệu sản phẩm.")
+            self.load_product_data([])
+            return
+
+        self.load_product_data(products)
+
+    def on_search_text_changed(self, text):
+        """
+        Chỉ kích hoạt bộ lọc tự động KHI VÀ CHỈ KHI ô tìm kiếm trở nên rỗng.
+        """
+        self.reset_timer.stop()
+        if not text.strip():
+            # Nếu ô rỗng, khởi động timer để tự động reset lại bảng
+            print("DEBUG: Search input is empty. Starting auto-reset timer...")
+            self.reset_timer.start(500)
+        # Nếu có chữ, không làm gì cả, chờ người dùng nhấn nút.
+
+    def load_product_data(self, products_to_display):
+        all_products = products_to_display
         if not all_products:
             self.table.setRowCount(0)
             return
 
         self.table.setRowCount(len(all_products))
-
-        # 2. ĐỊNH NGHĨA THỨ TỰ CÁC CỘT CẦN HIỂN THỊ
         column_order = [
             'product_id',
             'product_name',
-            'type_name', # <-- Bạn cần đảm bảo hàm query có JOIN để lấy cột này
+            'type_name',
             'stock',
             'selling_price',
         ]
 
-        # Thiết lập header (chỉ cần chạy 1 lần trong _setup_table_header_and_properties)
-        # self.table.setColumnCount(len(column_order))
-        # self.table.setHorizontalHeaderLabels(["ID", "Tên Sản phẩm", "Loại", "Tồn kho", "Giá bán", "Giá nhập"])
-
-        # 3. LẶP QUA DỮ LIỆU VÀ ĐIỀN VÀO BẢNG
         for row_index, product_dict in enumerate(all_products):
             for col_index, key in enumerate(column_order):
-
-                # --- LOGIC ĐÃ ĐƯỢC SỬA LẠI HOÀN TOÀN ---
-
-                # a. Lấy đúng giá trị tương ứng với key hiện tại
                 value = product_dict.get(key)
-
-                # b. Chuyển đổi giá trị thành chuỗi để hiển thị
-                if value is None:
-                    display_text = ""
-                elif key is 'selling_price':
-                    # Nếu là cột tiền tệ, áp dụng format
-                    try:
-                        display_text = f"{float(value):,.0f}"
-                    except (ValueError, TypeError):
-                        display_text = "0"
-                else:
-                    # Với các cột khác, chỉ cần chuyển thành chuỗi
-                    display_text = str(value)
-
-                # c. Tạo item và đặt vào bảng
+                display_text = ""
+                if value is not None:
+                    if key == 'selling_price':
+                        try:
+                            display_text = f"{int(value):,}"
+                        except (ValueError, TypeError):
+                            display_text = "0"
+                    else:
+                        display_text = str(value)
                 item = QTableWidgetItem(display_text)
-                if item:
-                    item.setTextAlignment(Qt.AlignCenter)
-
+                item.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(row_index, col_index, item)
-
-    def clear_search_input(self):
-        """
-        Xóa nội dung trong ô tìm kiếm.
-        """
-        # if self.search_customer_2:
-        #     self.search_customer_2.clear()
-        #     print("DEBUG: Search input cleared.")

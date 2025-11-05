@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from src.views.employee_main_view.invoice_detail_view import InvoiceDetailView
 from src.views.employee_main_view.item_card import ItemCard
@@ -17,10 +17,12 @@ def load_stylesheet(file_path):
         print(f"WARNING: Stylesheet file not found at '{file_path}'")
         return ""
 
-
 if __name__ == "__main__":
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+
+    # Load font từ resource (đường dẫn trong .qrc)
+    # QtGui.QFontDatabase.addApplicationFont(":/UI/fonts/LuckiestGuy-Regular.ttf")
 
     app = QtWidgets.QApplication(sys.argv)
     # open_login_window()

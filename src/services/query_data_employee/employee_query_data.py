@@ -156,7 +156,6 @@ class EmployeeQueryData:
         conn = None
         try:
             conn = self._get_connection()
-            conn.row_factory = sqlite3.Row  # Rất quan trọng để trả về dict-like
             cursor = conn.cursor()
 
             base_sql = "SELECT * FROM products"
@@ -186,7 +185,7 @@ class EmployeeQueryData:
             else:
                 final_sql = base_sql
 
-            final_sql += " ORDER BY product_name;"
+            final_sql += " ORDER BY product_id;"
 
             print(f"DEBUG: Executing SQL: {final_sql}")
             print(f"DEBUG: With params: {params}")
@@ -219,6 +218,67 @@ class EmployeeQueryData:
             return None
         except sqlite3.Error as e:
             print(f"Database error in add_customer: {e}")
+            return None
+        finally:
+            if conn:
+                conn.close()
+
+    def filter_products_for_warehouse(self, type_id=None, keyword=None):
+        """
+        Lọc sản phẩm dành riêng cho trang Warehouse, LUÔN BAO GỒM TÊN LOẠI SẢN PHẨM.
+        Hàm này kết hợp (JOIN) bảng products và product_types.
+        """
+        conn = None
+        try:
+            conn = self._get_connection()
+            # RẤT QUAN TRỌNG: Đảm bảo kết quả trả về là đối tượng dict-like
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Câu SQL cơ sở với INNER JOIN để lấy type_name
+            # Sử dụng alias p và pt để câu lệnh ngắn gọn và rõ ràng
+            base_sql = """
+                SELECT p.*, pt.type_name
+                FROM products p
+                INNER JOIN type_product pt ON p.type_id = pt.type_id
+            """
+
+            # Các điều kiện lọc, sử dụng alias để tránh nhầm lẫn
+            conditions = [
+                "p.status = 'đang kinh doanh'",
+                "p.stock > 0"
+            ]
+            params = []
+
+            # 1. Lọc theo Loại sản phẩm
+            if type_id is not None and type_id > 0:
+                conditions.append("p.type_id = ?")
+                params.append(type_id)
+
+            # 2. Lọc theo Từ khóa (tên sản phẩm)
+            if keyword:
+                conditions.append("p.product_name LIKE ?")
+                params.append(f"%{keyword}%")
+
+            # Nối chuỗi SQL cuối cùng một cách an toàn
+            final_sql = base_sql.strip()  # .strip() để xóa khoảng trắng thừa
+            if conditions:
+                final_sql += " WHERE " + " AND ".join(conditions)
+
+            # Sắp xếp theo tên sản phẩm để dễ nhìn hơn trên bảng
+            final_sql += " ORDER BY p.product_id;"
+
+            print(f"DEBUG [Warehouse]: Executing SQL: {final_sql}")
+            print(f"DEBUG [Warehouse]: With params: {params}")
+
+            cursor.execute(final_sql, tuple(params))
+            rows = cursor.fetchall()
+
+            # Chuyển đổi kết quả thành list of dictionaries
+            return [dict(row) for row in rows] if rows else []
+
+        except sqlite3.Error as e:
+            print(f"❌ Database error in filter_products_for_warehouse: {e}")
             return None
         finally:
             if conn:

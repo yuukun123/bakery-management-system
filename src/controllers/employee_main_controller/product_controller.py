@@ -179,7 +179,7 @@ class ProductController:
         if not text.strip():
             # Nếu text là rỗng, khởi động timer với một độ trễ nhỏ (ví dụ 500ms)
             print("DEBUG: Search input is empty. Starting reset timer (500ms)...")
-            self.reset_timer.start(50)
+            self.reset_timer.start(100)
 
     def update_checkout_button_state(self):
         """
