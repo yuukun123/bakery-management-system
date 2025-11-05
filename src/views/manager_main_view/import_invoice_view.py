@@ -34,6 +34,7 @@ class ImportInvoiceViewWidget(QWidget):
 
         self.parent().installEventFilter(self)
         self.import_invoice_tableWidget.installEventFilter(self)
+        self.import_invoice_tableWidget.viewport().installEventFilter(self)
         self.import_invoice_controller = ImportInvoiceController(parent,self)
 
         self.detail_btn.clicked.connect(self.import_invoice_controller.open_import_detail_dialog)
@@ -95,6 +96,13 @@ class ImportInvoiceViewWidget(QWidget):
 
     def eventFilter(self, obj, event):
         table = self.import_invoice_tableWidget
+        try:
+            if not table or not table.viewport():
+                return super().eventFilter(obj, event)
+        except RuntimeError:
+            return super().eventFilter(obj, event)
+        if (obj == table or obj == table.viewport()) and event.type() == QEvent.Resize:
+            self.placeholder_label.resize(table.viewport().size())
         if obj == self.parent() and event.type() == QEvent.MouseButtonPress:
             mapped_pos = self.mapFromParent(event.pos())
             table_rect = table.geometry()

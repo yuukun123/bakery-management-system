@@ -66,8 +66,13 @@ class productController:
                 self.view.status_comboBox.currentIndexChanged.connect(self.load_product_filter_data)
                 self.view.comboBox_display.currentIndexChanged.connect(self.load_product_filter_data)
                 self.view.search_product_btn.clicked.connect(self.load_product_filter_data)
+                self.view.search_product.textChanged.connect(self.reset_search)
             except AttributeError as e:
                 print(f"LỖI: Không tìm thấy widget filter trong View. Tên widget có đúng không? {e}")
+
+        def reset_search(self):
+            if self.view.search_product.text() == "":
+                self.load_product_filter_data()
 
         def load_product_filter_data(self):
             try:

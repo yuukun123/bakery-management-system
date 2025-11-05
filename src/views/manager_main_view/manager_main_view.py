@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QTableWidgetItem, QAbstractItemView, QHeaderView, \
     QAbstractScrollArea
 
@@ -113,7 +113,28 @@ class ManagerMainWindow(QMainWindow):
         # Nếu có bảng nhân sự thì clear
         if index == 0 and hasattr(self.employee_view, "employee_tableWidget"):
             self.employee_view.employee_tableWidget.clearSelection()
+            if hasattr(self, 'filter_employee'):
+                self.filter_employee.setCurrentIndex(0)
+            if hasattr(self, 'status_filter'):
+                self.status_filter.setCurrentIndex(0)
+            if hasattr(self, 'display_filter'):
+                self.display_filter.setCurrentIndex(0)
+            if hasattr(self, 'search_input'):
+                self.search_input.clear()
         if index == 1 and hasattr(self.product_view, "product_tableWidget"):
             self.product_view.product_tableWidget.clearSelection()
+            if hasattr(self, 'comboBox_category'):
+                self.comboBox_category.setCurrentIndex(0)
+            if hasattr(self, 'status_comboBox'):
+                self.status_comboBox.setCurrentIndex(0)
+            if hasattr(self, 'comboBox_display'):
+                self.comboBox_display.setCurrentIndex(0)
+            if hasattr(self, 'search_product'):
+                self.search_product.clear()
         if index == 2 and hasattr(self.import_invoice_view, "import_invoice_tableWidget"):
             self.import_invoice_view.import_invoice_tableWidget.clearSelection()
+            if hasattr(self, 'import_from_date') and hasattr(self, 'import_to_date'):
+                today = QDate.currentDate()
+                first_day_of_month = QDate(today.year(), today.month(), 1)
+                self.from_date.setDate(first_day_of_month)
+                self.to_date.setDate(today)

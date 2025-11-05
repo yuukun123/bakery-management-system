@@ -11,10 +11,7 @@ class employeeController:
             self.table = tableview
             self.connect_filter_signal()
             self.load_employee_data()
-            self.employee_data = self.table.get_selected_employee_data()
-            # if self.employee_data["status"].lower() == "đã nghỉ":
-            #     self.view.quit_employee_btn.setEnable(False)
-            #     self.view.update_employee_btn.setEnable(False)
+
         def open_add_employee_dialog(self):
             print("DEBUG: BẮT ĐẦU MỞ ADD DIALOG")
             dialog = addEmployee()
@@ -72,8 +69,13 @@ class employeeController:
                 self.view.display_filter.currentIndexChanged.connect(self.load_employee_data)
                 self.view.status_filter.currentIndexChanged.connect(self.load_employee_data)
                 self.view.search_employee_btn.clicked.connect(self.load_employee_data)
+                self.view.search_input.textChanged.connect(self.reset_search)
             except AttributeError as e:
                 print(f"LỖI: Không tìm thấy widget filter trong View. Tên widget có đúng không? {e}")
+
+        def reset_search(self):
+            if self.view.search_input.text() == "":
+                self.load_employee_data()
 
         def load_employee_data(self):
             try:

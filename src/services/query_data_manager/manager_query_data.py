@@ -3,6 +3,9 @@ import os
 from datetime import datetime
 import random
 
+from src.utils.nomalize import _normalize_search_sqlite
+
+
 class QueryData:
     def __init__(self):
         # lấy đường dẫn đến thư mục chứ file hiện tại
@@ -191,6 +194,7 @@ class QueryData:
 
     def search_employees(self, role, status,display,search_term):
         conn = self._get_connection()
+        conn.create_function("normalize_search", 1, _normalize_search_sqlite)
         cursor = conn.cursor()
         try:
             base_query = """
@@ -209,9 +213,10 @@ class QueryData:
                 parameters.append(status)
             if search_term:
                 search_like = f"%{search_term}%"
-                conditions.append("(employee_id LIKE ? OR employee_name LIKE ?)")
-                parameters.append(search_like)
-                parameters.append(search_like)
+                search_like_normalized = _normalize_search_sqlite(search_like)
+                conditions.append("(LOWER(employee_id) LIKE ? OR normalize_search(employee_name) LIKE ?)")
+                parameters.append(search_like.lower())
+                parameters.append(search_like_normalized)
             if conditions:
                 base_query += " WHERE " + " AND ".join(conditions)
             base_query += " ORDER BY employee_name"
