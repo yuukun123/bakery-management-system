@@ -474,6 +474,19 @@ class CreateSampleData:
         #         conn.close()
         #         print("Đã đóng kết nối CSDL.")
 
+        # """Cập nhật employee_id cho TẤT CẢ hóa đơn nhập."""
+        # sql_update = """
+        #     UPDATE import_invoice
+        #     SET employee_id = 251000001
+        #     Where import_id = 1
+        #     """
+        # try:
+        #     cursor.execute(sql_update)
+        #     conn.commit()
+        #     # print(f"Đã cập nhật thành công {cursor.rowcount} dòng trong import_invoice với employee_id = {new_employee_id}.")
+        # except sqlite3.Error as e:
+        #     print(f"Lỗi khi cập nhật toàn bộ hóa đơn nhập: {e}")
+
 
 if __name__ == "__main__":
     sample = CreateSampleData()  # phải khởi tạo object
