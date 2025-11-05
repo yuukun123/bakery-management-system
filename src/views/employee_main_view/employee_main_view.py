@@ -21,9 +21,8 @@ class EmployeeMainWindow(QMainWindow):
         uic.loadUi("UI/forms/employee/employee_main_screen.ui", self)
 
         QtGui.QFontDatabase.addApplicationFont(":/UI/fonts/LuckiestGuy-Regular.ttf")
-        font = QtGui.QFont("Luckiest Guy", 50)
+        font = QtGui.QFont("Luckiest Guy")
         self.label_3.setFont(font)
-        self.label_3.setStyleSheet("color: #1A5276;")
 
         # Thêm frameless + trong suốt
         self.setWindowFlags(Qt.FramelessWindowHint)
