@@ -10,6 +10,7 @@ from src.utils.username_ui import set_employee_info, set_employee_role
 from src.views.moveable_window import MoveableWindow
 from src.views.manager_main_view.employee_view import EmployeeViewWidget
 from src.views.manager_main_view.product_view import ProductViewWidget
+from src.views.manager_main_view.import_invoice_view import ImportInvoiceViewWidget
 from resources import resources_rc
 
 class ManagerMainWindow(QMainWindow):
@@ -25,10 +26,10 @@ class ManagerMainWindow(QMainWindow):
         self.setWindowOpacity(1.0)
 
         # Vô hiệu hóa các nút xóa sửa
-        self.delete_employee_btn.setEnabled(False)
+        self.quit_employee_btn.setEnabled(False)
         self.update_employee_btn.setEnabled(False)
         self.update_product_btn.setEnabled(False)
-        self.delete_product_btn.setEnabled(False)
+        self.stop_product_btn.setEnabled(False)
 
         self.setup_views()
 
@@ -42,7 +43,8 @@ class ManagerMainWindow(QMainWindow):
         self.employee_btn.clicked.connect(lambda: self.handle_nav_click(0, self.employee_btn))
         self.product_btn.clicked.connect(lambda: self.handle_nav_click(1, self.product_btn))
         self.import_invoice_btn.clicked.connect(lambda: self.handle_nav_click(2, self.import_invoice_btn))
-        self.statistical_btn.clicked.connect(lambda: self.handle_nav_click(3, self.statistical_btn))
+        self.add_import_btn.clicked.connect(lambda: self.handle_nav_click(3,self.add_import_btn))
+        self.statistical_btn.clicked.connect(lambda: self.handle_nav_click(4, self.statistical_btn))
 
         if not self._employee_context:
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{self.employee_id}'.")
@@ -104,6 +106,7 @@ class ManagerMainWindow(QMainWindow):
     def setup_views(self):
         self.employee_view = EmployeeViewWidget(self)
         self.product_view = ProductViewWidget(self)
+        self.import_invoice_view = ImportInvoiceViewWidget(self)
 
     def handle_nav_click(self, index, button):
         self.switch_stack(index, button)
@@ -112,3 +115,5 @@ class ManagerMainWindow(QMainWindow):
             self.employee_view.employee_tableWidget.clearSelection()
         if index == 1 and hasattr(self.product_view, "product_tableWidget"):
             self.product_view.product_tableWidget.clearSelection()
+        if index == 2 and hasattr(self.import_invoice_view, "import_invoice_tableWidget"):
+            self.import_invoice_view.import_invoice_tableWidget.clearSelection()

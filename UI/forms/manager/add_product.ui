@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>573</height>
+    <width>522</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="mainFrame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -521,24 +521,25 @@ QComboBox#type_comboBox::down-arrow {
 }
 </string>
                        </property>
-                       <item>
-                        <property name="text">
-                         <string>Croissant</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Tart</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Mousse</string>
-                        </property>
-                       </item>
                       </widget>
                      </item>
                     </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="link_product">
+                    <property name="font">
+                     <font>
+                      <pointsize>10</pointsize>
+                     </font>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">padding-left:10px;
+color: rgb(0, 85, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
                    </widget>
                   </item>
                   <item alignment="Qt::AlignHCenter">
@@ -566,7 +567,7 @@ background-color: rgb(167, 167, 167);
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="label_8">
+                <widget class="QLabel" name="image_label">
                  <property name="minimumSize">
                   <size>
                    <width>150</width>
@@ -587,7 +588,7 @@ background-color: rgb(167, 167, 167);
                   </font>
                  </property>
                  <property name="text">
-                  <string>image</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -595,6 +596,21 @@ background-color: rgb(167, 167, 167);
              </widget>
             </item>
            </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="text_error">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 0, 0);</string>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
           </widget>
          </item>
          <item alignment="Qt::AlignHCenter">

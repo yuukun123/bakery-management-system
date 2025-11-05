@@ -79,10 +79,10 @@ class QueryData:
 
             # Insert nhân viên mới
             insert_query = """
-                INSERT INTO employees (employee_id, employee_name, password_hash, email, sex, phone, address, role, starting_date, end_date)
+                INSERT INTO employees (employee_id, employee_name, password_hash, email, gender, phone, address, role, starting_date, end_date)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            employee_data = (new_employee_id, data["name"], data["password"], data["email"],data["sex"], data["phoneNumber"], data["address"], data["role"], data["startDate"], data["endDate"])
+            employee_data = (new_employee_id, data["name"], data["password"], data["email"],data["gender"], data["phoneNumber"], data["address"], data["role"], data["startDate"], data["endDate"])
             cursor.execute(insert_query, employee_data)
 
             # Commit transaction
@@ -103,7 +103,7 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT employee_id, employee_name, sex, role, status, email, phone, address, starting_date, end_date FROM employees")
+            cursor.execute("SELECT employee_id, employee_name, gender, role, status, email, phone, address, starting_date, end_date FROM employees")
             rows = cursor.fetchall()
             return rows
         except sqlite3.Error as e:
@@ -114,7 +114,10 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT product_id, product_name, selling_price, import_price, stock, status, image_path FROM products")
+            cursor.execute("""SELECT p.product_id, p.product_name, tp.type_name, p.selling_price, p.import_price, p.stock, p.status, p.image_path 
+                              FROM products as p
+                              JOIN type_product as tp ON p.type_id = tp.type_id
+                              """)
             rows = cursor.fetchall()
             return rows
         except sqlite3.Error as e:
@@ -151,7 +154,7 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("update employees set status = ?, end_date = ? where employee_id = ?",("inactive", update_data["end_date"], update_data["employee_id"]))
+            cursor.execute("update employees set status = ?, end_date = ? where employee_id = ?",("đã nghỉ", update_data["end_date"], update_data["employee_id"]))
             conn.commit()
             return True
         except sqlite3.Error as e:
@@ -163,13 +166,13 @@ class QueryData:
         try:
             cursor.execute("""
                 update employees
-                set employee_id = ?, employee_name = ?, password_hash = ?, email = ?, sex = ?, phone = ?, address = ?, role = ?, starting_date = ?, end_date = ?
+                set employee_id = ?, employee_name = ?, password_hash = ?, email = ?, gender = ?, phone = ?, address = ?, role = ?, starting_date = ?, end_date = ?
                 where employee_id = ?
             """,(data["employee_id"],
                             data["name"],
                             data["password"],
                             data["email"],
-                            data["sex"],
+                            data["gender"],
                             data["phoneNumber"],
                             data["address"],
                             data["role"],
@@ -186,22 +189,22 @@ class QueryData:
             print(f"Database error in update_inactive_employee: {e}")
             return None
 
-    def search_employees(self, role, status, search_term):
+    def search_employees(self, role, status,display,search_term):
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
             base_query = """
                 SELECT 
-                    employee_id, employee_name, sex, role, status, 
+                    employee_id, employee_name, gender, role, status, 
                     email, phone, address, starting_date, end_date 
                 FROM employees
             """
             conditions = []
             parameters = []
-            if role != "Tất cả":
+            if role.lower() != "tất cả":
                 conditions.append("role = ?")
                 parameters.append(role)
-            if status != "Tất cả":
+            if status.lower() != "tất cả":
                 conditions.append("status = ?")
                 parameters.append(status)
             if search_term:
@@ -212,11 +215,182 @@ class QueryData:
             if conditions:
                 base_query += " WHERE " + " AND ".join(conditions)
             base_query += " ORDER BY employee_name"
+            if display.isdigit():
+                try:
+                    limit_value = int(display)
+                    base_query += " LIMIT ?"
+                    parameters.append(limit_value)
+                except ValueError:
+                    # Bỏ qua nếu không phải số hợp lệ
+                    pass
             cursor.execute(base_query, tuple(parameters))
             results = cursor.fetchall()
-            conn.commit()
             return results
         except sqlite3.Error as e:
             print(f"Database error in get_data_product: {e}")
             conn.rollback()
+            return None
+
+    def get_all_type(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT * FROM type_product")
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in get_type_product: {e}")
+            return None
+
+    def add_new_product(self, data):
+        conn = None
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            insert_query = """
+                INSERT INTO products ( product_name, selling_price, stock, import_price, image_path, status, type_id)
+                VALUES ( ?, ?, ?, ?, ?, ?, ?)
+            """
+            product_data = (data["name"], data["selling"], data["stock_price"],data["import_price"], data["image_path"], data["status"], data["type_id"])
+            cursor.execute(insert_query, product_data)
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            if conn:
+                conn.rollback()
+            print(f"Database error in add_new_product: {e}")
+            return False
+        finally:
+            if conn:
+                conn.close()
+
+    def update_status_product(self,product_id):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("update products set status = ? where product_id = ?",("ngừng kinh doanh", product_id,))
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Database error in update_status_product: {e}")
+            return None
+
+    def update_product(self,data):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                UPDATE products
+                SET product_name = ?, selling_price = ?, stock = ?, import_price = ?, image_path = ?, status = ?, type_id = ?
+                WHERE product_id = ?
+            """,(data["name"],data["selling_price"],data["stock"],data["import_price"],data["image_path"],data["status"],data["type_id"],data["product_id"]))
+            conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Database error in update_status_product: {e}")
+            return None
+
+    def search_products(self, category,status,display,search_term):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            base_query = """
+                SELECT 
+                    p.product_id, p.product_name, tp.type_name, p.selling_price, 
+                    p.import_price, p.stock, p.status, p.image_path
+                FROM products as p
+                JOIN type_product as tp ON p.type_id = tp.type_id
+            """
+            conditions = []
+            parameters = []
+            if category.lower() != "tất cả":
+                conditions.append("tp.type_name = ?")
+                parameters.append(category)
+            if status.lower() != "tất cả":
+                conditions.append("p.status = ?")
+                parameters.append(status)
+            if search_term:
+                search_like = f"%{search_term}%"
+                conditions.append("(LOWER(p.product_id) LIKE LOWER(?) OR LOWER(p.product_name) LIKE LOWER(?))")
+                parameters.append(search_like)
+                parameters.append(search_like)
+            if conditions:
+                base_query += " WHERE " + " AND ".join(conditions)
+            base_query += " ORDER BY p.product_name"
+            if display.isdigit():
+                try:
+                    limit_value = int(display)
+                    base_query += " LIMIT ?"
+                    parameters.append(limit_value)
+                except ValueError:
+                    # Bỏ qua nếu không phải số hợp lệ
+                    pass
+            cursor.execute(base_query, tuple(parameters))
+            results = cursor.fetchall()
+            return results
+        except sqlite3.Error as e:
+            print(f"Database error in search_products: {e}")
+            conn.rollback()
+            return None
+
+    def search_import(self, employee,from_date,to_date, display, search_term):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            base_query = """
+                SELECT 
+                    i.import_code, e.employee_name, i.import_date, id.subtotal_amount_import_invoice
+                FROM import_invoice as i
+                JOIN import_invoice_details as id ON i.import_id = id.import_id
+                JOIN employees as e ON e.employee_id = i.employee_id
+            """
+            conditions = []
+            parameters = []
+            if employee.lower() != "tất cả":
+                conditions.append("e.employee_name = ?")
+                parameters.append(employee)
+            if search_term:
+                search_like = f"%{search_term}%"
+                conditions.append("LOWER(i.import_code) LIKE LOWER(?)")
+                parameters.append(search_like)
+            if from_date and to_date:
+                conditions.append("DATE(i.import_date) BETWEEN DATE(?) AND DATE(?)")
+                parameters.append(from_date)
+                parameters.append(to_date)
+            elif from_date:
+                # Nếu chỉ có ngày bắt đầu
+                conditions.append("DATE(i.import_date) >= DATE(?)")
+                parameters.append(from_date)
+            elif to_date:
+                # Nếu chỉ có ngày kết thúc
+                conditions.append("DATE(i.import_date) <= DATE(?)")
+                parameters.append(to_date)
+            if conditions:
+                base_query += " WHERE " + " AND ".join(conditions)
+            base_query += " ORDER BY i.import_date"
+            if display.isdigit():
+                try:
+                    limit_value = int(display)
+                    base_query += " LIMIT ?"
+                    parameters.append(limit_value)
+                except ValueError:
+                    # Bỏ qua nếu không phải số hợp lệ
+                    pass
+            cursor.execute(base_query, tuple(parameters))
+            results = cursor.fetchall()
+            return results
+        except sqlite3.Error as e:
+            print(f"Database error in search_products: {e}")
+            conn.rollback()
+            return None
+
+    def get_all_name_employee(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT employee_name FROM employees")
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in get_type_product: {e}")
             return None

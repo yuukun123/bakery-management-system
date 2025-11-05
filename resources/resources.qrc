@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="/">
+    <file>../UI/icons/excel-3-64.ico</file>
+    <file>../UI/icons/view-details-64.ico</file>
     <file>../UI/icons/delete.ico</file>
     <file>../UI/icons/plus_2.svg</file>
     <file>../UI/icons/conference-call-64.ico</file>

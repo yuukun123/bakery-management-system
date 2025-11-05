@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>591</height>
+    <width>522</width>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="mainFrame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -25,13 +25,13 @@
      <property name="minimumSize">
       <size>
        <width>500</width>
-       <height>573</height>
+       <height>660</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>500</width>
-       <height>573</height>
+       <height>660</height>
       </size>
      </property>
      <property name="frameShape">
@@ -361,7 +361,7 @@ border-bottom-right-radius:5px;</string>
                 <widget class="QComboBox" name="sex_comboBox">
                  <property name="minimumSize">
                   <size>
-                   <width>130</width>
+                   <width>212</width>
                    <height>40</height>
                   </size>
                  </property>
@@ -402,6 +402,11 @@ QComboBox#sex_comboBox::down-arrow {
 }
 </string>
                  </property>
+                 <item>
+                  <property name="text">
+                   <string>-- Vui lòng chọn --</string>
+                  </property>
+                 </item>
                  <item>
                   <property name="text">
                    <string>Nam</string>
@@ -570,12 +575,17 @@ QComboBox#role_comboBox::down-arrow {
                  </property>
                  <item>
                   <property name="text">
+                   <string>-- Vui lòng chọn --</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
                    <string>Nhân viên</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>Quản lí</string>
+                   <string>Quản lý</string>
                   </property>
                  </item>
                 </widget>
@@ -653,12 +663,12 @@ QComboBox#status_comboBox::down-arrow {
                  </property>
                  <item>
                   <property name="text">
-                   <string>Đang làm việc</string>
+                   <string>Đang làm</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>Đã nghỉ việc</string>
+                   <string>Đã nghỉ </string>
                   </property>
                  </item>
                 </widget>
@@ -818,6 +828,22 @@ QCalendarWidget QTableView::item:disabled {
              </widget>
             </item>
            </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="text_error">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 0, 0);
+padding-left:10px;</string>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
           </widget>
          </item>
          <item alignment="Qt::AlignHCenter">

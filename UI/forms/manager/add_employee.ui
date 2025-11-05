@@ -585,7 +585,7 @@ QComboBox#role_comboBox::down-arrow {
                  </item>
                  <item>
                   <property name="text">
-                   <string>Quản lí</string>
+                   <string>Quản lý</string>
                   </property>
                  </item>
                 </widget>
@@ -663,12 +663,12 @@ QComboBox#status_comboBox::down-arrow {
                  </property>
                  <item>
                   <property name="text">
-                   <string>active</string>
+                   <string>Đang làm</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>inactive</string>
+                   <string>Đã nghỉ </string>
                   </property>
                  </item>
                 </widget>
