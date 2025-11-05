@@ -22,7 +22,6 @@ if __name__ == "__main__":
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
     # Load font từ resource (đường dẫn trong .qrc)
-    # QtGui.QFontDatabase.addApplicationFont(":/UI/fonts/LuckiestGuy-Regular.ttf")
 
     app = QtWidgets.QApplication(sys.argv)
     # open_login_window()
