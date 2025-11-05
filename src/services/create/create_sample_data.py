@@ -61,9 +61,9 @@ class CreateSampleData:
                     ('14', 'Strawberry_Tart', 650000, 10, 55000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Strawberry_Tart.jpg'),
                     ('15', 'Tiramisu_Tart', 70000, 10, 60000, datetime('now'), datetime('now'), 'đang kinh doanh', 3, 'UI/images/Tart/Tiramisu_Tart.jpg');
                 
-                INSERT INTO import_invoice (import_id, import_code, employee_id, import_date, total_amount)
+                INSERT INTO import_invoice (import_id, import_code, employee_id, import_date, total_amount, invoice_type)
                 VALUES     
-                    (1, 'PN251000001' ,1, date('now'), 18500000);
+                    (1, 'PN251000001' ,1, date('now'), 18500000, 'Phiếu nhập');
                     
                 INSERT INTO import_invoice_details (import_id, product_id, quantity, unit_price)
                 VALUES

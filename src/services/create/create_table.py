@@ -115,6 +115,7 @@ def create_table():
             employee_id INTEGER NOT NULL,
             import_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
+            invoice_type TEXT NOT NULL DEFAULT 'Phiếu nhập' CHECK(invoice_type IN ('Phiếu nhập', 'Phiếu hủy'))
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id)
         )
     """)
