@@ -1,15 +1,16 @@
 import time
 from logging import disable
 
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QObject
 from PyQt5.QtWidgets import QHeaderView, QTableWidgetItem, QStackedWidget, QToolButton, QWidget, QGridLayout, QLabel, QMessageBox, QComboBox, QLineEdit
 
 from src.views.employee_main_view.product_card import ProductCard
 from src.views.employee_main_view.item_card import ItemCard
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
 
-class ProductController:
+class ProductController(QObject):
     def __init__(self, ui_page, main_window, order_service):
+        super().__init__()
         self.order_service = order_service
         self.item_card_widgets = {}
         self.page = ui_page
@@ -172,6 +173,13 @@ class ProductController:
             print("INFO: No products found for the current filters. Display remains unchanged.")
             QMessageBox.information(self.main_window, "Không tìm thấy",
                                     "Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn.")
+
+    @pyqtSlot()
+    def refresh_product_display(self):
+        print("DEBUG: [ProductController] Refreshing product display triggered by payment success signal.")
+        # Gọi lại hàm lọc sản phẩm là đủ, nó sẽ tự động lấy dữ liệu mới nhất
+        # và lọc bỏ các sản phẩm hết hàng.
+        self.apply_product_filters()
 
     def on_search_text_changed(self, text):
         self.reset_timer.stop()

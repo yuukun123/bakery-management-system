@@ -48,15 +48,11 @@ class EmployeeMainWindow(QMainWindow):
         set_employee_info(self.username_label, employee_name)
         set_employee_role(self.role_label, employee_role)
 
-        self.buttonController = buttonController(self)
-        self.closeBtn.clicked.connect(buttonController.handle_close)
-        self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
-        self.logout.clicked.connect(self.buttonController.handle_logout)
-
         buttons = [ self.product_btn, self.customer_btn, self.invoice_btn, self.warehouse_btn ]
         index_map = {btn: i for i, btn in enumerate(buttons)}
         self.menu_nav = MenuNavigator(self.stackedWidget, buttons, index_map, default_button=self.product_btn)
 
+        self.buttonController = buttonController(self)
         self.order_service = OrderService()
         self.product_controller = ProductController(self.product_page, self, self.order_service)
         self.checkout_controller = CheckoutController(self.checkout_page, self, self.order_service)
@@ -65,11 +61,20 @@ class EmployeeMainWindow(QMainWindow):
         self.invoice_controller = InvoiceController(self)
         self.warehouse_controller = WarehouseController(self)
 
+        self.connect_signals()
+
         self.stackedWidget.currentChanged.connect(self.on_tab_changed)
         # Chủ động tải Dashboard lần đầu tiên nếu nó là tab mặc định
         if self.stackedWidget.currentWidget() == self.product_page:
             self.on_tab_changed(self.stackedWidget.currentIndex())
         self.on_tab_changed(self.stackedWidget.currentIndex())
+
+    def connect_signals(self):
+        self.closeBtn.clicked.connect(buttonController.handle_close)
+        self.hideBtn.clicked.connect(self.buttonController.handle_hidden)
+        self.logout.clicked.connect(self.buttonController.handle_logout)
+
+        self.checkout_controller.payment_successful.connect(self.product_controller.refresh_product_display)
 
     def get_employee_context(self):
         """Get the employee context data."""

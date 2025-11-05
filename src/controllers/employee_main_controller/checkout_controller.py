@@ -1,12 +1,15 @@
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtCore import QRegExp, pyqtSignal, QObject
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QToolButton, QStackedWidget, QLabel, QPushButton, QFrame, QLineEdit, QMessageBox, QComboBox
 
 from src.services.query_data_employee.employee_query_data import EmployeeQueryData
 from src.utils.validators import is_valid_phone_number
 
-class CheckoutController:
+class CheckoutController(QObject):
+    payment_successful = pyqtSignal()
+
     def __init__(self, ui_page, main_window, order_service):
+        super().__init__()
         self.order_service = order_service
         self.page = ui_page
         self.main_window = main_window
@@ -204,8 +207,6 @@ class CheckoutController:
         total_amount = self.order_service.get_total_amount()
         items = self.order_service.items
         customer_info = self.order_service.customer_info
-
-        # Lấy thông tin từ context
         employee_id = self.main_window.employee_id
         print(f"Debug: xem id nhân viên {employee_id}")
 
@@ -216,16 +217,12 @@ class CheckoutController:
             return
 
         if customer_info is None:
-            # Gán khách vãng lai nếu chưa chọn khách
-            # Bạn cần một hàm để lấy thông tin khách vãng lai
             customer_info = self.query_data.get_guest_customer_info()  # Giả sử ID=1
             if customer_info is None:
                 QMessageBox.critical(self.main_window, "Lỗi CSDL", "Không tìm thấy thông tin 'Khách vãng lai'.")
                 return
 
         customer_id = customer_info.get('customer_id')
-
-        # Lấy thông tin thanh toán từ giao diện
         payment_method, cash_received, change_given = self.get_payment_details_from_ui()
         if payment_method is None:  # Hàm get_payment_details_from_ui sẽ trả về None nếu có lỗi
             return
@@ -243,7 +240,6 @@ class CheckoutController:
         )
 
         # --- 4. XỬ LÝ KẾT QUẢ ---
-
         if new_invoice_code:
             # Thành công!
             QMessageBox.information(self.main_window, "Thành công", f"Đã lưu hóa đơn {new_invoice_code} thành công!")
@@ -251,6 +247,9 @@ class CheckoutController:
             # Dọn dẹp cho hóa đơn tiếp theo
             self.order_service.clear_order()
             self.reset_checkout_ui()  # Một hàm để xóa các input, item card...
+
+            print("DEBUG: [CheckoutController] Emitting payment_successful signal.")
+            self.payment_successful.emit()
 
             # Chuyển về trang bán hàng
             self.main_window.product_controller.show_product_selection_page()
