@@ -67,10 +67,11 @@ class LoginController:
                 if clicked_button == btn_manager:
                     self.main_window_instance = open_manager_main_window(employee_id)
                     print("DEBUG: Manager chọn giao diện quản lý.")
+
                 else:
                     self.main_window_instance = open_employee_main_window(employee_id)
                     print("DEBUG: Manager chọn giao diện nhân viên.")
-
+                self.view.close()
 
             elif self.role == "nhân viên":
                 self.main_window_instance = open_employee_main_window(employee_id)
