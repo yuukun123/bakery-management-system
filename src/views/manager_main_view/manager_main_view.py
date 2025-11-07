@@ -18,6 +18,7 @@ class ManagerMainWindow(QMainWindow):
     def __init__(self, employee_id):
         # self.username = username
         super().__init__()
+        self.employee_id = employee_id
         uic.loadUi("UI/forms/manager/manager_main_screen.ui", self)
         MoveableWindow.__init__(self)
 
@@ -39,7 +40,6 @@ class ManagerMainWindow(QMainWindow):
         self.query_username = QueryUserName()
         self._employee_context = None
         self._employee_role = None
-        self.employee_id = employee_id
         self.load_employee_context(self.employee_id)
 
         self.set_default_stack(0, self.employee_btn)
@@ -110,7 +110,7 @@ class ManagerMainWindow(QMainWindow):
         self.employee_view = EmployeeViewWidget(self)
         self.product_view = ProductViewWidget(self)
         self.import_invoice_view = ImportInvoiceViewWidget(self)
-        self.add_invoice_view = addInvoiceViewWidget(self)
+        self.add_invoice_view = addInvoiceViewWidget(parent = self, employee_id = self.employee_id)
 
     def handle_nav_click(self, index, button):
         self.switch_stack(index, button)
@@ -179,3 +179,5 @@ class ManagerMainWindow(QMainWindow):
                 self.to_date.blockSignals(False)
 
                 controller.load_employee_data()
+        if index == 3:
+            self.add_invoice_view.reset_view()

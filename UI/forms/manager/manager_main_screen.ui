@@ -3071,7 +3071,7 @@ padding-left: 10px;
                            </widget>
                           </item>
                           <item>
-                           <widget class="QTableWidget" name="product_tableWidget_3">
+                           <widget class="QTableWidget" name="product_import_tableWidget">
                             <property name="styleSheet">
                              <string notr="true">QTableWidget {
     font: 13px &quot;Segoe UI&quot;;
@@ -3153,6 +3153,9 @@ QTableWidget QScrollBar::sub-page:vertical {
                                  <width>0</width>
                                  <height>35</height>
                                 </size>
+                               </property>
+                               <property name="cursor">
+                                <cursorShape>PointingHandCursor</cursorShape>
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#add_product_import{
@@ -3282,10 +3285,10 @@ QTableWidget QScrollBar::sub-page:vertical {
 	font: 16px &quot;Segoe UI&quot;;
 background-color: rgb(247, 247, 247);
 }
-#product_id_import:focus{
-	border: 2px solid rgb(0, 170, 255);        
-    background: #ffffff;  
-}</string>
+</string>
+                                     </property>
+                                     <property name="readOnly">
+                                      <bool>true</bool>
                                      </property>
                                     </widget>
                                    </item>
@@ -3339,10 +3342,10 @@ background-color: rgb(247, 247, 247);
 	font: 16px &quot;Segoe UI&quot;;
 background-color: rgb(247, 247, 247);
 }
-#type_import:focus{
-	border: 2px solid rgb(0, 170, 255);        
-    background: #ffffff;  
-}</string>
+</string>
+                                     </property>
+                                     <property name="readOnly">
+                                      <bool>true</bool>
                                      </property>
                                     </widget>
                                    </item>
@@ -3403,6 +3406,9 @@ background-color: rgb(247, 247, 247);
 	border: 2px solid rgb(0, 170, 255);        
     background: #ffffff;  
 }</string>
+                                  </property>
+                                  <property name="readOnly">
+                                   <bool>true</bool>
                                   </property>
                                  </widget>
                                 </item>
@@ -3582,7 +3588,12 @@ background-color: rgb(247, 247, 247);
 #update_product_import::hover{
 	
 	background-color: rgb(206, 137, 0);
-}</string>
+}
+#update_product_import:disabled {
+   color: rgb(120, 120, 120);       /* Màu chữ xám */
+   background-color: rgb(200, 200, 200); /* Màu nền xám */
+}
+</string>
                                </property>
                                <property name="text">
                                 <string>Sửa sản phẩm</string>
@@ -3611,7 +3622,12 @@ background-color: rgb(247, 247, 247);
 #delete_product_import::hover{
 	
 	background-color: rgb(203, 0, 0);
-}</string>
+}
+#delete_product_import:disabled {
+   color: rgb(120, 120, 120);       /* Màu chữ xám */
+   background-color: rgb(200, 200, 200); /* Màu nền xám */
+}
+</string>
                                </property>
                                <property name="text">
                                 <string>Xóa sản phẩm</string>
@@ -3652,7 +3668,7 @@ background-color: rgb(247, 247, 247);
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_36">
                        <item>
-                        <widget class="QTableWidget" name="product_tableWidget_4">
+                        <widget class="QTableWidget" name="list_product_import">
                          <property name="font">
                           <font>
                            <family>Segoe UI</family>
@@ -3803,10 +3819,10 @@ background-color: rgb(255, 255, 255);</string>
 	font: 16px &quot;Segoe UI&quot;;
 background-color: rgb(247, 247, 247);
 }
-#import_id_output:focus{
-	border: 2px solid rgb(0, 170, 255);        
-    background: #ffffff;  
-}</string>
+</string>
+                            </property>
+                            <property name="readOnly">
+                             <bool>true</bool>
                             </property>
                            </widget>
                           </item>
@@ -3860,10 +3876,10 @@ background-color: rgb(247, 247, 247);
 	font: 16px &quot;Segoe UI&quot;;
 background-color: rgb(247, 247, 247);
 }
-#employee_output:focus{
-	border: 2px solid rgb(0, 170, 255);        
-    background: #ffffff;  
-}</string>
+</string>
+                            </property>
+                            <property name="readOnly">
+                             <bool>true</bool>
                             </property>
                            </widget>
                           </item>
@@ -3985,7 +4001,7 @@ QComboBox#type_invoice_comboBox::down-arrow {
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLabel" name="label_22">
+                           <widget class="QLabel" name="total_price_import">
                             <property name="sizePolicy">
                              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                               <horstretch>0</horstretch>
@@ -4000,7 +4016,7 @@ QComboBox#type_invoice_comboBox::down-arrow {
                              </font>
                             </property>
                             <property name="text">
-                             <string>100,000Đ</string>
+                             <string>0Đ</string>
                             </property>
                            </widget>
                           </item>

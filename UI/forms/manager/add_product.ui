@@ -526,22 +526,6 @@ QComboBox#type_comboBox::down-arrow {
                     </layout>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QLabel" name="link_product">
-                    <property name="font">
-                     <font>
-                      <pointsize>10</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">padding-left:10px;
-color: rgb(0, 85, 255);</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
                   <item alignment="Qt::AlignHCenter">
                    <widget class="QToolButton" name="upload_btn">
                     <property name="cursor">

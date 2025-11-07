@@ -38,19 +38,23 @@ class QueryData:
             print(f"Database error in get_user_by_username: {e}")
             return None
 
-    # hàm gen ra mã nhân viên
+    def get_employee_name_by_id(self, employee_id):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT employee_name FROM employees WHERE employee_id = ?", (employee_id,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+        except sqlite3.Error as e:
+            print(f"Database error in get_employee_name_by_id: {e}")
+            return None
+
     def _generate_new_employee_id(self, cursor):
-        """
-        Tạo mã nhân viên mới theo định dạng YYMMNNNNN.
-        Hàm này cần được gọi bên trong một transaction.
-        """
         now = datetime.now()
         prefix = now.strftime('%y%m')
 
         query = "SELECT MAX(employee_id) FROM employees WHERE CAST(employee_id AS TEXT) LIKE ?"
         cursor.execute(query, (f'{prefix}%',))
-
-        # fetchone() trả về một tuple, ví dụ (None,) hoặc (231000001,)
         result = cursor.fetchone()
         last_id = result[0] if result else None
 
@@ -63,20 +67,12 @@ class QueryData:
         new_id = int(f"{prefix}{next_seq_number:05d}")
         return new_id
 
-    # SỬA LỖI 2: Thêm 'self' và bỏ tham số 'db_path'
     def add_new_employee(self,data):
-        """
-        Hàm an toàn để thêm một nhân viên mới với ID tự tạo (định dạng YYMMNNNNN).
-        """
         conn = None
         try:
-            # SỬA LỖI 3: Sử dụng hàm tiện ích _get_connection
             conn = self._get_connection()
             cursor = conn.cursor()
 
-            # Bắt đầu transaction (mặc định trong sqlite3)
-
-            # SỬA LỖI 4: Gọi phương thức tạo ID qua 'self'
             new_employee_id = self._generate_new_employee_id(cursor)
             print(f"Generated new employee ID: {new_employee_id}")
 
@@ -415,6 +411,50 @@ class QueryData:
             return None
         except sqlite3.Error as e:
             print(f"Database error in get_date_oldest_import_invoice: {e}")
+            return None
+        finally:
+            conn.close()
+
+    def get_all_product(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT p.product_id, p.product_name, tp.type_name, p.stock 
+                              FROM products as p
+                              JOIN type_product as tp ON p.type_id = tp.type_id   
+                              WHERE p.status = "đang kinh doanh"
+            """)
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in get_type_product: {e}")
+            return None
+
+    def _generate_new_import_invoice_id(self, cursor, prefix_type):
+        now = datetime.now()
+        full_prefix = f"{prefix_type}{now.strftime('%y%m')}"
+        query = "SELECT MAX(import_code) FROM import_invoice WHERE import_code LIKE ?"
+        cursor.execute(query, (f'{full_prefix}%',))
+
+        result = cursor.fetchone()
+        last_id = result[0] if result else None
+
+        if last_id is None:
+            next_seq_number = 1
+        else:
+            last_seq_str = last_id[-5:]
+            next_seq_number = int(last_seq_str) + 1
+        new_id = f"{full_prefix}{next_seq_number:05d}"
+        return new_id
+
+    def get_new_invoice_code(self, prefix_type):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            new_code = self._generate_new_import_invoice_id(cursor, prefix_type)
+            return new_code
+        except Exception as e:
+            print(f"Lỗi khi tạo mã phiếu mới: {e}")
             return None
         finally:
             conn.close()
