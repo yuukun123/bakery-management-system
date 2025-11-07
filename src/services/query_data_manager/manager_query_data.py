@@ -458,3 +458,40 @@ class QueryData:
             return None
         finally:
             conn.close()
+
+    def create_import_invoice(self, invoice_data, details_data):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+
+            cursor.execute("""
+                INSERT INTO import_invoice (import_code, employee_id, import_date, total_amount, invoice_type)
+                VALUES (?, ?, DATE('now', 'localtime'), ?, ?)
+            """, (
+                invoice_data['import_code'],
+                invoice_data['employee_id'],
+                invoice_data['total_amount'],
+                invoice_data['invoice_type']
+            ))
+
+            import_id = cursor.lastrowid
+            print(f"DEBUG: Loại phiếu đang xử lý: '{invoice_data['invoice_type']}'")
+            for item in details_data:
+                cursor.execute("""
+                    INSERT INTO import_invoice_details (import_id, product_id, quantity, unit_price)
+                    VALUES (?, ?, ?, ?)
+                """, (import_id, item['product_id'], item['quantity'], item['price']))
+                print(f"DEBUG: Đang cập nhật SP {item['product_id']} với số lượng thêm: {item['quantity']}")
+                if invoice_data['invoice_type'] == "Phiếu nhập":
+                     cursor.execute("UPDATE products SET stock = stock + ? WHERE product_id = ?", (item['quantity'], item['product_id']))
+                else:
+                     cursor.execute("UPDATE products SET stock = stock - ? WHERE product_id = ?", (item['quantity'], item['product_id']))
+
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error creating import invoice: {e}")
+            return False
+        finally:
+            conn.close()

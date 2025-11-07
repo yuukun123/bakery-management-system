@@ -51,6 +51,7 @@ class addInvoiceViewWidget(QWidget):
         self.view.add_product_import.clicked.connect(self.add_product_to_invoice)
         self.view.delete_product_import.clicked.connect(self.remove_product_from_invoice)
         self.view.update_product_import.clicked.connect(self.save_product_update)
+        self.view.accept_btn.clicked.connect(self.save_invoice)
 
         self.load_product()
         self.load_product_to_import()
@@ -67,11 +68,16 @@ class addInvoiceViewWidget(QWidget):
         if type_invoice_comboBox.currentIndex() != 1:
             frame_import_price.show()
             new_invoice_id = self.query_data.get_new_invoice_code("PN")
+            self.view.frame_price.show()
+            self.view.accept_btn.setText("Nhập hàng")
         else:
             frame_import_price.hide()
+            self.view.frame_price.hide()
+            self.view.accept_btn.setText("Hủy hàng")
             new_invoice_id = self.query_data.get_new_invoice_code("PH")
         self.view.import_id_output.setText(new_invoice_id)
         self.view.employee_output.setText(employee_name)
+
 
 
     def load_product(self):
@@ -177,31 +183,44 @@ class addInvoiceViewWidget(QWidget):
         p_id = self.view.product_id_import.text().strip()
         p_name = self.view.name_import.text()
         p_type = self.view.type_import.text()
-        price_text = self.view.import_price.text().replace(',', '').strip()
         qty_text = self.view.quantity_import.text().strip()
 
-        if not price_text or not qty_text:
-            QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng nhập đầy đủ Giá nhập và Số lượng!")
+        if not qty_text:
+             QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng nhập số lượng!")
+             return
+        try:
+            quantity = int(qty_text)
+            if quantity <= 0:
+                QMessageBox.warning(self.view, "Thông báo", "Vui lòng nhập số lượng từ 1 trở lên")
+                return
+        except ValueError:
+             QMessageBox.warning(self.view, "Lỗi định dạng", "Số lượng phải là số hợp lệ.")
+             return
+
+        is_return_invoice = (self.view.type_invoice_comboBox.currentIndex() == 1)
+        price = 0
+
+        if not is_return_invoice:
+            price_text = self.view.import_price.text().replace(',', '').strip()
+            if not price_text:
+                QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng nhập giá nhập!")
+                return
+            try:
+                price = int(price_text)
+            except ValueError:
+                 QMessageBox.warning(self.view, "Lỗi định dạng", "Giá phải là số hợp lệ.")
+                 return
+
+        if not p_id:
+            QMessageBox.warning(self.view,"Thông báo", "Vui lòng chọn sản phẩm trước khi thêm!")
             return
 
-        try:
-            price = int(price_text)
-            quantity = int(qty_text)
-        except ValueError:
-             print("Lỗi: Giá hoặc số lượng không hợp lệ.")
-             return
-        if not p_id:
-            QMessageBox.information(self.view,"Thông báo", "Vui lòng chọn sản phẩm trước khi thêm!")
-            return
-        if quantity <= 0:
-            QMessageBox.information(self.view,"Thông báo", "Vui lòng nhập số lượng từ 1 trở lên")
-            return
         if p_id in self.data_import:
             QMessageBox.warning(
                 self.view,
                 "Sản phẩm đã tồn tại",
                 f"Sản phẩm có mã '{p_id}' đã có trong phiếu.\n"
-                "Vui lòng nhấn nút 'Sửa sản phẩm' nếu muốn thay đổi giá nhập hoặc số lượng."
+                "Vui lòng nhấn nút 'Sửa sản phẩm' nếu muốn thay đổi."
             )
             return
         else:
@@ -305,25 +324,37 @@ class addInvoiceViewWidget(QWidget):
 
     def save_product_update(self):
         p_id = self.view.product_id_import.text().strip()
-        price_text = self.view.import_price.text().replace(',', '').strip()
         qty_text = self.view.quantity_import.text().strip()
-        if not p_id or not price_text or not qty_text:
-             QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng chọn sản phẩm và nhập đầy đủ giá, số lượng!")
+        if not p_id or not qty_text:
+             QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng chọn sản phẩm và nhập số lượng!")
              return
         try:
-            price = int(price_text)
             quantity = int(qty_text)
+            if quantity <= 0:
+                 QMessageBox.warning(self.view, "Lỗi số lượng", "Số lượng phải lớn hơn 0.")
+                 return
         except ValueError:
-             QMessageBox.warning(self.view, "Lỗi định dạng", "Giá và số lượng phải là số hợp lệ.")
+             QMessageBox.warning(self.view, "Lỗi định dạng", "Số lượng phải là số hợp lệ.")
              return
 
-        if quantity <= 0:
-             QMessageBox.warning(self.view, "Lỗi số lượng", "Số lượng phải lớn hơn 0.")
-             return
+        is_return_invoice = (self.view.type_invoice_comboBox.currentIndex() == 1)
+        price = 0
+
+        if not is_return_invoice:
+            price_text = self.view.import_price.text().replace(',', '').strip()
+            if not price_text:
+                 QMessageBox.warning(self.view, "Thiếu thông tin", "Vui lòng nhập giá nhập để sửa!")
+                 return
+            try:
+                price = int(price_text)
+            except ValueError:
+                 QMessageBox.warning(self.view, "Lỗi định dạng", "Giá phải là số hợp lệ.")
+                 return
 
         if p_id not in self.data_import:
              QMessageBox.warning(self.view, "Lỗi", "Sản phẩm này không có trong phiếu để sửa!")
              return
+
         self.data_import[p_id]['price'] = price
         self.data_import[p_id]['quantity'] = quantity
 
@@ -341,3 +372,28 @@ class addInvoiceViewWidget(QWidget):
         self.load_product()
         self.check_invoice()
         self.view.total_price_import.setText("0đ")
+
+    def save_invoice(self):
+        if not self.data_import:
+            QMessageBox.warning(self.view, "Cảnh báo", "Phiếu chưa có sản phẩm nào! Vui lòng thêm sản phẩm trước khi lưu.")
+            return
+        reply = QMessageBox.question(self.view, 'Xác nhận', "Bạn có chắc chắn muốn lưu phiếu này không?",
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+        total_amount = 0
+        for item in self.data_import.values():
+            total_amount += item['price'] * item['quantity']
+        invoice_data = {
+            'import_code': self.view.import_id_output.text(),
+            'employee_id': self.employee_id,
+            'invoice_type': self.view.type_invoice_comboBox.currentText(),
+            'total_amount': total_amount
+        }
+        details_data = list(self.data_import.values())
+        if self.query_data.create_import_invoice(invoice_data, details_data):
+            QMessageBox.information(self.view, "Thành công", f"Đã lưu phiếu {invoice_data['import_code']} thành công!")
+            app_signals.product_data_changed.emit()
+            self.reset_view()
+        else:
+            QMessageBox.critical(self.view, "Lỗi", "Đã xảy ra lỗi trong quá trình lưu phiếu. Vui lòng kiểm tra lại log.")

@@ -17,3 +17,6 @@ class addInvoiceController:
         self.view.view.quantity_import.clear()
         self.view.view.import_price.clear()
         self.view.set_disable_btn()
+
+
+

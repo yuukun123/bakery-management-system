@@ -3973,7 +3973,7 @@ QComboBox#type_invoice_comboBox::down-arrow {
                       </property>
                       <layout class="QVBoxLayout" name="verticalLayout_22">
                        <item>
-                        <widget class="QFrame" name="frame_53">
+                        <widget class="QFrame" name="frame_price">
                          <property name="frameShape">
                           <enum>QFrame::StyledPanel</enum>
                          </property>
