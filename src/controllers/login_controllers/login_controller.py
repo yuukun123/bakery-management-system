@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QPushButton
 from src.services.login_query.login_query import Login
 from src.services.query_user_name import QueryUserName
 from src.windows.manager_window.manager_window_manage import open_manager_main_window
@@ -49,9 +49,28 @@ class LoginController:
                 return
             print(f"DEBUG: {self.role}")
             if self.role == "quản lý":
-                self.main_window_instance = open_manager_main_window(employee_id)
-                self.view.close()
-                print("DEBUG: MainWindow instance created via window_manage and shown.")
+                msg_box = QMessageBox(self.view)
+                msg_box.setWindowTitle("Chọn giao diện")
+                msg_box.setText("Bạn muốn vào giao diện nào?")
+
+                # Tạo 2 nút tuỳ chỉnh
+                btn_manager = QPushButton("Quản lý")
+                btn_employee = QPushButton("Nhân viên")
+
+                msg_box.addButton(btn_manager, QMessageBox.AcceptRole)
+                msg_box.addButton(btn_employee, QMessageBox.RejectRole)
+
+                msg_box.exec_()  # Hiển thị hộp thoại
+
+                # Kiểm tra người dùng chọn nút nào
+                clicked_button = msg_box.clickedButton()
+                if clicked_button == btn_manager:
+                    self.main_window_instance = open_manager_main_window(employee_id)
+                    print("DEBUG: Manager chọn giao diện quản lý.")
+                else:
+                    self.main_window_instance = open_employee_main_window(employee_id)
+                    print("DEBUG: Manager chọn giao diện nhân viên.")
+
 
             elif self.role == "nhân viên":
                 self.main_window_instance = open_employee_main_window(employee_id)
