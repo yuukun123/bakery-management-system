@@ -643,7 +643,7 @@ background-color: #a2d2ff;</string>
 }</string>
                      </property>
                      <property name="text">
-                      <string>Nhân sự</string>
+                      <string>Nhân viên</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../../resources/resources.qrc">
@@ -715,7 +715,7 @@ background-color: #a2d2ff;</string>
 }</string>
                      </property>
                      <property name="text">
-                      <string>Phiếu nhập</string>
+                      <string>Kho</string>
                      </property>
                      <property name="icon">
                       <iconset resource="../../../resources/resources.qrc">
@@ -774,7 +774,7 @@ background-color: #a2d2ff;</string>
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="employee_page">
                 <property name="styleSheet">
@@ -1978,7 +1978,7 @@ QTableWidget QScrollBar::sub-page:vertical {
 }</string>
                          </property>
                          <property name="text">
-                          <string>Thêm</string>
+                          <string>Tạo phiếu</string>
                          </property>
                          <property name="icon">
                           <iconset resource="../../../resources/resources.qrc">
@@ -2174,6 +2174,82 @@ QComboBox#comboBox_employee::down-arrow {
                            </widget>
                           </item>
                          </layout>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_58">
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_34">
+                       <item>
+                        <widget class="QLabel" name="label_24">
+                         <property name="font">
+                          <font>
+                           <pointsize>10</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(85, 85, 85);</string>
+                         </property>
+                         <property name="text">
+                          <string>Loại phiếu</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="type_invoice_filter">
+                         <property name="styleSheet">
+                          <string notr="true">QComboBox#type_invoice_filter{
+    border: 2px solid rgb(226, 226, 226);     
+    border-radius: 6px;           
+    padding: 6px 10px;             
+    background: #fdfdfd;           
+    font-size: 14px;
+}
+
+QComboBox#type_invoice_filter:focus {
+    border: 1px solid #888;        
+    background: #ffffff;           
+}
+
+QComboBox#type_invoice_filter::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#type_invoice_filter::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Tất cả</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Phiếu nhập</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Phiếu hủy</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                       </layout>
@@ -2745,6 +2821,8 @@ QCalendarWidget QTableView::item:disabled {
                          <property name="font">
                           <font>
                            <pointsize>10</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -3090,7 +3168,7 @@ QTableWidget QScrollBar::sub-page:vertical {
 }</string>
                                </property>
                                <property name="text">
-                                <string>Thêm sản phẩm vào phiếu nhập</string>
+                                <string>Thêm sản phẩm vào phiếu</string>
                                </property>
                               </widget>
                              </item>
@@ -3406,7 +3484,7 @@ background-color: rgb(247, 247, 247);
                                  </widget>
                                 </item>
                                 <item>
-                                 <widget class="QFrame" name="frame_54">
+                                 <widget class="QFrame" name="frame_import_price">
                                   <property name="frameShape">
                                    <enum>QFrame::StyledPanel</enum>
                                   </property>
@@ -3697,7 +3775,7 @@ background-color: rgb(255, 255, 255);</string>
                              </font>
                             </property>
                             <property name="text">
-                             <string>Mã phiếu nhập</string>
+                             <string>Mã phiếu</string>
                             </property>
                            </widget>
                           </item>
@@ -3754,7 +3832,7 @@ background-color: rgb(247, 247, 247);
                              </font>
                             </property>
                             <property name="text">
-                             <string>Nhân viên nhập</string>
+                             <string>Nhân viên tạo phiếu</string>
                             </property>
                            </widget>
                           </item>
@@ -3792,6 +3870,74 @@ background-color: rgb(247, 247, 247);
                          </layout>
                         </widget>
                        </item>
+                       <item>
+                        <widget class="QFrame" name="frame_57">
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                         <layout class="QVBoxLayout" name="verticalLayout_14">
+                          <item>
+                           <widget class="QLabel" name="label_23">
+                            <property name="font">
+                             <font>
+                              <pointsize>9</pointsize>
+                              <weight>75</weight>
+                              <bold>true</bold>
+                             </font>
+                            </property>
+                            <property name="text">
+                             <string>Loại phiếu</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QComboBox" name="type_invoice_comboBox">
+                            <property name="styleSheet">
+                             <string notr="true">QComboBox#type_invoice_comboBox {
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 3px;           
+    padding: 6px 10px;             
+    background: #fdfdfd;           
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QComboBox#type_invoice_comboBox:focus {
+    border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;           
+}
+
+QComboBox#type_invoice_comboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#type_invoice_comboBox::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                            </property>
+                            <item>
+                             <property name="text">
+                              <string>Phiếu nhập</string>
+                             </property>
+                            </item>
+                            <item>
+                             <property name="text">
+                              <string>Phiếu hủy</string>
+                             </property>
+                            </item>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
                       </layout>
                      </widget>
                     </item>
@@ -3824,6 +3970,7 @@ background-color: rgb(247, 247, 247);
                             <property name="font">
                              <font>
                               <family>Segoe UI</family>
+                              <pointsize>10</pointsize>
                               <weight>75</weight>
                               <italic>false</italic>
                               <bold>true</bold>

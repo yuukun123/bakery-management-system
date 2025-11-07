@@ -11,6 +11,7 @@ from src.views.moveable_window import MoveableWindow
 from src.views.manager_main_view.employee_view import EmployeeViewWidget
 from src.views.manager_main_view.product_view import ProductViewWidget
 from src.views.manager_main_view.import_invoice_view import ImportInvoiceViewWidget
+from src.views.manager_main_view.add_invoice_view import addInvoiceViewWidget
 from resources import resources_rc
 
 class ManagerMainWindow(QMainWindow):
@@ -24,6 +25,8 @@ class ManagerMainWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setWindowOpacity(1.0)
+
+        self.query_data = QueryData()
 
         # Vô hiệu hóa các nút xóa sửa
         self.quit_employee_btn.setEnabled(False)
@@ -107,6 +110,7 @@ class ManagerMainWindow(QMainWindow):
         self.employee_view = EmployeeViewWidget(self)
         self.product_view = ProductViewWidget(self)
         self.import_invoice_view = ImportInvoiceViewWidget(self)
+        self.add_invoice_view = addInvoiceViewWidget(self)
 
     def handle_nav_click(self, index, button):
         self.switch_stack(index, button)
@@ -133,8 +137,45 @@ class ManagerMainWindow(QMainWindow):
                 self.search_product.clear()
         if index == 2 and hasattr(self.import_invoice_view, "import_invoice_tableWidget"):
             self.import_invoice_view.import_invoice_tableWidget.clearSelection()
-            if hasattr(self, 'import_from_date') and hasattr(self, 'import_to_date'):
+            if hasattr(self, 'comboBox_employee'):
+                self.comboBox_employee.setCurrentIndex(0)
+            if hasattr(self, 'type_invoice_filter'):
+                self.type_invoice_filter.setCurrentIndex(0)
+            if hasattr(self, 'display_import'):
+                self.display_import.setCurrentIndex(0)
+            if hasattr(self, 'search_import_invoice'):
+                self.search_import_invoice.clear()
+            if hasattr(self, 'from_date') and hasattr(self, 'to_date'):
+                controller = self.import_invoice_view.import_invoice_controller
+                self.comboBox_employee.blockSignals(True)
+                self.type_invoice_filter.blockSignals(True)
+                self.display_import.blockSignals(True)
+                self.search_import_invoice.blockSignals(True)
+                self.from_date.blockSignals(True)
+                self.to_date.blockSignals(True)
+
+                self.import_invoice_view.import_invoice_tableWidget.clearSelection()
+                self.comboBox_employee.setCurrentIndex(0)
+                self.type_invoice_filter.setCurrentIndex(0)
+                self.display_import.setCurrentIndex(0)
+                self.search_import_invoice.clear()
+
                 today = QDate.currentDate()
-                first_day_of_month = QDate(today.year(), today.month(), 1)
-                self.from_date.setDate(first_day_of_month)
+                oldest_date_str = self.query_data.get_date_oldest_import_invoice()
+
+                if oldest_date_str:
+                    oldest_date = QDate.fromString(oldest_date_str, "yyyy-MM-dd")
+                else:
+                    oldest_date = QDate(today.year(), today.month(), 1)
+
+                self.from_date.setDate(oldest_date)
                 self.to_date.setDate(today)
+
+                self.comboBox_employee.blockSignals(False)
+                self.type_invoice_filter.blockSignals(False)
+                self.display_import.blockSignals(False)
+                self.search_import_invoice.blockSignals(False)
+                self.from_date.blockSignals(False)
+                self.to_date.blockSignals(False)
+
+                controller.load_employee_data()
