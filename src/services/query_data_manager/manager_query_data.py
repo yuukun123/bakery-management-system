@@ -338,22 +338,25 @@ class QueryData:
             conn.rollback()
             return None
 
-    def search_import(self, employee,from_date,to_date, display, search_term):
+    def search_import(self, employee,from_date,to_date, type_invoice, display, search_term):
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
             base_query = """
                 SELECT 
-                    i.import_code, e.employee_name, i.import_date, id.subtotal_amount_import_invoice
+                    i.import_code, i.invoice_type, e.employee_name, i.import_date, i.total_amount
                 FROM import_invoice as i
-                JOIN import_invoice_details as id ON i.import_id = id.import_id
-                JOIN employees as e ON e.employee_id = i.employee_id
+                LEFT JOIN import_invoice_details as id ON i.import_id = id.import_id
+                LEFT JOIN employees as e ON e.employee_id = i.employee_id
             """
             conditions = []
             parameters = []
             if employee.lower() != "tất cả":
                 conditions.append("e.employee_name = ?")
                 parameters.append(employee)
+            if type_invoice.lower() != "tất cả":
+                conditions.append("i.invoice_type = ?")
+                parameters.append(type_invoice)
             if search_term:
                 search_like = f"%{search_term}%"
                 conditions.append("LOWER(i.import_code) LIKE LOWER(?)")
@@ -372,7 +375,8 @@ class QueryData:
                 parameters.append(to_date)
             if conditions:
                 base_query += " WHERE " + " AND ".join(conditions)
-            base_query += " ORDER BY i.import_date"
+            base_query += """ GROUP BY i.import_id, i.import_code, i.invoice_type, e.employee_name, i.import_date, i.total_amount
+                              ORDER BY i.import_code """
             if display.isdigit():
                 try:
                     limit_value = int(display)
@@ -399,3 +403,18 @@ class QueryData:
         except sqlite3.Error as e:
             print(f"Database error in get_type_product: {e}")
             return None
+
+    def get_date_oldest_import_invoice(self):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT MIN(import_date) AS oldest_date FROM import_invoice")
+            row = cursor.fetchone()
+            if row and row["oldest_date"]:
+                return row["oldest_date"]
+            return None
+        except sqlite3.Error as e:
+            print(f"Database error in get_date_oldest_import_invoice: {e}")
+            return None
+        finally:
+            conn.close()

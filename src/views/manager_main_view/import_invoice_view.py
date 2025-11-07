@@ -16,13 +16,18 @@ class ImportInvoiceViewWidget(QWidget):
         self.to_date = parent.to_date
         self.query_data = QueryData()
         self.load_employee_comboBox()
+        self.detail_btn.setEnabled(False)
 
         today = QDate.currentDate()
-        first_day_of_month = QDate(today.year(), today.month(), 1)
-        self.from_date.setDate(first_day_of_month)
+        oldest_date_str = self.query_data.get_date_oldest_import_invoice()
+        if oldest_date_str:
+            oldest_date = QDate.fromString(oldest_date_str, "yyyy-MM-dd")
+        else:
+            oldest_date = QDate(today.year(), today.month(), 1)
+        self.from_date.setDate(oldest_date)
         self.to_date.setDate(today)
         self.from_date.setMaximumDate(today)
-        self.to_date.setMinimumDate(first_day_of_month)
+        self.to_date.setMinimumDate(oldest_date)
 
         viewport = self.import_invoice_tableWidget.viewport()
         self.placeholder_label = QLabel("Không tìm thấy dữ liệu phù hợp", viewport)
@@ -52,7 +57,7 @@ class ImportInvoiceViewWidget(QWidget):
         else:
             self.placeholder_label.hide()
         table = self.import_invoice_tableWidget
-        headers = ["Mã phiếu nhập", "Nhân viên nhập", "Thời gian", "Tổng tiền"]
+        headers = ["Mã phiếu", "Loại phiếu", "Nhân viên tạo", "Thời gian tạo", "Tổng tiền"]
         table.setColumnCount(len(headers))
         table.setHorizontalHeaderLabels(headers)
         table.setRowCount(len(data))

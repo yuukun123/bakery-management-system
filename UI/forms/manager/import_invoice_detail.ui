@@ -89,7 +89,7 @@ border-top-right-radius:5px;</string>
             <string notr="true">color: rgb(255, 255, 255);</string>
            </property>
            <property name="text">
-            <string>THÔNG TIN PHIẾU NHẬP</string>
+            <string>THÔNG TIN PHIẾU </string>
            </property>
           </widget>
          </item>
@@ -164,7 +164,7 @@ border-bottom-right-radius:5px;</string>
                   </font>
                  </property>
                  <property name="text">
-                  <string>Mã phiếu nhập</string>
+                  <string>Mã phiếu </string>
                  </property>
                 </widget>
                </item>
@@ -206,6 +206,66 @@ border-bottom-right-radius:5px;</string>
              </widget>
             </item>
             <item>
+             <widget class="QFrame" name="frame_5">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_6">
+               <item>
+                <widget class="QLabel" name="type_invoice_label">
+                 <property name="font">
+                  <font>
+                   <pointsize>9</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Loại phiếu</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="type_invoice">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Segoe UI</family>
+                   <pointsize>-1</pointsize>
+                   <weight>50</weight>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#type_invoice{
+	border: 2px solid rgb(226, 226, 226);
+	border-radius:3px;
+	font: 16px &quot;Segoe UI&quot;;
+	background-color: rgb(247, 247, 247);
+}
+</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
              <widget class="QFrame" name="frame">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
@@ -224,7 +284,7 @@ border-bottom-right-radius:5px;</string>
                   </font>
                  </property>
                  <property name="text">
-                  <string>Nhân viên nhập</string>
+                  <string>Nhân viên Lập phiếu</string>
                  </property>
                 </widget>
                </item>
