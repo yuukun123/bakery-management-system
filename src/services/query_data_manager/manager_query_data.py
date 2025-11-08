@@ -489,3 +489,35 @@ class QueryData:
             return False
         finally:
             conn.close()
+
+    def get_product_import_detail(self, import_code):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT p.product_id, p.product_name, tp.type_name, id.unit_price, id.quantity
+                            FROM import_invoice as i
+                            JOIN import_invoice_details as id ON i.import_id = id.import_id
+                            JOIN products as p ON p.product_id = id.product_id
+                            JOIN type_product as tp ON tp.type_id = p.type_id
+                            WHERE i.import_code = ?
+            """,(import_code,))
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Database error in get_product_import_detail: {e}")
+            return None
+
+    def get_invoice_information(self, import_code):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""SELECT i.import_code, i.invoice_type, e.employee_name, i.import_date
+                            FROM import_invoice as i
+                            JOIN employees as e ON e.employee_id = i.employee_id
+                            WHERE i.import_code = ?
+            """,(import_code,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
+        except sqlite3.Error as e:
+            print(f"Database error in get_invoice_information: {e}")
+            return None
