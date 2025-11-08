@@ -21,4 +21,3 @@ class InvoiceDetailView(QDialog, MoveableWindow):
 
         self.invoice_controller = InvoiceDetailController(self, self.invoice_code)
         self.invoice_controller.setup_dialog()
-        # self.invoice_controller.load_invoice_data(self.invoice_code)

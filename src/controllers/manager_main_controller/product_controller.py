@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QDialog, QMessageBox
 from src.services.query_data_manager.manager_query_data import QueryData
 from src.views.manager_main_view.add_product_dialog_view import addProduct
 from src.views.manager_main_view.update_product_dialog import updateProduct
-
+from src.utils.global_signal import app_signals
 
 class productController:
         def __init__(self, mainview, tableview):
@@ -20,6 +20,7 @@ class productController:
             if result == QDialog.Accepted:
                 QMessageBox.information(self.view,"Thành công", "Đã thêm sản phẩm thành công!")
                 self.table.load_product_data()
+                app_signals.product_data_changed.emit()
 
         def handle_stop_selling(self):
             product_data =  self.table.get_selected_product_data()
@@ -28,6 +29,7 @@ class productController:
                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.set_product_stop_selling(product_data)
+                app_signals.product_data_changed.emit()
 
         def set_product_stop_selling(self, data):
             print(f"DEBUG: CHO SẢN PHẨM NGỪNG BÁN")
@@ -59,6 +61,7 @@ class productController:
             if result == QDialog.Accepted:
                 QMessageBox.information( self.view,"Thành công", "Đã sửa thông tin sản phẩm thành công!")
                 self.table.load_product_data()
+                app_signals.product_data_changed.emit()
 
         def connect_filter_signal(self):
             try:

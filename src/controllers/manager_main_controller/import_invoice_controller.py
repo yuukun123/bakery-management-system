@@ -60,3 +60,4 @@ class ImportInvoiceController:
             self.view.to_date.setMinimumDate(date)
         def update_from_date_limit(self, date):
             self.view.from_date.setMaximumDate(date)
+

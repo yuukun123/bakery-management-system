@@ -28,7 +28,6 @@ class addProduct(QDialog,MoveableWindow):
         self.cancel_btn.clicked.connect(self.reject)
         self.image_path = None
         self.source_image_path = None
-        self.type_comboBox.currentIndexChanged.connect(self.on_type_or_image_changed)
         self.upload_btn.clicked.connect(self.select_image)
         self.load_product_types()
 
@@ -138,7 +137,6 @@ class addProduct(QDialog,MoveableWindow):
             self.source_image_path = file_name
             print(f"Đã lưu tên file: {self.image_path}")
             print(f"Đường dẫn gốc: {self.source_image_path}")
-            self.link_product.setText(self.source_image_path)
             pixmap = QPixmap(file_name)
             scaled_pixmap = pixmap.scaled(
                 self.image_label.size(),
@@ -147,7 +145,6 @@ class addProduct(QDialog,MoveableWindow):
             )
             self.image_label.setPixmap(scaled_pixmap)
             self.image_label.setAlignment(Qt.AlignCenter)
-            self.on_type_or_image_changed()
 
     def format_number(self, line_edit):
         text = line_edit.text()
@@ -161,18 +158,6 @@ class addProduct(QDialog,MoveableWindow):
             line_edit.setText(formatted)
             line_edit.blockSignals(False)
             line_edit.setCursorPosition(len(formatted))
-
-    def on_type_or_image_changed(self):
-        self.hide_error_frame()
-        type = self.type_comboBox.currentText()
-        type_index = self.type_comboBox.currentIndex()
-        file_name = self.image_path
-
-        if file_name and type_index != 0:
-            final_relative_path = os.path.join("UI/images", type, file_name).replace("\\", "/")
-            self.link_product.setText(final_relative_path)
-        elif file_name:
-            self.link_product.setText(file_name)
 
     def load_product_types(self):
         try:
