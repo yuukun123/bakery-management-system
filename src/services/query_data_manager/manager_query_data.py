@@ -481,12 +481,6 @@ class QueryData:
                     INSERT INTO import_invoice_details (import_id, product_id, quantity, unit_price)
                     VALUES (?, ?, ?, ?)
                 """, (import_id, item['product_id'], item['quantity'], item['price']))
-                print(f"DEBUG: Đang cập nhật SP {item['product_id']} với số lượng thêm: {item['quantity']}")
-                if invoice_data['invoice_type'] == "Phiếu nhập":
-                     cursor.execute("UPDATE products SET stock = stock + ? WHERE product_id = ?", (item['quantity'], item['product_id']))
-                else:
-                     cursor.execute("UPDATE products SET stock = stock - ? WHERE product_id = ?", (item['quantity'], item['product_id']))
-
             conn.commit()
             return True
         except Exception as e:
