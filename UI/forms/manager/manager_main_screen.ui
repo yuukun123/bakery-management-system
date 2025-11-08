@@ -774,7 +774,7 @@ background-color: #a2d2ff;</string>
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="employee_page">
                 <property name="styleSheet">
