@@ -115,7 +115,7 @@ def create_table():
             employee_id INTEGER NOT NULL,
             import_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             total_amount DOUBLE NOT NULL CHECK(total_amount >= 0),
-            invoice_type TEXT NOT NULL DEFAULT 'Phiếu nhập' CHECK(invoice_type IN ('Phiếu nhập', 'Phiếu hủy'))
+            invoice_type TEXT NOT NULL DEFAULT 'Phiếu nhập' CHECK(invoice_type IN ('Phiếu nhập', 'Phiếu hủy')),
             FOREIGN KEY(employee_id) REFERENCES employees(employee_id)
         )
     """)
@@ -155,27 +155,73 @@ def create_table():
             END;
         """)
 
+    # trigger phiếu
+    # 1. TRIGGER KHI INSERT (Thêm chi tiết phiếu)
+    cursor.execute("DROP TRIGGER IF EXISTS trg_increase_stock_on_import;")  # Xóa tên cũ (tùy chọn)
+    cursor.execute("DROP TRIGGER IF EXISTS trg_handle_stock_on_import_insert;")  # Xóa tên mới
     cursor.execute("""
-            CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_import_delete
-            AFTER DELETE ON import_invoice_details
-            FOR EACH ROW
-            BEGIN
-                UPDATE products
-                SET stock = stock - OLD.quantity
-                WHERE product_id = OLD.product_id;
-            END;
-        """)
+                CREATE TRIGGER trg_handle_stock_on_import_insert
+                AFTER INSERT ON import_invoice_details
+                FOR EACH ROW
+                BEGIN
+                    -- Xử lý Phiếu Nhập (Tăng tồn kho)
+                    UPDATE products
+                    SET stock = stock + NEW.quantity
+                    WHERE product_id = NEW.product_id
+                      AND (SELECT invoice_type FROM import_invoice WHERE import_id = NEW.import_id) = 'Phiếu nhập';
 
+                    -- Xử lý Phiếu Hủy (Giảm tồn kho)
+                    UPDATE products
+                    SET stock = stock - NEW.quantity
+                    WHERE product_id = NEW.product_id
+                      AND (SELECT invoice_type FROM import_invoice WHERE import_id = NEW.import_id) = 'Phiếu hủy';
+                END;
+            """)
+
+    # 2. TRIGGER KHI DELETE (Xóa chi tiết phiếu)
+    cursor.execute("DROP TRIGGER IF EXISTS trg_decrease_stock_on_import_delete;")  # Xóa tên cũ (tùy chọn)
+    cursor.execute("DROP TRIGGER IF EXISTS trg_handle_stock_on_import_delete;")  # Xóa tên mới
     cursor.execute("""
-            CREATE TRIGGER IF NOT EXISTS trg_update_stock_on_import_update
-            AFTER UPDATE OF quantity ON import_invoice_details
-            FOR EACH ROW
-            BEGIN
-                UPDATE products
-                SET stock = stock + (NEW.quantity - OLD.quantity)
-                WHERE product_id = OLD.product_id;
-            END;
-        """)
+                CREATE TRIGGER trg_handle_stock_on_import_delete
+                AFTER DELETE ON import_invoice_details
+                FOR EACH ROW
+                BEGIN
+                    -- Xử lý Phiếu Nhập (Giảm tồn kho vì nhập bị hủy)
+                    UPDATE products
+                    SET stock = stock - OLD.quantity
+                    WHERE product_id = OLD.product_id
+                      AND (SELECT invoice_type FROM import_invoice WHERE import_id = OLD.import_id) = 'Phiếu nhập';
+
+                    -- Xử lý Phiếu Hủy (Tăng tồn kho vì hủy bị hủy)
+                    UPDATE products
+                    SET stock = stock + OLD.quantity
+                    WHERE product_id = OLD.product_id
+                      AND (SELECT invoice_type FROM import_invoice WHERE import_id = OLD.import_id) = 'Phiếu hủy';
+                END;
+            """)
+
+    # 3. TRIGGER KHI UPDATE (Cập nhật số lượng)
+    cursor.execute("DROP TRIGGER IF EXISTS trg_update_stock_on_import_update;")  # Xóa tên cũ (tùy chọn)
+    cursor.execute("DROP TRIGGER IF EXISTS trg_handle_stock_on_import_update;")  # Xóa tên mới
+    cursor.execute("""
+                CREATE TRIGGER trg_handle_stock_on_import_update
+                AFTER UPDATE OF quantity ON import_invoice_details
+                FOR EACH ROW
+                WHEN OLD.quantity != NEW.quantity
+                BEGIN
+                    -- Xử lý Phiếu Nhập (Tồn kho = Tồn kho cũ + Delta)
+                    UPDATE products
+                    SET stock = stock + (NEW.quantity - OLD.quantity)
+                    WHERE product_id = NEW.product_id
+                      AND (SELECT invoice_type FROM import_invoice WHERE import_id = NEW.import_id) = 'Phiếu nhập';
+
+                    -- Xử lý Phiếu Hủy (Tồn kho = Tồn kho cũ - Delta)
+                    UPDATE products
+                    SET stock = stock - (NEW.quantity - OLD.quantity)
+                    WHERE product_id = NEW.product_id
+                      AND (SELECT invoice_type FROM import_invoice WHERE import_id = NEW.import_id) = 'Phiếu hủy';
+                END;
+            """)
 
     cursor.execute("""
         CREATE TRIGGER IF NOT EXISTS trg_decrease_stock_on_sale
@@ -187,15 +233,6 @@ def create_table():
         END;
     """)
 
-    cursor.execute("""
-        CREATE TRIGGER IF NOT EXISTS trg_increase_stock_on_import
-        AFTER INSERT ON import_invoice_details
-        BEGIN
-            UPDATE products
-            SET stock = stock + NEW.quantity
-            WHERE product_id = NEW.product_id;
-        END;
-    """)
 
     # Trigger tự động cập nhật `updated_at` cho bảng employees
     cursor.execute("""
