@@ -482,7 +482,7 @@ padding-left:10px;
 padding-right:10px;</string>
                          </property>
                          <property name="placeholderText">
-                          <string>Employee id</string>
+                          <string>Mã nhân viên</string>
                          </property>
                         </widget>
                        </item>
@@ -631,7 +631,7 @@ padding-right:10px;</string>
                              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                             </property>
                             <property name="placeholderText">
-                             <string>Password</string>
+                             <string>Mật khẩu</string>
                             </property>
                            </widget>
                           </item>
