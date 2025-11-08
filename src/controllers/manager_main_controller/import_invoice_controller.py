@@ -14,10 +14,14 @@ class ImportInvoiceController:
             self.view.to_date.dateChanged.connect(self.update_from_date_limit)
         def open_import_detail_dialog(self):
             print("DEBUG: BẮT ĐẦU MỞ DETAIL DIALOG")
-            dialog = importDetail()
-            result = dialog.exec_()
-            if result == QDialog.Accepted:
-                QMessageBox.information(self.view,"Thành công", "Đã thêm nhân viên thành công!")
+            table = self.view.import_invoice_tableWidget
+            selected_row = table.currentRow()
+            if selected_row >= 0:
+                import_code_item = table.item(selected_row, 0)
+                if import_code_item:
+                    import_code = import_code_item.text()
+                    dialog = importDetail(parent=self.view, invoice_code=import_code)
+                    result = dialog.exec_()
 
         def connect_filter_signal(self):
             try:
