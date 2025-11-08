@@ -482,7 +482,7 @@ padding-left:10px;
 padding-right:10px;</string>
                          </property>
                          <property name="placeholderText">
-                          <string>User name</string>
+                          <string>Employee id</string>
                          </property>
                         </widget>
                        </item>
