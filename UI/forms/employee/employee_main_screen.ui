@@ -946,7 +946,7 @@ background-color: #a2d2ff;</string>
                 <number>0</number>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="product_page">
                 <layout class="QHBoxLayout" name="horizontalLayout">
@@ -968,7 +968,7 @@ background-color: #a2d2ff;</string>
                     <string notr="true">border: 0px solid rgb(2, 2, 2)</string>
                    </property>
                    <property name="currentIndex">
-                    <number>1</number>
+                    <number>0</number>
                    </property>
                    <widget class="QWidget" name="product_list">
                     <property name="styleSheet">
@@ -1132,7 +1132,7 @@ QComboBox::down-arrow {
                               <string notr="true">border: none;</string>
                              </property>
                              <property name="placeholderText">
-                              <string>search product</string>
+                              <string>tìm kiếm sản phẩm</string>
                              </property>
                             </widget>
                            </item>
@@ -1175,8 +1175,8 @@ QComboBox::down-arrow {
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>100</width>
-                             <height>30</height>
+                             <width>822</width>
+                             <height>620</height>
                             </rect>
                            </property>
                            <property name="styleSheet">
@@ -1317,8 +1317,8 @@ color: rgb(255, 255, 255)</string>
                             <rect>
                              <x>0</x>
                              <y>0</y>
-                             <width>100</width>
-                             <height>30</height>
+                             <width>448</width>
+                             <height>474</height>
                             </rect>
                            </property>
                            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1814,6 +1814,9 @@ border-radius: 10px;</string>
                                 <property name="styleSheet">
                                  <string notr="true">padding: 5 5px;
 border: none;</string>
+                                </property>
+                                <property name="placeholderText">
+                                 <string>Tìm kiếm bằng số điện thoại</string>
                                 </property>
                                </widget>
                               </item>
@@ -3513,7 +3516,7 @@ color: rgb(255, 255, 255)</string>
                         <number>0</number>
                        </property>
                        <item>
-                        <widget class="QToolButton" name="show_update_customer_btn">
+                        <widget class="QToolButton" name="clear_btn_2">
                          <property name="minimumSize">
                           <size>
                            <width>250</width>
@@ -3534,18 +3537,18 @@ color: rgb(255, 255, 255)</string>
                           </font>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">#show_update_customer_btn{
-background-color: #e09f3e;
+                          <string notr="true">#clear_btn_2{
+background-color: #c1121f;
 color: rgb(255, 255, 255);
 border-radius: 10px;
 }
 
-#show_update_customer_btn:hover{
+#clear_btn_2:hover{
 background-color: #495057;
 }</string>
                          </property>
                          <property name="text">
-                          <string>Thay Đổi Thông Tin Khách Hàng</string>
+                          <string>Xóa thông tin</string>
                          </property>
                         </widget>
                        </item>
@@ -3599,6 +3602,9 @@ border-radius: 10px;</string>
                          <property name="styleSheet">
                           <string notr="true">padding: 5 5px;
 border: none;</string>
+                         </property>
+                         <property name="placeholderText">
+                          <string>Tìm kiếm bằng số điện thoại</string>
                          </property>
                         </widget>
                        </item>
@@ -5029,7 +5035,7 @@ QComboBox::down-arrow {
                        <string notr="true">border: none;</string>
                       </property>
                       <property name="placeholderText">
-                       <string>search product</string>
+                       <string>tìm kiếm sản phẩm</string>
                       </property>
                      </widget>
                     </item>
