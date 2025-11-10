@@ -12,6 +12,7 @@ from src.views.manager_main_view.employee_view import EmployeeViewWidget
 from src.views.manager_main_view.product_view import ProductViewWidget
 from src.views.manager_main_view.import_invoice_view import ImportInvoiceViewWidget
 from src.views.manager_main_view.add_invoice_view import addInvoiceViewWidget
+from src.views.manager_main_view.statistical_view import statisticalView
 from resources import resources_rc
 
 class ManagerMainWindow(QMainWindow):
@@ -48,6 +49,9 @@ class ManagerMainWindow(QMainWindow):
         self.import_invoice_btn.clicked.connect(lambda: self.handle_nav_click(2, self.import_invoice_btn))
         self.add_import_btn.clicked.connect(lambda: self.handle_nav_click(3,self.add_import_btn))
         self.statistical_btn.clicked.connect(lambda: self.handle_nav_click(4, self.statistical_btn))
+        self.statistical_invenue_tab.clicked.connect(self.show_revenue_tab)
+        self.statistical_product_tab.clicked.connect(self.show_product_tab)
+        self.statistical_destroy_tab.clicked.connect(self.show_destroy_tab)
 
         if not self._employee_context:
             QMessageBox.critical(self, "Lỗi nghiêm trọng", f"Không thể tìm thấy dữ liệu cho người dùng '{self.employee_id}'.")
@@ -111,6 +115,8 @@ class ManagerMainWindow(QMainWindow):
         self.product_view = ProductViewWidget(self)
         self.import_invoice_view = ImportInvoiceViewWidget(self)
         self.add_invoice_view = addInvoiceViewWidget(parent = self, employee_id = self.employee_id)
+        self.statistical_view = statisticalView(parent=self)
+
 
     def handle_nav_click(self, index, button):
         self.switch_stack(index, button)
@@ -181,3 +187,29 @@ class ManagerMainWindow(QMainWindow):
                 controller.load_employee_data()
         if index == 3:
             self.add_invoice_view.reset_view()
+
+        if index == 4:
+            self.statistical_stack.setCurrentIndex(0)
+            self.update_subtab_style(self.statistical_invenue_tab)
+
+    def show_revenue_tab(self):
+        self.stackedWidget.setCurrentIndex(4)
+        self.statistical_stack.setCurrentIndex(0)
+        self.update_subtab_style(self.statistical_invenue_tab)
+
+    def show_product_tab(self):
+        self.stackedWidget.setCurrentIndex(4)
+        self.statistical_stack.setCurrentIndex(1)
+        self.update_subtab_style(self.statistical_product_tab)
+
+    def show_destroy_tab(self):
+        self.stackedWidget.setCurrentIndex(4)
+        self.statistical_stack.setCurrentIndex(2)
+        self.update_subtab_style(self.statistical_destroy_tab)
+
+    def update_subtab_style(self, active_button):
+        normal_style = "QToolButton { color: rgb(255, 255, 255); background-color: rgb(0, 111, 162);font: 15px \"Segoe UI\"; border-radius:5px; }"
+        active_style = "QToolButton { background-color: rgb(0, 88, 129); color: rgb(255, 255, 255);font: 15px \"Segoe UI\"; border-radius:5px;  }"
+
+        for btn in [self.statistical_invenue_tab, self.statistical_product_tab, self.statistical_destroy_tab]:
+            btn.setStyleSheet(active_style if btn == active_button else normal_style)

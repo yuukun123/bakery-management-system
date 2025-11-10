@@ -774,7 +774,7 @@ background-color: #a2d2ff;</string>
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>4</number>
                </property>
                <widget class="QWidget" name="employee_page">
                 <property name="styleSheet">
@@ -3016,7 +3016,7 @@ QTableWidget QScrollBar::sub-page:vertical {
                             </property>
                             <layout class="QHBoxLayout" name="horizontalLayout_31">
                              <item>
-                              <widget class="QToolButton" name="search_product_import">
+                              <widget class="QToolButton" name="search_product_invoice_btn">
                                <property name="minimumSize">
                                 <size>
                                  <width>30</width>
@@ -3027,10 +3027,10 @@ QTableWidget QScrollBar::sub-page:vertical {
                                 <cursorShape>PointingHandCursor</cursorShape>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#search_product_import{
+                                <string notr="true">#search_product_invoice_btn{
 background-color: rgb(217, 217, 217);
 }
-#search_product_import::hover{
+#search_product_invoice_btn::hover{
 background-color: rgb(200, 200, 200);
 }</string>
                                </property>
@@ -3041,7 +3041,7 @@ background-color: rgb(200, 200, 200);
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLineEdit" name="search_import_invoice_2">
+                              <widget class="QLineEdit" name="search_product_invoice">
                                <property name="minimumSize">
                                 <size>
                                  <width>0</width>
@@ -3063,7 +3063,7 @@ padding-left: 10px;
                                 <string/>
                                </property>
                                <property name="placeholderText">
-                                <string>Tìm kiếm mã SP</string>
+                                <string>Tìm kiếm tên SP</string>
                                </property>
                               </widget>
                              </item>
@@ -3634,6 +3634,40 @@ background-color: rgb(247, 247, 247);
                                </property>
                               </widget>
                              </item>
+                             <item>
+                              <widget class="QToolButton" name="reset_btn">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>140</width>
+                                 <height>35</height>
+                                </size>
+                               </property>
+                               <property name="cursor">
+                                <cursorShape>PointingHandCursor</cursorShape>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#reset_btn{
+	
+	background-color: rgb(0, 127, 186);
+	color: rgb(255, 255, 255);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#reset_btn::hover{
+	
+	background-color: rgb(0, 85, 127);
+}
+#reset_btn:disabled {
+   color: rgb(120, 120, 120);   
+   background-color: rgb(200, 200, 200); 
+}
+</string>
+                               </property>
+                               <property name="text">
+                                <string>Làm mới</string>
+                               </property>
+                              </widget>
+                             </item>
                             </layout>
                            </widget>
                           </item>
@@ -4063,6 +4097,1314 @@ QComboBox#type_invoice_comboBox::down-arrow {
                 <property name="styleSheet">
                  <string notr="true">border: none</string>
                 </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_39">
+                 <item>
+                  <widget class="QScrollArea" name="scrollArea">
+                   <property name="widgetResizable">
+                    <bool>true</bool>
+                   </property>
+                   <widget class="QWidget" name="frameStatistical">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>1115</width>
+                      <height>675</height>
+                     </rect>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_15">
+                     <item alignment="Qt::AlignLeft">
+                      <widget class="QFrame" name="frame_64">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_45">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QToolButton" name="statistical_invenue_tab">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>30</height>
+                           </size>
+                          </property>
+                          <property name="cursor">
+                           <cursorShape>PointingHandCursor</cursorShape>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">#statistical_invenue_tab{
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 111, 162);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#statistical_invenue_tab::hover{
+	
+	background-color: rgb(0, 88, 129);
+}</string>
+                          </property>
+                          <property name="text">
+                           <string>Thống kê doanh thu</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QToolButton" name="statistical_product_tab">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>30</height>
+                           </size>
+                          </property>
+                          <property name="cursor">
+                           <cursorShape>PointingHandCursor</cursorShape>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">#statistical_product_tab{
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 111, 162);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#statistical_product_tab::hover{
+	
+	background-color: rgb(0, 88, 129);
+}</string>
+                          </property>
+                          <property name="text">
+                           <string>Thống kê sản phẩm</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QToolButton" name="statistical_destroy_tab">
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>30</height>
+                           </size>
+                          </property>
+                          <property name="cursor">
+                           <cursorShape>PointingHandCursor</cursorShape>
+                          </property>
+                          <property name="styleSheet">
+                           <string notr="true">#statistical_destroy_tab{
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 111, 162);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#statistical_destroy_tab::hover{
+	
+	background-color: rgb(0, 88, 129);
+}</string>
+                          </property>
+                          <property name="text">
+                           <string>Thống kê hàng hủy </string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QStackedWidget" name="statistical_stack">
+                       <property name="styleSheet">
+                        <string notr="true">background-color: rgb(255, 255, 255);</string>
+                       </property>
+                       <property name="currentIndex">
+                        <number>2</number>
+                       </property>
+                       <widget class="QWidget" name="page">
+                        <layout class="QVBoxLayout" name="verticalLayout_29">
+                         <item>
+                          <widget class="QFrame" name="frame_53">
+                           <property name="styleSheet">
+                            <string notr="true">background-color: rgb(255, 255, 255);</string>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::StyledPanel</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_16">
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QFrame" name="frame_59">
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>81</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(241, 241, 241);</string>
+                              </property>
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QHBoxLayout" name="horizontalLayout_40">
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <item alignment="Qt::AlignHCenter">
+                                <widget class="QFrame" name="frame_63">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>279</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="frameShape">
+                                  <enum>QFrame::StyledPanel</enum>
+                                 </property>
+                                 <property name="frameShadow">
+                                  <enum>QFrame::Raised</enum>
+                                 </property>
+                                 <layout class="QHBoxLayout" name="horizontalLayout_42">
+                                  <item>
+                                   <widget class="QLabel" name="label_12">
+                                    <property name="font">
+                                     <font>
+                                      <family>Segoe UI</family>
+                                      <pointsize>-1</pointsize>
+                                      <weight>75</weight>
+                                      <italic>false</italic>
+                                      <bold>true</bold>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">font: bold 16px &quot;Segoe UI&quot;;
+</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Thống kê theo:</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QComboBox" name="time_statiscal_comboBox">
+                                    <property name="styleSheet">
+                                     <string notr="true">QComboBox#time_statiscal_comboBox {
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;           
+    padding: 4px 6px;             
+    background: #fdfdfd;           
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QComboBox#time_statiscal_comboBox:focus {
+    border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;           
+}
+
+QComboBox#time_statiscal_comboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#time_statiscal_comboBox::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                                    </property>
+                                    <item>
+                                     <property name="text">
+                                      <string>Hôm nay</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tuần này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tháng này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Năm này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tùy chỉnh</string>
+                                     </property>
+                                    </item>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QDateEdit" name="dateOption">
+                                    <property name="styleSheet">
+                                     <string notr="true">QDateTimeEdit {
+    background-color: #fdfdfd;
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;
+    padding: 4px 6px;
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QDateTimeEdit::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #ccc;
+}
+
+QDateTimeEdit::up-button, QDateTimeEdit::down-button {
+    width: 14px;
+    height: 14px;
+    border: none;
+    background-color: transparent;
+}
+
+QDateTimeEdit::up-arrow {
+    image: url(:/UI/icons/chevron-up.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QDateTimeEdit::down-arrow {
+   image: url(:/UI/icons/chevron-down.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QDateTimeEdit:focus {
+	border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;  
+}
+QCalendarWidget {
+    background-color: #fdfdfd;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+}
+
+QCalendarWidget QToolButton {
+    height: 30px;
+    width: 100px;
+    color: #2c3e50;
+    font-weight: bold;
+    icon-size: 24px, 24px;
+    background-color: transparent;
+    border: none;
+}
+
+QCalendarWidget QToolButton:hover {
+    color: #3498db;
+}
+
+QCalendarWidget QMenu {
+    background-color: white;
+    border: 1px solid #dcdcdc;
+}
+
+QCalendarWidget QSpinBox {
+    width: 60px;
+    font-size: 14px;
+    padding: 2px;
+}
+
+QCalendarWidget QSpinBox::up-button, QCalendarWidget QSpinBox::down-button {
+    width: 12px;
+    background-color: #ecf0f1;
+}
+
+QCalendarWidget QAbstractItemView {
+    outline: 0;
+    selection-background-color: #3498db;
+    selection-color: white;
+    background-color: #ffffff;
+    gridline-color: #ecf0f1;
+    font-size: 13px;
+}
+
+QCalendarWidget QAbstractItemView:enabled {
+    color: #2c3e50;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+QCalendarWidget QTableView {
+    border: none;
+}
+
+QCalendarWidget QTableView::item:selected {
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+}
+
+QCalendarWidget QTableView::item:enabled {
+    background-color: #ffffff;
+}
+
+QCalendarWidget QTableView::item:disabled {
+    color: #bdc3c7;
+}
+</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QToolButton" name="statistical_invenue_btn">
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>124</width>
+                                      <height>32</height>
+                                     </size>
+                                    </property>
+                                    <property name="cursor">
+                                     <cursorShape>PointingHandCursor</cursorShape>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">#statistical_invenue_btn{
+	color: rgb(255, 255, 255);
+	background-color: rgb(62, 186, 91);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#statistical_invenue_btn::hover{
+	
+	background-color: rgb(41, 125, 61);
+}</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Thống kê</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                 </layout>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QFrame" name="Frame_chart_revenue">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>0</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">border:solid 1px #000000;</string>
+                              </property>
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QFrame" name="Frame_piechart_revenue">
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                       <widget class="QWidget" name="page_3">
+                        <layout class="QVBoxLayout" name="verticalLayout_31">
+                         <item>
+                          <widget class="QFrame" name="frame_76">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::StyledPanel</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_53">
+                            <item>
+                             <widget class="QFrame" name="frame_77">
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>81</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(241, 241, 241);</string>
+                              </property>
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QHBoxLayout" name="horizontalLayout_51">
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <item alignment="Qt::AlignHCenter">
+                                <widget class="QFrame" name="frame_78">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>279</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="frameShape">
+                                  <enum>QFrame::StyledPanel</enum>
+                                 </property>
+                                 <property name="frameShadow">
+                                  <enum>QFrame::Raised</enum>
+                                 </property>
+                                 <layout class="QHBoxLayout" name="horizontalLayout_52">
+                                  <item>
+                                   <widget class="QLabel" name="label_26">
+                                    <property name="font">
+                                     <font>
+                                      <family>Segoe UI</family>
+                                      <pointsize>-1</pointsize>
+                                      <weight>75</weight>
+                                      <italic>false</italic>
+                                      <bold>true</bold>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">font: bold 16px &quot;Segoe UI&quot;;
+</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Thống kê theo:</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QComboBox" name="time_statiscal_product">
+                                    <property name="styleSheet">
+                                     <string notr="true">QComboBox#time_statiscal_product {
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;           
+    padding: 4px 6px;             
+    background: #fdfdfd;           
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QComboBox#time_statiscal_product:focus {
+    border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;           
+}
+
+QComboBox#time_statiscal_product::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#time_statiscal_product::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                                    </property>
+                                    <item>
+                                     <property name="text">
+                                      <string>Hôm nay</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tuần này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tháng này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Năm này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tùy chỉnh</string>
+                                     </property>
+                                    </item>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QDateEdit" name="date_option_product">
+                                    <property name="styleSheet">
+                                     <string notr="true">QDateTimeEdit {
+    background-color: #fdfdfd;
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;
+    padding: 4px 6px;
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QDateTimeEdit::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #ccc;
+}
+
+QDateTimeEdit::up-button, QDateTimeEdit::down-button {
+    width: 14px;
+    height: 14px;
+    border: none;
+    background-color: transparent;
+}
+
+QDateTimeEdit::up-arrow {
+    image: url(:/UI/icons/chevron-up.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QDateTimeEdit::down-arrow {
+   image: url(:/UI/icons/chevron-down.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QDateTimeEdit:focus {
+	border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;  
+}
+QCalendarWidget {
+    background-color: #fdfdfd;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+}
+
+QCalendarWidget QToolButton {
+    height: 30px;
+    width: 100px;
+    color: #2c3e50;
+    font-weight: bold;
+    icon-size: 24px, 24px;
+    background-color: transparent;
+    border: none;
+}
+
+QCalendarWidget QToolButton:hover {
+    color: #3498db;
+}
+
+QCalendarWidget QMenu {
+    background-color: white;
+    border: 1px solid #dcdcdc;
+}
+
+QCalendarWidget QSpinBox {
+    width: 60px;
+    font-size: 14px;
+    padding: 2px;
+}
+
+QCalendarWidget QSpinBox::up-button, QCalendarWidget QSpinBox::down-button {
+    width: 12px;
+    background-color: #ecf0f1;
+}
+
+QCalendarWidget QAbstractItemView {
+    outline: 0;
+    selection-background-color: #3498db;
+    selection-color: white;
+    background-color: #ffffff;
+    gridline-color: #ecf0f1;
+    font-size: 13px;
+}
+
+QCalendarWidget QAbstractItemView:enabled {
+    color: #2c3e50;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+QCalendarWidget QTableView {
+    border: none;
+}
+
+QCalendarWidget QTableView::item:selected {
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+}
+
+QCalendarWidget QTableView::item:enabled {
+    background-color: #ffffff;
+}
+
+QCalendarWidget QTableView::item:disabled {
+    color: #bdc3c7;
+}
+</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QToolButton" name="statistical_product_btn">
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>124</width>
+                                      <height>32</height>
+                                     </size>
+                                    </property>
+                                    <property name="cursor">
+                                     <cursorShape>PointingHandCursor</cursorShape>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">#statistical_product_btn{
+	color: rgb(255, 255, 255);
+	background-color: rgb(62, 186, 91);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#statistical_product_btn::hover{
+	
+	background-color: rgb(41, 125, 61);
+}</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Thống kê</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                 </layout>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QFrame" name="frame_54">
+                           <property name="frameShape">
+                            <enum>QFrame::StyledPanel</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_39">
+                            <item>
+                             <widget class="QFrame" name="frame_75">
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QVBoxLayout" name="verticalLayout_34">
+                               <item>
+                                <widget class="QLabel" name="label_25">
+                                 <property name="styleSheet">
+                                  <string notr="true">color: rgb(85, 85, 85);
+font: bold 16px &quot;Segoe UI&quot;;</string>
+                                 </property>
+                                 <property name="text">
+                                  <string>Top 5 sản phẩm bán chạy</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QTableWidget" name="table_best_seller_product">
+                                 <property name="styleSheet">
+                                  <string notr="true">QTableWidget {
+    font: 13px &quot;Segoe UI&quot;;
+	border:none;
+}
+
+QHeaderView::section {
+    background-color: #2980b9;
+    color: white;
+    padding: 6px;
+	border: 1px solid rgb(191, 191, 191);
+    font-weight: bold;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;
+}
+
+QTableWidget::item:selected {
+    background-color: #cce5ff;
+	border: 1px solid #2980b9;
+    color: black;
+
+}
+
+
+QTableWidget QScrollBar:vertical {
+    background: #f0f0f0;
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #7aa5d2;
+    min-height: 30px;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical:hover {
+    background: #5a92c4;
+}
+
+QTableWidget QScrollBar::add-line:vertical, 
+QTableWidget QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QTableWidget QScrollBar::add-page:vertical, 
+QTableWidget QScrollBar::sub-page:vertical {
+    background: none;
+}
+</string>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QFrame" name="frame_72">
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QVBoxLayout" name="verticalLayout_38">
+                               <item>
+                                <widget class="QLabel" name="label_22">
+                                 <property name="styleSheet">
+                                  <string notr="true">color: rgb(85, 85, 85);
+font: bold 16px &quot;Segoe UI&quot;;</string>
+                                 </property>
+                                 <property name="text">
+                                  <string>Top 5 sản phẩm bán chậm</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QTableWidget" name="table_low_product">
+                                 <property name="styleSheet">
+                                  <string notr="true">QTableWidget {
+    font: 13px &quot;Segoe UI&quot;;
+	border:none;
+}
+
+QHeaderView::section {
+    background-color: #2980b9;
+    color: white;
+    padding: 6px;
+	border: 1px solid rgb(191, 191, 191);
+    font-weight: bold;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;
+}
+
+QTableWidget::item:selected {
+    background-color: #cce5ff;
+	border: 1px solid #2980b9;
+    color: black;
+
+}
+
+
+QTableWidget QScrollBar:vertical {
+    background: #f0f0f0;
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #7aa5d2;
+    min-height: 30px;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical:hover {
+    background: #5a92c4;
+}
+
+QTableWidget QScrollBar::add-line:vertical, 
+QTableWidget QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QTableWidget QScrollBar::add-page:vertical, 
+QTableWidget QScrollBar::sub-page:vertical {
+    background: none;
+}
+</string>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                       <widget class="QWidget" name="page_2">
+                        <layout class="QVBoxLayout" name="verticalLayout_40">
+                         <item>
+                          <widget class="QFrame" name="frame_79">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::StyledPanel</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_54">
+                            <item>
+                             <widget class="QFrame" name="frame_80">
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>81</height>
+                               </size>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(241, 241, 241);</string>
+                              </property>
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QHBoxLayout" name="horizontalLayout_55">
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <item alignment="Qt::AlignHCenter">
+                                <widget class="QFrame" name="frame_81">
+                                 <property name="minimumSize">
+                                  <size>
+                                   <width>279</width>
+                                   <height>0</height>
+                                  </size>
+                                 </property>
+                                 <property name="frameShape">
+                                  <enum>QFrame::StyledPanel</enum>
+                                 </property>
+                                 <property name="frameShadow">
+                                  <enum>QFrame::Raised</enum>
+                                 </property>
+                                 <layout class="QHBoxLayout" name="horizontalLayout_56">
+                                  <item>
+                                   <widget class="QLabel" name="label_29">
+                                    <property name="font">
+                                     <font>
+                                      <family>Segoe UI</family>
+                                      <pointsize>-1</pointsize>
+                                      <weight>75</weight>
+                                      <italic>false</italic>
+                                      <bold>true</bold>
+                                     </font>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">font: bold 16px &quot;Segoe UI&quot;;
+</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Thống kê theo:</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QComboBox" name="time_statiscal_destroy">
+                                    <property name="styleSheet">
+                                     <string notr="true">QComboBox#time_statiscal_destroy {
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;           
+    padding: 4px 6px;             
+    background: #fdfdfd;           
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QComboBox#time_statiscal_destroy:focus {
+    border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;           
+}
+
+QComboBox#time_statiscal_destroy::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: 1px solid #ccc;
+}
+
+QComboBox#time_statiscal_destroy::down-arrow {
+	image: url(:/UI/icons/chevron-down.svg);
+    width: 12px;
+    height: 12px;
+}
+</string>
+                                    </property>
+                                    <item>
+                                     <property name="text">
+                                      <string>Hôm nay</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tuần này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tháng này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Năm này</string>
+                                     </property>
+                                    </item>
+                                    <item>
+                                     <property name="text">
+                                      <string>Tùy chỉnh</string>
+                                     </property>
+                                    </item>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QDateEdit" name="date_option_destroy">
+                                    <property name="styleSheet">
+                                     <string notr="true">QDateTimeEdit {
+    background-color: #fdfdfd;
+    border: 2px solid rgb(226, 226, 226);    
+    border-radius: 6px;
+    padding: 4px 6px;
+    font: 16px &quot;Segoe UI&quot;;
+}
+
+QDateTimeEdit::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left: 1px solid #ccc;
+}
+
+QDateTimeEdit::up-button, QDateTimeEdit::down-button {
+    width: 14px;
+    height: 14px;
+    border: none;
+    background-color: transparent;
+}
+
+QDateTimeEdit::up-arrow {
+    image: url(:/UI/icons/chevron-up.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QDateTimeEdit::down-arrow {
+   image: url(:/UI/icons/chevron-down.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QDateTimeEdit:focus {
+	border: 2px solid rgb(0, 170, 255);        
+    background: #ffffff;  
+}
+QCalendarWidget {
+    background-color: #fdfdfd;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+}
+
+QCalendarWidget QToolButton {
+    height: 30px;
+    width: 100px;
+    color: #2c3e50;
+    font-weight: bold;
+    icon-size: 24px, 24px;
+    background-color: transparent;
+    border: none;
+}
+
+QCalendarWidget QToolButton:hover {
+    color: #3498db;
+}
+
+QCalendarWidget QMenu {
+    background-color: white;
+    border: 1px solid #dcdcdc;
+}
+
+QCalendarWidget QSpinBox {
+    width: 60px;
+    font-size: 14px;
+    padding: 2px;
+}
+
+QCalendarWidget QSpinBox::up-button, QCalendarWidget QSpinBox::down-button {
+    width: 12px;
+    background-color: #ecf0f1;
+}
+
+QCalendarWidget QAbstractItemView {
+    outline: 0;
+    selection-background-color: #3498db;
+    selection-color: white;
+    background-color: #ffffff;
+    gridline-color: #ecf0f1;
+    font-size: 13px;
+}
+
+QCalendarWidget QAbstractItemView:enabled {
+    color: #2c3e50;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+QCalendarWidget QTableView {
+    border: none;
+}
+
+QCalendarWidget QTableView::item:selected {
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+}
+
+QCalendarWidget QTableView::item:enabled {
+    background-color: #ffffff;
+}
+
+QCalendarWidget QTableView::item:disabled {
+    color: #bdc3c7;
+}
+</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                  <item>
+                                   <widget class="QToolButton" name="statistical_destroy_btn">
+                                    <property name="minimumSize">
+                                     <size>
+                                      <width>124</width>
+                                      <height>32</height>
+                                     </size>
+                                    </property>
+                                    <property name="cursor">
+                                     <cursorShape>PointingHandCursor</cursorShape>
+                                    </property>
+                                    <property name="styleSheet">
+                                     <string notr="true">#statistical_destroy_btn{
+	color: rgb(255, 255, 255);
+	background-color: rgb(62, 186, 91);
+	font: 15px &quot;Segoe UI&quot;;
+	border-radius:5px;
+}
+#statistical_destroy_btn::hover{
+	
+	background-color: rgb(41, 125, 61);
+}</string>
+                                    </property>
+                                    <property name="text">
+                                     <string>Thống kê</string>
+                                    </property>
+                                   </widget>
+                                  </item>
+                                 </layout>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QFrame" name="frame_82">
+                           <property name="frameShape">
+                            <enum>QFrame::StyledPanel</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_41">
+                            <item>
+                             <widget class="QFrame" name="frame_83">
+                              <property name="frameShape">
+                               <enum>QFrame::StyledPanel</enum>
+                              </property>
+                              <property name="frameShadow">
+                               <enum>QFrame::Raised</enum>
+                              </property>
+                              <layout class="QVBoxLayout" name="verticalLayout_42">
+                               <item>
+                                <widget class="QLabel" name="label_30">
+                                 <property name="styleSheet">
+                                  <string notr="true">color: rgb(85, 85, 85);
+font: bold 16px &quot;Segoe UI&quot;;</string>
+                                 </property>
+                                 <property name="text">
+                                  <string>Hàng hủy cuối ngày </string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QTableWidget" name="table_destroyed_product">
+                                 <property name="styleSheet">
+                                  <string notr="true">QTableWidget {
+    font: 13px &quot;Segoe UI&quot;;
+	border:none;
+}
+
+QHeaderView::section {
+    background-color: #2980b9;
+    color: white;
+    padding: 6px;
+	border: 1px solid rgb(191, 191, 191);
+    font-weight: bold;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;
+}
+
+QTableWidget::item:selected {
+    background-color: #cce5ff;
+	border: 1px solid #2980b9;
+    color: black;
+
+}
+
+
+QTableWidget QScrollBar:vertical {
+    background: #f0f0f0;
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #7aa5d2;
+    min-height: 30px;
+    border-radius: 5px;
+}
+
+QTableWidget QScrollBar::handle:vertical:hover {
+    background: #5a92c4;
+}
+
+QTableWidget QScrollBar::add-line:vertical, 
+QTableWidget QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QTableWidget QScrollBar::add-page:vertical, 
+QTableWidget QScrollBar::sub-page:vertical {
+    background: none;
+}
+</string>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </widget>
              </item>

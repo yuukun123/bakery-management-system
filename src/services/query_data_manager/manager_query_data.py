@@ -415,15 +415,17 @@ class QueryData:
         finally:
             conn.close()
 
-    def get_all_product(self):
+    def get_search_product(self, search_term):
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
+            search_pattern = f"%{search_term}%"
             cursor.execute("""SELECT p.product_id, p.product_name, tp.type_name, p.stock 
                               FROM products as p
                               JOIN type_product as tp ON p.type_id = tp.type_id   
                               WHERE p.status = "đang kinh doanh"
-            """)
+                              AND p.product_name LIKE ?
+            """, (search_pattern,))
             rows = cursor.fetchall()
             return rows
         except sqlite3.Error as e:
@@ -521,3 +523,212 @@ class QueryData:
         except sqlite3.Error as e:
             print(f"Database error in get_invoice_information: {e}")
             return None
+    def get_revenue_by_hour(self, date_str):
+        """Thống kê doanh thu theo từng khung giờ trong 1 ngày cụ thể."""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            # strftime('%H') lấy giờ từ 00-23
+            query = """
+                SELECT strftime('%H', invoice_date) as hour, SUM(total_amount)
+                FROM invoices
+                WHERE DATE(invoice_date) = ?
+                GROUP BY hour
+                ORDER BY hour ASC
+            """
+            cursor.execute(query, (date_str,))
+            # Tạo dict với key là giờ (int), value là doanh thu
+            data = {int(row[0]): row[1] for row in cursor.fetchall()}
+            # Đảm bảo có đủ 24h (từ 0 đến 23h)
+            return [data.get(h, 0) for h in range(24)]
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê theo giờ: {e}")
+            return [0] * 24
+        finally:
+            conn.close()
+
+    def get_revenue_by_day_of_week(self, start_date_str, end_date_str):
+        """Thống kê doanh thu theo thứ trong tuần (cho tùy chọn 'Tuần này')."""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            # Lấy dữ liệu theo từng ngày trong khoảng thời gian
+            query = """
+                SELECT DATE(invoice_date) as day_date, SUM(total_amount)
+                FROM invoices
+                WHERE DATE(invoice_date) BETWEEN ? AND ?
+                GROUP BY day_date
+                ORDER BY day_date ASC
+            """
+            cursor.execute(query, (start_date_str, end_date_str))
+            # Trả về list các tuple (ngày, doanh thu) để Python xử lý tiếp
+            return cursor.fetchall()
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê theo ngày: {e}")
+            return []
+        finally:
+            conn.close()
+
+    def get_revenue_by_week_in_month(self, year, month):
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            query = """
+                SELECT 
+                    ((strftime('%d', invoice_date) - 1) / 7) + 1 AS week_in_month,
+                    SUM(total_amount)
+                FROM invoices
+                WHERE strftime('%Y-%m', invoice_date) = ?
+                GROUP BY week_in_month
+                ORDER BY week_in_month
+            """
+            cursor.execute(query, (f"{year}-{month:02d}",))
+            rows = cursor.fetchall()
+            # Tạo dict: {1: doanh thu tuần 1, 2: tuần 2, ...}
+            data = {row[0]: row[1] for row in rows}
+            # Trả về tuần 1 → 5 (nếu có)
+            return [data.get(w, 0) for w in range(1, 6)]
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê theo tuần: {e}")
+            return [0] * 5
+        finally:
+            conn.close()
+
+    def get_revenue_by_month_in_year(self, year):
+        """Thống kê doanh thu theo 12 tháng trong năm."""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            query = """
+                SELECT strftime('%m', invoice_date) as month, SUM(total_amount)
+                FROM invoices
+                WHERE strftime('%Y', invoice_date) = ?
+                GROUP BY month
+                ORDER BY month ASC
+            """
+            cursor.execute(query, (str(year),))
+            data = {int(row[0]): row[1] for row in cursor.fetchall()}
+            # Đảm bảo đủ 12 tháng
+            return [data.get(m, 0) for m in range(1, 13)]
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê theo tháng: {e}")
+            return [0] * 12
+        finally:
+            conn.close()
+
+    def get_product_revenue_by_type(self, start_date, end_date):
+        print(f"DEBUG: PIE CHART DRAWED FROM {start_date} TO {end_date}")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            query = """
+                SELECT 
+                   SUM(CASE WHEN tp.type_name = 'Croissant' THEN id.quantity * id.unit_price ELSE 0 END) as Croissant,
+                   SUM(CASE WHEN tp.type_name = 'Tart'       THEN id.quantity * id.unit_price ELSE 0 END) as Tart,
+                   SUM(CASE WHEN tp.type_name = 'Mousse'     THEN id.quantity * id.unit_price ELSE 0 END) as Mousse
+                FROM invoice_details id
+                JOIN products p ON id.product_id = p.product_id
+                JOIN type_product tp ON tp.type_id = p.type_id
+                JOIN invoices i ON id.invoice_id = i.invoice_id
+                WHERE DATE(i.invoice_date) BETWEEN ? AND ?
+            """
+            cursor.execute(query, (start_date,end_date))
+            row = cursor.fetchone()
+            return [float(x) if x else 0.0 for x in row] if row else [0, 0, 0]
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê theo loại: {e}")
+            return [0] * 12
+        finally:
+            conn.close()
+
+    def get_5_best_seller_product(self, start_date, end_date):
+        print(f"DEBUG: STATISTICAL PRODUCT FROM {start_date} TO {end_date}")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            query = """
+                SELECT p.product_id, 
+                       p.product_name,
+                       tp.type_name, 
+                       SUM(id.quantity) as total_sold,
+                       SUM(id.quantity * id.unit_price) as total_revenue
+                FROM invoice_details id
+                JOIN invoices i ON id.invoice_id = i.invoice_id
+                JOIN products p ON id.product_id = p.product_id
+                JOIN type_product tp ON tp.type_id = p.type_id
+                WHERE DATE(i.invoice_date) BETWEEN ? AND ?
+                GROUP BY p.product_id, p.product_name
+                ORDER BY total_sold DESC
+                LIMIT 5
+            """
+            cursor.execute(query, (start_date,end_date))
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê top 5 best seller: {e}")
+            return [0] * 12
+        finally:
+            conn.close()
+
+    def get_5_low_product(self, start_date, end_date):
+        print(f"DEBUG: STATISTICAL PRODUCT FROM {start_date} TO {end_date}")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            query = """
+                SELECT p.product_id, 
+                       p.product_name,
+                       tp.type_name, 
+                       SUM(id.quantity) as total_sold,
+                       SUM(id.quantity * id.unit_price) as total_revenue
+                FROM invoice_details id
+                JOIN invoices i ON id.invoice_id = i.invoice_id
+                JOIN products p ON id.product_id = p.product_id
+                JOIN type_product tp ON tp.type_id = p.type_id
+                WHERE DATE(i.invoice_date) BETWEEN ? AND ?
+                GROUP BY p.product_id, p.product_name
+                ORDER BY total_sold ASC
+                LIMIT 5
+            """
+            cursor.execute(query, (start_date,end_date))
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê top 5 low product: {e}")
+            return [0] * 12
+        finally:
+            conn.close()
+
+    def get_destroyed_product(self, start_date, end_date):
+        print(f"DEBUG: STATISTICAL DESTROYED PRODUCT FROM {start_date} TO {end_date}")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            query = """
+                SELECT
+                p.product_id,                         
+                p.product_name,                      
+                SUM(iid.quantity) AS cancelled_qty,
+                DATE(ii.import_date) AS cancel_date  
+            FROM import_invoice ii
+            JOIN import_invoice_details iid ON ii.import_id = iid.import_id
+            JOIN products p ON iid.product_id = p.product_id
+            WHERE
+                ii.invoice_type = 'Phiếu hủy'
+                AND DATE(ii.import_date) BETWEEN ? AND ?
+            GROUP BY
+                DATE(ii.import_date),
+                p.product_id,
+                p.product_name
+            ORDER BY
+                cancel_date DESC,
+                cancelled_qty DESC;
+            """
+            cursor.execute(query, (start_date,end_date))
+            rows = cursor.fetchall()
+            return rows
+        except sqlite3.Error as e:
+            print(f"Lỗi thống kê destroyed product: {e}")
+            return [0] * 12
+        finally:
+            conn.close()

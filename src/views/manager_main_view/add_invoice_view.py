@@ -52,6 +52,9 @@ class addInvoiceViewWidget(QWidget):
         self.view.delete_product_import.clicked.connect(self.remove_product_from_invoice)
         self.view.update_product_import.clicked.connect(self.save_product_update)
         self.view.accept_btn.clicked.connect(self.save_invoice)
+        self.view.reset_btn.clicked.connect(self.reset_view)
+        self.view.search_product_invoice_btn.clicked.connect(self.handle_search_product)
+        self.view.search_product_invoice.textChanged.connect(self.handle_search_empty)
 
         self.load_product()
         self.load_product_to_import()
@@ -78,10 +81,20 @@ class addInvoiceViewWidget(QWidget):
         self.view.import_id_output.setText(new_invoice_id)
         self.view.employee_output.setText(employee_name)
 
+    def handle_search_product(self):
+        search_term = self.view.search_product_invoice.text().strip()
+        data = self.query_data.get_search_product(search_term)
+        self.load_product(data)
 
+    def handle_search_empty(self):
+        search_term = self.view.search_product_invoice.text().strip()
+        if search_term == "":
+            data = self.query_data.get_search_product(search_term)
+            self.load_product(data)
 
-    def load_product(self):
-        data = self.query_data.get_all_product()
+    def load_product(self, data = None):
+        if data is None:
+            data = self.query_data.get_search_product("")
         table = self.view.product_import_tableWidget
         headers = ["Mã sản phẩm", "Tên sản phẩm", "Loại", "Số lượng Tồn"]
         table.setColumnCount(len(headers))
@@ -372,6 +385,7 @@ class addInvoiceViewWidget(QWidget):
         self.load_product()
         self.check_invoice()
         self.view.total_price_import.setText("0đ")
+        self.view.search_product_invoice.clear()
 
     def save_invoice(self):
         if not self.data_import:
