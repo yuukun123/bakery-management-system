@@ -88,7 +88,6 @@ class updateProduct(QDialog,MoveableWindow):
         self.selling_input.setText(selling_price)
         self.format_number(self.selling_input)
         self.type_comboBox.setCurrentText(type)
-        self.link_product.setText(image_path)
         if image_path:
             pixmap = QPixmap(image_path)
             scaled_pixmap = pixmap.scaled(
@@ -227,9 +226,6 @@ class updateProduct(QDialog,MoveableWindow):
         type = self.type_comboBox.currentText()
         type_index = self.type_comboBox.currentIndex()
         file_name = self.new_image_path if self.new_image_path else os.path.basename(self.original_image_path)
-        if file_name and type_index != 0:
-            final_relative_path = os.path.join("UI/images", type, file_name).replace("\\", "/")
-            self.link_product.setText(final_relative_path)
-        elif file_name:
-            self.link_product.setText(file_name)
+
+
 

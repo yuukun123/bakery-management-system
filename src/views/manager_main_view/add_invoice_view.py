@@ -220,6 +220,9 @@ class addInvoiceViewWidget(QWidget):
                 return
             try:
                 price = int(price_text)
+                if price < 10000:
+                     QMessageBox.warning(self.view, "Thông báo", "Vui lòng nhập giá từ 10,000đ trở lên")
+                     return
             except ValueError:
                  QMessageBox.warning(self.view, "Lỗi định dạng", "Giá phải là số hợp lệ.")
                  return
