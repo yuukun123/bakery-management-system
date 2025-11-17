@@ -24,19 +24,6 @@ class EmployeeQueryData:
         conn.row_factory = sqlite3.Row
         return conn
 
-    # def get_all_products(self):
-    #     conn = self._get_connection()
-    #     cursor = conn.cursor()
-    #     try:
-    #         cursor.execute("SELECT product_id, product_name, selling_price, image_path FROM products")
-    #         products = [dict(row) for row in cursor.fetchall()]
-    #         return products
-    #     except sqlite3.Error as e:
-    #         print(f"Database error in get product:  {e}")
-    #         return None
-    #     finally:
-    #         conn.close()
-
     def get_guest_customer_info(self):
         """
         Lấy thông tin của khách hàng mặc định "Khách vãng lai".
@@ -356,15 +343,17 @@ class EmployeeQueryData:
             # === Bước 1: Tạo mã hóa đơn mới ===
             new_invoice_code = self.generate_invoice_code(cursor)
 
+            current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
             # === Bước 2: Lưu thông tin chính vào bảng `invoices` ===
             sql_invoice = """
                 INSERT INTO invoices (
-                    invoice_code, total_amount, payment_method, 
+                    invoice_code, invoice_date, total_amount, payment_method, 
                     cash_received, change_given, employee_id, customer_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """
             cursor.execute(sql_invoice, (
-                new_invoice_code, total_amount, payment_method,
+                new_invoice_code, current_datetime, total_amount, payment_method,
                 cash_received, change_given, employee_id, customer_id
             ))
 

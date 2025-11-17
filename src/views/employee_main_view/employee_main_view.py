@@ -75,6 +75,7 @@ class EmployeeMainWindow(QMainWindow):
         self.logout.clicked.connect(self.buttonController.handle_logout)
 
         self.checkout_controller.payment_successful.connect(self.product_controller.refresh_product_display)
+        self.checkout_controller.payment_successful.connect(self.invoice_controller.refresh_invoice_display)
 
     def get_employee_context(self):
         """Get the employee context data."""
