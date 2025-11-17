@@ -212,9 +212,9 @@ class RevenueStatsView(QWidget):
             self.pie_canvas.axes.annotate(label_text, xy=(x, y), xytext=(1.35*np.sign(x), 1.4*y),
                         horizontalalignment=horizontalalignment, color='black', **kw) # Thêm color='black'
 
-        self.pie_canvas.axes.set_title(f'Doanh thu theo loại sản phẩm - {title_suffix}', fontsize=12, fontweight='bold', pad=20)
+        self.pie_canvas.axes.set_title(f'Doanh thu theo loại sản phẩm - {title_suffix}', fontsize=12, fontweight='bold', pad=30)
         self.pie_canvas.fig.tight_layout(rect=[0, 0, 1, 0.92])
-        self.pie_canvas.fig.subplots_adjust(left=0.1, right=0.9, top=0.85, bottom=0.15)
+        self.pie_canvas.fig.subplots_adjust(left=0.1, right=0.9, top=0.8, bottom=0.15)
         self.pie_canvas.draw()
 
     def _format_pie_label(self, pct, all_values):

@@ -55,6 +55,7 @@ class addInvoiceViewWidget(QWidget):
         self.view.reset_btn.clicked.connect(self.reset_view)
         self.view.search_product_invoice_btn.clicked.connect(self.handle_search_product)
         self.view.search_product_invoice.textChanged.connect(self.handle_search_empty)
+        self.view.type_invoice_comboBox.currentIndexChanged.connect(self.reset_view)
 
         self.load_product()
         self.load_product_to_import()
@@ -158,8 +159,6 @@ class addInvoiceViewWidget(QWidget):
             if not table1.geometry().contains(mapped_pos) and not table2.geometry().contains(mapped_pos):
                 table1.clearSelection()
                 table2.clearSelection()
-                self.clear_input_fields()
-
         return super().eventFilter(obj, event)
 
     def format_number(self, line_edit):
@@ -220,6 +219,9 @@ class addInvoiceViewWidget(QWidget):
                 return
             try:
                 price = int(price_text)
+                if price < 10000:
+                     QMessageBox.warning(self.view, "Thông báo", "Vui lòng nhập giá từ 10,000đ trở lên")
+                     return
             except ValueError:
                  QMessageBox.warning(self.view, "Lỗi định dạng", "Giá phải là số hợp lệ.")
                  return
