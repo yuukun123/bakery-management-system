@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from PyQt5.QtCore import Qt, QRegExp, QDate, QObject
+from PyQt5.QtCore import Qt, QRegExp, QDate, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView, QHeaderView
 
@@ -70,6 +70,10 @@ class InvoiceController(QObject):
 
         self.table.setColumnCount(len(INVOICE_HEADER))
         self.table.setHorizontalHeaderLabels(INVOICE_HEADER)
+
+    @pyqtSlot()
+    def refresh_invoice_display(self):
+        self.load_all_invoices()
 
     def load_all_invoices(self):
         """Tải tất cả các hóa đơn từ CSDL và hiển thị lên bảng."""
