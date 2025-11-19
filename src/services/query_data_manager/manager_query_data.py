@@ -393,7 +393,9 @@ class QueryData:
         conn = self._get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT employee_name FROM employees")
+            cursor.execute("""SELECT employee_name FROM employees
+                              WHERE role = "quản lý"
+                           """)
             rows = cursor.fetchall()
             return rows
         except sqlite3.Error as e:
